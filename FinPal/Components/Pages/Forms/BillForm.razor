@@ -1,77 +1,231 @@
-﻿@page "/bill/form"
+﻿@page "/bills/form"
+@inject BillDatabase BDatabase
+@inject FinanceNameDatabase FnDatabase
+@inject CategoryDatabase CDatabase
+@inject NavigationManager Navigation
+@using FinPal.Utility
 
-<h3>Bills / Utilities</h3>
+<h3 class="mb-5">Add Bill</h3>
 
 <form>
-    <div class="mb-3">
+    <div class="mb-3 position-relative">
+        <label for="totalPrice" class="form-label">Amount due</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+            <input type="number" class="form-control @(UIHelper.GetFormValidClass(isAmount))" required id="totalPrice" @bind="formModel.amountDue" placeholder="Amount due" />
+        </div>
+        <div class="invalid-tooltip">
+            Amount due cannot be 0!
+        </div>
+    </div>
+    <hr class="my-5 mx-3"/>
+    <div class="mb-3 position-relative">
+        <label for="category" class="form-label">Category</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
+            <select class="form-select @(UIHelper.GetFormValidClass(isCategory))" required @bind="formModel.category">
+                <option>Select Category</option>
+                @foreach (var item in cItems)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </select>
+        </div>
+        <div class="invalid-tooltip">
+            Please select a category.
+        </div>
+    </div>
+    <div class="mb-3 position-relative">
         <label for="financeCode" class="form-label">Finance Name</label>
-        <select class="form-select" @bind="financeCode">
-            <option>1</option>
-        </select>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-bank2"></i></span>
+            <select class="form-select @(UIHelper.GetFormValidClass(isFinance))" required @bind="formModel.financeCode">
+                <option>Please Select</option>
+                @foreach (var item in fnItems)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </select>
+        </div>
+        
+        <div class="invalid-tooltip">
+            Please select a valid finance name. If none is available, please create one in the Settings > Finance Name or click <a class="text-white" href="settings/finance">here</a>.
+        </div>
     </div>
-    <div class="mb-3">
+    <div class="mb-3 position-relative">
         <label for="itemName" class="form-label">Item Name</label>
-        <input type="text" class="form-control" id="itemName" @bind="itemName" placeholder="Enter item name" />
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-type"></i></span>
+            <input type="text" class="form-control @(UIHelper.GetFormValidClass(isName))" required id="itemName" @bind="formModel.itemName" placeholder="Enter item name" />
+        </div>
+        <div class="invalid-tooltip">
+            Please input the item name.
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="totalPrice" class="form-label">Total Price</label>
-        <input type="number" class="form-control" id="totalPrice" @bind="totalPrice" @onblur="calculateTotal" @oninput="calculateTotal" placeholder="Enter Total Price" />
-    </div>
-   
-    <div class="mb-3">
-        <label for="period" class="form-label">Installment Period</label>
-        <input type="number" class="form-control" id="period" @bind="period" @onblur="calculateTotal" @oninput="calculateTotal" placeholder="Enter Installment Period" />
-    </div>
-    <div class="mb-3">
-        <label for="interest" class="form-label">Interest (%)</label>
-        <input type="number" class="form-control" id="interest" @bind="interestRate" @onblur="calculateTotal" @oninput="calculateTotal" placeholder="Enter Interest (%)" />
+
+    <hr class="my-5 mx-3" />
+
+    <div class="row mb-3">
+        <div class="col-md-6 mb-3 position-relative">
+            <label for="category" class="form-label">Repeat Option</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-repeat"></i></span>
+                <select class="form-select @(UIHelper.GetFormValidClass(isRepeat))" @bind="formModel.repeat">
+                    <option>Select repeat option</option>
+                    <option value="N">None</option>
+                    <option value="D">Daily</option>
+                    <option value="W">Weekly</option>
+                    <option value="B-W">Bi-Weekly</option>
+                    <option value="M">Monthly</option>
+                    <option value="B-M">Bi-Monthly</option>
+                    <option value="A">Anually</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6 position-relative">
+            <label for="period" class="form-label">Repeat for</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-repeat-1"></i></span>
+                <input type="number" class="form-control @(UIHelper.GetFormValidClass(isPeriod))" id="period" min="0" max="1000" @bind="formModel.period" placeholder="Enter Installment Period" />
+            </div>
+            <div class="invalid-tooltip">
+                Repeat time must be more than 1!
+            </div>
+        </div>
     </div>
     
-    <div class="mb-3">
-        <label for="fee" class="form-label">Processsing/Admin Fees</label>
-        <input type="number" class="form-control" id="fee" @bind="adminFee" @onblur="calculateTotal" @oninput="calculateTotal" placeholder="Enter Processsing/Admin Fees" />
+    <div class="row mb-3">
+        <div class="mb-3 col-md-6">
+            <label for="startDate" class="form-label">Start Date</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                <input type="date" class="form-control" id="startDate" min="1970-12-31" @bind="formModel.startDate" @onblur="setEndDate" @oninput="setEndDate" placeholder="Select Start Date" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label for="endDate" class="form-label">End Date</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
+                <input type="date" class="form-control" id="endDate" @bind="formModel.endDate" placeholder="Select End Date" />
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="monthlyInstallment" class="form-label">Monthly Installment</label>
-        <input type="number" class="form-control" id="monthlyInstallment" @bind="monthlyInstallment" disabled placeholder="Total" />
+    
+    <hr class="my-5 mx-3" />
+
+    <h4 class="mb-5">Notes</h4>
+
+    <div class="row mb-3">
+        <div class="col-md-6 mb-3 position-relative">
+            <label for="interestRate" class="form-label">Interest Rate</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-percent"></i></span>
+                <input type="number" class="form-control" id="interestRate" min="0" max="100" @bind="formModel.interestRate" placeholder="Enter Interest Rate" />
+            </div>
+        </div>
+
+        <div class="col-md-6 position-relative">
+            <label for="period" class="form-label">Admin Fee</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
+                <input type="number" class="form-control" id="adminFee" min="0" @bind="formModel.adminFee" placeholder="Enter Admin Fee" />
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="startDate" class="form-label">Start Date</label>
-        <input type="date" class="form-control" id="startDate" @bind="startDate" placeholder="Select Start Date" />
+
+    <div class="mb-3 position-relative">
+        <label for="totalPrice" class="form-label">Total Price</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-cash-coin"></i></span>
+            <input type="number" class="form-control" id="totalPrice" min="0" @bind="formModel.total" placeholder="Enter Total Price" />
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="endDate" class="form-label">End Date</label>
-        <input type="date" class="form-control" id="endDate" @bind="endDate" placeholder="Select End Date" />
+
+    <div class="mb-3 position-relative">
+        <label for="note" class="form-label">Note</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+            <textarea class="form-control" id="note" min="0" @bind="formModel.note" placeholder="Enter Notes"></textarea>
+        </div>
     </div>
+
+
+
     <div class="d-grid gap-2 d-md-flex justify-content-md-end my-5">
-        <button type="button" class="btn btn-primary">Submit</button>
-        <a href="installment" class="btn btn-primary">Cancel</a>
+        <button type="button" @onclick="submitForm" class="btn btn-primary">Submit</button>
+        <a href="bills" class="btn btn-primary">Cancel</a>
     </div>
 </form>
 
 @code {
-    public string? financeCode, itemName, e, monthlyInstallment;
-    public decimal totalPrice, interestRate, adminFee;
-    public int period;
-    public DateTime startDate, endDate;
-
-    private void calculateTotal()
-    {
-        decimal principal = totalPrice + adminFee;
-
-        if(interestRate != 0)
+    // 0 = none, 1 = not valid, 2 valid
+    private int isAmount = 0, isCategory = 0, isName = 0, isFinance = 0, isRepeat = 0, isPeriod = 0;
+    private List<FinPal.Models.FinanceName> fnItems = new List<FinPal.Models.FinanceName>();
+    private List<FinPal.Models.Category> cItems = new List<FinPal.Models.Category>();
+    private FormModel formModel = new FormModel
         {
-            // Interest rate
-            decimal intRate = interestRate / 100;
+            period = 1,
+            startDate = DateTime.Today,
+            endDate = DateTime.Today
+        };
 
-            // Monthly installment calculation
-            decimal rawMonthlyInstallment = principal * (intRate * (decimal)Math.Pow((double)(1 + intRate), period)) /
-                ((decimal)Math.Pow((double)(1 + intRate), period) - 1);
-
-            double tempMonthlyInstallment = (double)rawMonthlyInstallment;
-            monthlyInstallment = tempMonthlyInstallment.ToString("F2");
-        }
-      
+    protected override async Task OnInitializedAsync()
+    {
+        fnItems = await FnDatabase.GetActiveItemsAsync();
+        cItems = await CDatabase.GetActiveItemsAsync();
     }
 
+    private async Task submitForm()
+    {
+        isAmount = UIHelper.IsZeroEmpty(formModel.amountDue);
+        isCategory = UIHelper.IsZeroEmpty(formModel.category);
+        isName = UIHelper.IsZeroEmpty(formModel.itemName);
+        isFinance = UIHelper.IsZeroEmpty(formModel.financeCode);
+        isRepeat = UIHelper.IsZeroEmpty(formModel.repeat);
+        isPeriod = UIHelper.IsZeroEmpty(formModel.period);
+
+        if (isAmount == 2 && isCategory == 2 && isName == 2 && isFinance == 2 && isRepeat == 2 && isPeriod == 2)
+        {
+            var newBill = new Bill
+                {
+                    FinanceCode = Convert.ToInt32(formModel.financeCode),
+                    ItemName = formModel.itemName,
+                    AmountDue = formModel.amountDue,
+                    Period = formModel.period,
+                    CategoryCode = formModel.category,
+                    Total = formModel.total,
+                    AdminFee = formModel.adminFee,
+                    InterestRate = formModel.interestRate,
+                    Repeat = formModel.repeat,
+                    StartDate = formModel.startDate,
+                    EndDate = formModel.endDate,
+                    Note = formModel.note
+                };
+
+            await BDatabase.SaveItemAsync(newBill);
+            Navigation.NavigateTo("/bills");
+        }
+    }
+
+    private void setEndDate()
+    {
+        formModel.endDate = formModel.startDate.AddMonths(formModel.period - 1);
+    }
+
+    private class FormModel
+    {
+        public decimal amountDue { get; set; }
+        public string category { get; set; }
+        public string financeCode { get; set; }
+        public string itemName { get; set; }
+        public string repeat { get; set; }
+        public string note { get; set; }
+        public int period { get; set; }
+        public DateTime startDate { get; set; }
+        public DateTime endDate { get; set; }
+        public decimal total { get; set; }
+        public decimal interestRate { get; set; }
+        public decimal adminFee { get; set; }
+    }
 }

@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace SinarFinance
+namespace FinPal
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

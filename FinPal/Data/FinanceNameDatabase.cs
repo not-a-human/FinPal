@@ -1,74 +1,41 @@
-﻿using SinarFinance.Models;
-using SinarFinance.Constant;
+﻿using FinPal.Models;
+using FinPal.Constant;
 using SQLite;
+using static SQLite.SQLite3;
+using System.Diagnostics;
 
-namespace SinarFinance.Data
+namespace FinPal.Data
 {
-    public class FinanceNameDatabase
+    public class FinanceNameDatabase : BaseDatabase<FinanceName>
     {
-        SQLiteAsyncConnection Database;
-
-        public FinanceNameDatabase()
-        {
-        }
-
-        async Task Init()
-        {
-            if (Database is not null)
-                return;
-
-            Database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-            var result = await Database.CreateTableAsync<FinanceName>();
-        }
-
+        
         // Check if data exists and insert default data
-        private async Task SeedDataAsync()
-        {
-            var financeName = await Database.Table<FinanceName>().ToListAsync();
-            if (financeName.Count == 0)
-            {
-                // Insert default records if no records exist
-                await Database.InsertAsync(new FinanceName { Name = "Administrator" });
-            }
-        }
-        public async Task<int> GetCountAsync()
-        {
-            if (Database == null)
-                return 0;
-            else
-            {
-                // Query to get the total count of rows
-                return await Database.Table<FinanceName>().CountAsync();
-            }
-        }
-        public async Task<List<FinanceName>> GetItemsAsync()
+        public async Task SeedDataAsync()
         {
             await Init();
-            return await Database.Table<FinanceName>().ToListAsync();
-        }
+            // Check if the database is empty
+            if (await GetCountAsync() > 0)
+            {
+                return; // If not empty, do not seed
+            }
 
+            var financename = new List<FinanceName>
+            {
+                new FinanceName {Name = "Maybank Credit Card"},
+                new FinanceName {Name = "ShopeePayLater"}
+            };
+
+            foreach (var item in financename)
+            {
+                var result = await SaveItemAsync(item);
+                Debug.WriteLine($"Inserted {item.Name}, result: {result}");
+            }
+        }
+        
         public async Task<FinanceName> GetItemAsync(int id)
         {
             await Init();
             return await Database.Table<FinanceName>().Where(i => i.Id == id).FirstOrDefaultAsync();
         }
-
-        public async Task<int> SaveItemAsync(FinanceName item)
-        {
-            await Init();
-            if (item.Id != 0)
-                return await Database.UpdateAsync(item);
-            else
-                return await Database.InsertAsync(item);
-        }
-
-        public async Task<int> DeleteItemAsync(FinanceName item)
-        {
-           
-                await Init();
-                return await Database.DeleteAsync(item);
-                
-        }
     }
-
 }

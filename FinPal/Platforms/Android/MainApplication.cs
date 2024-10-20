@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace SinarFinance
+namespace FinPal
 {
     [Application]
     public class MainApplication : MauiApplication

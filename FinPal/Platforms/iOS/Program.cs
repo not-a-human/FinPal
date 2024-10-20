@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace SinarFinance
+namespace FinPal
 {
     public class Program
     {

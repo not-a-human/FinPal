@@ -26,7 +26,7 @@
             @foreach(var iItem in insItems)
             {
                 <tr>
-                    <td scope="row">@iItem.fName</td>
+                    <td scope="row">@iItem.FName</td>
                     <td>@iItem.ItemName</td>
                     <td>@iItem.Price</td>
                     <td>@iItem.Period</td>
@@ -44,7 +44,7 @@
 </div>
 
 @code {
-    private List<SinarFinance.Models.InstallmentwithFinance> insItems = new List<SinarFinance.Models.InstallmentwithFinance>();
+    private List<FinPal.Models.InstallmentwithFinance> insItems = new List<FinPal.Models.InstallmentwithFinance>();
 
 
     protected override async Task OnInitializedAsync()

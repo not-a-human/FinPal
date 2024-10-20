@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SinarFinance.Constant
+namespace FinPal.Constant
 {
     public static class Constants
     {

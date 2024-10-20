@@ -1,4 +1,4 @@
-﻿namespace SinarFinance
+﻿namespace FinPal
 {
     public partial class MainPage : ContentPage
     {
