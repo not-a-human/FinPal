@@ -1,8 +1,8 @@
-﻿using SinarFinance.Models;
-using SinarFinance.Constant;
+﻿using FinPal.Models;
+using FinPal.Constant;
 using SQLite;
 
-namespace SinarFinance.Data
+namespace FinPal.Data
 {
     public class FinanceNameDatabase
     {

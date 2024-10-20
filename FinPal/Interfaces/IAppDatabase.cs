@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SinarFinance.Interfaces
+namespace FinPal.Interfaces
 {
     public interface IAppDatabase<T>
     {

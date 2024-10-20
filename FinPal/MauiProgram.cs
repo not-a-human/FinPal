@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using SinarFinance.Data;
-using SinarFinance.Services;
+using FinPal.Data;
+using FinPal.Services;
 
-namespace SinarFinance
+namespace FinPal
 {
     public static class MauiProgram
     {

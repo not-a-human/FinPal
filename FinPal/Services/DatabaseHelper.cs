@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SinarFinance.Constant;
+using FinPal.Constant;
 
-namespace SinarFinance.Services
+namespace FinPal.Services
 {
     public static class DatabaseHelper
     {
