@@ -1,0 +1,39 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+
+    <!-- ======= Mobile nav toggle button ======= -->
+    <i class="bi bi-list mobile-nav-toggle d-xl-none"></i>
+
+    <header id="header">
+        <div class="sidebar">
+            <div class="d-flex flex-column">
+                <div class="profile">
+                    <h1 class="text-light m-3"><a href="index">SinarFinance</a></h1>
+                </div>
+                <NavMenu />
+            </div>
+        </div>
+    </header>
+
+    <main id="main">
+        
+
+        <section class="inner-page">
+            <div class="container">
+                @Body
+            </div>
+        </section>
+    </main>
+</div>
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Default Title"; // Default title value
+
+    protected override void OnInitialized()
+    {
+        // Put here code that checks the value of ShowFooter and acts in
+        // accordance with your dear wishes
+        Title = Title;
+    }
+}

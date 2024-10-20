@@ -1,0 +1,79 @@
+﻿@page "/settings/finance"
+@inject FinanceNameDatabase Database
+<h3>Settings</h3>
+<form>
+    <div class="mb-3 row">
+        <label for="name" class="form-label col-md-2">Finance Name</label>
+        <div class="col-md-10">
+            <input type="text" class="form-control" required id="name" @bind="name" placeholder="Enter Finance Name" />
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label for="note" class="form-label col-md-2">Note</label>
+        <div class="col-md-10">
+            <textarea class="form-control" id="note" @bind="note" placeholder="Enter Note"></textarea>
+        </div>
+    </div>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end my-5">
+        <button type="button" @onclick="createFinance" class="btn btn-primary">Submit</button>
+        <button type="button" @onclick="cancelFinance" class="btn btn-primary">Cancel</button>
+    </div>
+</form>
+<div>
+    @foreach (var finance in financeList)
+    {
+        <div class="card mb-2">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-10">
+                        <h5 class="card-title">@finance.Name</h5>
+                        <p class="card-text">@finance.Note</p>
+                    </div>
+                    <div class="col-2">
+                        <a @onclick="() => updateFinance(finance.Name,finance.Note,finance.Id)" class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
+                        <a @onclick="() => deleteFinance(finance)" class="btn btn-danger disabled"><i class="bi bi-trash-fill"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@code {
+    public string? name, note;
+    public int id = 0;
+
+    private List<FinanceName> financeList = new List<FinanceName>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        financeList = await Database.GetItemsAsync();
+    }
+
+    private async Task createFinance()
+    {
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            var finance = new FinanceName { Id = id, Name = name, Note = note };
+            await Database.SaveItemAsync(finance);
+            financeList = await Database.GetItemsAsync();
+        }
+    }
+
+    private async Task deleteFinance(FinanceName finance)
+    {
+        await Database.DeleteItemAsync(finance);
+        financeList = await Database.GetItemsAsync();
+    }
+
+    private void updateFinance(string uName, string uNote, int uId)
+    {
+        id = uId;
+        name = uName;
+        note = uNote;
+    }
+
+    private void cancelFinance()
+    {
+        id = 0; name = ""; note = "";
+    }
+}

@@ -1,0 +1,77 @@
+﻿@page "/bill/form"
+
+<h3>Bills / Utilities</h3>
+
+<form>
+    <div class="mb-3">
+        <label for="financeCode" class="form-label">Finance Name</label>
+        <select class="form-select" @bind="financeCode">
+            <option>1</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="itemName" class="form-label">Item Name</label>
+        <input type="text" class="form-control" id="itemName" @bind="itemName" placeholder="Enter item name" />
+    </div>
+    <div class="mb-3">
+        <label for="totalPrice" class="form-label">Total Price</label>
+        <input type="number" class="form-control" id="totalPrice" @bind="totalPrice" @onblur="calculateTotal" @oninput="calculateTotal" placeholder="Enter Total Price" />
+    </div>
+   
+    <div class="mb-3">
+        <label for="period" class="form-label">Installment Period</label>
+        <input type="number" class="form-control" id="period" @bind="period" @onblur="calculateTotal" @oninput="calculateTotal" placeholder="Enter Installment Period" />
+    </div>
+    <div class="mb-3">
+        <label for="interest" class="form-label">Interest (%)</label>
+        <input type="number" class="form-control" id="interest" @bind="interestRate" @onblur="calculateTotal" @oninput="calculateTotal" placeholder="Enter Interest (%)" />
+    </div>
+    
+    <div class="mb-3">
+        <label for="fee" class="form-label">Processsing/Admin Fees</label>
+        <input type="number" class="form-control" id="fee" @bind="adminFee" @onblur="calculateTotal" @oninput="calculateTotal" placeholder="Enter Processsing/Admin Fees" />
+    </div>
+    <div class="mb-3">
+        <label for="monthlyInstallment" class="form-label">Monthly Installment</label>
+        <input type="number" class="form-control" id="monthlyInstallment" @bind="monthlyInstallment" disabled placeholder="Total" />
+    </div>
+    <div class="mb-3">
+        <label for="startDate" class="form-label">Start Date</label>
+        <input type="date" class="form-control" id="startDate" @bind="startDate" placeholder="Select Start Date" />
+    </div>
+    <div class="mb-3">
+        <label for="endDate" class="form-label">End Date</label>
+        <input type="date" class="form-control" id="endDate" @bind="endDate" placeholder="Select End Date" />
+    </div>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end my-5">
+        <button type="button" class="btn btn-primary">Submit</button>
+        <a href="installment" class="btn btn-primary">Cancel</a>
+    </div>
+</form>
+
+@code {
+    public string? financeCode, itemName, e, monthlyInstallment;
+    public decimal totalPrice, interestRate, adminFee;
+    public int period;
+    public DateTime startDate, endDate;
+
+    private void calculateTotal()
+    {
+        decimal principal = totalPrice + adminFee;
+
+        if(interestRate != 0)
+        {
+            // Interest rate
+            decimal intRate = interestRate / 100;
+
+            // Monthly installment calculation
+            decimal rawMonthlyInstallment = principal * (intRate * (decimal)Math.Pow((double)(1 + intRate), period)) /
+                ((decimal)Math.Pow((double)(1 + intRate), period) - 1);
+
+            double tempMonthlyInstallment = (double)rawMonthlyInstallment;
+            monthlyInstallment = tempMonthlyInstallment.ToString("F2");
+        }
+      
+    }
+
+}

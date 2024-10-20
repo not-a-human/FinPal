@@ -1,0 +1,62 @@
+﻿@page "/installment"
+@inject InstallmentDatabase InsDatabase
+@inject FinanceNameDatabase FnDatabase
+@inject IJSRuntime JS
+<h3>Installment</h3>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end my-2">
+    <a href="installment/form" class="btn btn-primary">New</a>
+</div>
+<div class="table-responsive-xxl">
+    <table class="table table-striped table-dark table-hover" style="min-width: 1000px;">
+        <thead>
+            <tr>
+                <th scope="col">Finance Name</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Total Price</th>
+                <th scope="col">Period</th>
+                <th scope="col">Interest (%)</th>
+                <th scope="col">P/A Fees</th>
+                <th scope="col">Monthly Pay</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var iItem in insItems)
+            {
+                <tr>
+                    <td scope="row">@iItem.fName</td>
+                    <td>@iItem.ItemName</td>
+                    <td>@iItem.Price</td>
+                    <td>@iItem.Period</td>
+                    <td>@iItem.Interest</td>
+                    <td>@iItem.Fees</td>
+                    <td>@iItem.Monthly</td>
+                    <td>@iItem.StartDate.ToString("yyyy-MMM")</td>
+                    <td>@iItem.EndDate.ToString("yyyy-MMM")</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
+
+@code {
+    private List<SinarFinance.Models.InstallmentwithFinance> insItems = new List<SinarFinance.Models.InstallmentwithFinance>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        int fnCount = await FnDatabase.GetCountAsync();
+
+        // Check if database is NULL or 0
+        if (fnCount != 0)
+        {
+            insItems = await InsDatabase.GetItemsAsyncWithFinance();
+            await JS.InvokeVoidAsync("logToConsole", insItems);
+        }
+    }
+    
+}
