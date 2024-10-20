@@ -8,14 +8,13 @@ using System.Threading.Tasks;
 
 namespace FinPal.Models
 {
-    public class FinanceName : IModel
+    public class Category : IModel
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? Note { get; set; }
-        public DateTime PayDate { get; set; }
-        public bool Reminder { get; set; } = false;
+        public double Percentage { get; set; }
         public bool Active { get; set; } = true;
     }
 }

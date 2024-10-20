@@ -1,19 +1,26 @@
 ﻿@page "/settings/finance"
 @inject FinanceNameDatabase Database
-<h3>Settings</h3>
+<h3 class="mb-5" >Settings</h3>
 <form>
-    <div class="mb-3 row">
-        <label for="name" class="form-label col-md-2">Finance Name</label>
-        <div class="col-md-10">
-            <input type="text" class="form-control" required id="name" @bind="name" placeholder="Enter Finance Name" />
+    <div class="row mb-3">
+        <div class="mb-3 col-md-6">
+            <label for="name" class="form-label col-md-2">Finance Name</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-bank2"></i></span>
+                <input type="text" class="form-control" required id="name" @bind="name" placeholder="Enter Finance Name" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label for="note" class="form-label col-md-2">Note</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                <textarea class="form-control" id="note" @bind="note" placeholder="Enter Note"></textarea>
+            
+            </div>
         </div>
     </div>
-    <div class="mb-3 row">
-        <label for="note" class="form-label col-md-2">Note</label>
-        <div class="col-md-10">
-            <textarea class="form-control" id="note" @bind="note" placeholder="Enter Note"></textarea>
-        </div>
-    </div>
+    
+    
     <div class="d-grid gap-2 d-md-flex justify-content-md-end my-5">
         <button type="button" @onclick="createFinance" class="btn btn-primary">Submit</button>
         <button type="button" @onclick="cancelFinance" class="btn btn-primary">Cancel</button>

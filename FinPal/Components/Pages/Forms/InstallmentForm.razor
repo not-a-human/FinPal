@@ -35,14 +35,14 @@
    
     <div class="mb-3 position-relative">
         <label for="period" class="form-label">Installment Period</label>
-        <input type="number" class="form-control @(formModel.period < 1 ? "is-invalid" : "is-valid" )" id="period" @bind="formModel.period" @onblur="calculateTotal" @oninput="calculateTotal" placeholder="Enter Installment Period" />
+        <input type="number" class="form-control @(formModel.period < 1 ? "is-invalid" : "is-valid" )" id="period" min="0" max="1000" @bind="formModel.period" @onblur="calculateTotal" @oninput="calculateTotal" placeholder="Enter Installment Period" />
         <div class="invalid-tooltip">
             Installment Period must be more than 1!
         </div>
     </div>
     <div class="mb-3">
         <label for="interest" class="form-label">Interest (%)</label>
-        <input type="number" class="form-control" id="interest" @bind="formModel.interestRate" @onblur="calculateTotal" @oninput="calculateTotal" placeholder="Enter Interest (%)" />
+        <input type="number" class="form-control" id="interest" min="0" max="100" @bind="formModel.interestRate" @onblur="calculateTotal" @oninput="calculateTotal" placeholder="Enter Interest (%)" />
     </div>
     
     <div class="mb-3">
@@ -58,7 +58,7 @@
     </div>
     <div class="mb-3">
         <label for="startDate" class="form-label">Start Date</label>
-        <input type="date" class="form-control" id="startDate" @bind="formModel.startDate" @onblur="setEndDate" @oninput="setEndDate" placeholder="Select Start Date" />
+        <input type="date" class="form-control" id="startDate" min="1970-12-31" @bind="formModel.startDate" @onblur="setEndDate" @oninput="setEndDate" placeholder="Select Start Date" />
     </div>
     <div class="mb-3">
         <label for="endDate" class="form-label">End Date</label>

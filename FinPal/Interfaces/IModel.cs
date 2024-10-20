@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinPal.Models
+namespace FinPal.Interfaces
 {
-    internal class Plan
+    public interface IModel
     {
+        int Id { get; set; }
+        bool Active { get; set; }
     }
 }

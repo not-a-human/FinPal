@@ -1,0 +1,92 @@
+﻿@page "/plan"
+@inject CategoryDatabase CDatabase
+<h3 class="mb-5">Plan</h3>
+
+
+
+
+<div class="row justify-content-center">
+    <div class="col-12 mx-auto">
+        <div class="my-4">
+            <div class="list-group mb-5 shadow">
+                @foreach (var items in cItems)
+                {
+                    <div class="list-group-item list-group-item-action">
+                        <div class="row">
+                            <div class="col-8">
+                                <strong class="mb-0">@items.Name</strong>
+                                <p class="text-muted mb-0">@items.Note</p>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    <input onchange="calculateTotalPercentage()" type="number" class="form-control input-percent" id="percentage-@items.Id" placeholder="Enter Percentage" @bind-value="items.Percentage" @bind-value:event="oninput" min="0" max="100" />
+                                    <span class="input-group-text"><i class="bi bi-percent"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="list-group-item">
+                    <div class="row">
+                        <div class="col-8"></div>
+                        <div id="totalPercentDiv" class="col-4 text-center @(totalPercent>100 ? "text-danger" : "text-success")"><span id="totalPercent">@totalPercent</span> <span><i class="bi bi-percent"></i></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container text-center">
+    <button class="btn btn-primary px-5" @onclick="UpdateItems">Update</button>
+</div>
+
+
+<script>
+    function calculateTotalPercentage() {
+        var total = 0;
+        var inputs = document.querySelectorAll(".input-percent");
+        inputs.forEach(function (input) {
+            var value = parseFloat(input.value);
+            if (!isNaN(value)) {
+                total += value;
+            }
+        });
+        document.getElementById("totalPercent").innerText = total;
+
+        if (total > 100) {
+            document.getElementById("totalPercentDiv").classList.remove("text-success");
+            document.getElementById("totalPercentDiv").classList.add("text-danger");
+        } else {
+            document.getElementById("totalPercentDiv").classList.remove("text-danger");
+            document.getElementById("totalPercentDiv").classList.add("text-success");
+        }
+    }
+</script>
+
+@code {
+    private List<FinPal.Models.Category> cItems = new List<FinPal.Models.Category>();
+    private double totalPercent;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        cItems = await CDatabase.GetItemsAsync();
+        CalculateTotalPercentage();
+    }
+
+    // Function to process the updated items
+    private async Task UpdateItems()
+    {
+        // Here you can process or save the updated percentages
+        foreach (var item in cItems)
+        {
+            await CDatabase.SaveItemAsync(item);
+        }
+    }
+
+    private void CalculateTotalPercentage()
+    {
+        totalPercent = cItems.Sum(item => item.Percentage);
+    }
+}

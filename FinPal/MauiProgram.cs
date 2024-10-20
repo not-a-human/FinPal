@@ -16,18 +16,16 @@ namespace FinPal
                     fonts.AddFont("Poppins-ExtraLight.ttf", "PoppinsExtraLight");
                 });
 
-
-            // Specify your database name
-            string dbName = "SinarSQLite.db3";
-
             // Delete the old database file if it exists
-            DatabaseHelper.DeleteDatabase(dbName);
+            // DatabaseHelper.DeleteDatabase("SinarSQLite.db3");
 
             builder.Services.AddMauiBlazorWebView();
 
 
             builder.Services.AddSingleton<InstallmentDatabase>();
             builder.Services.AddSingleton<FinanceNameDatabase>();
+            builder.Services.AddSingleton<BillDatabase>();
+            builder.Services.AddSingleton<CategoryDatabase>();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
