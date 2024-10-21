@@ -35,7 +35,8 @@ namespace FinPal.Data
             return await Database.Table<T>().Where(item => ((IModel)item).Active).ToListAsync();
         }
 
-        public async Task<int> SaveItemAsync(T item)
+        // virtual = to allow overriding
+        public virtual async Task<int> SaveItemAsync(T item)
         {
             await Init();
             if (((IModel)item).Id != 0)
