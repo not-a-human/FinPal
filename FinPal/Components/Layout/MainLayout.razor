@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
-
+@inject SettingsDatabase SettingsDatabase
+@inject IJSRuntime JS
 <div class="page">
 
     <!-- ======= Mobile nav toggle button ======= -->
@@ -27,13 +28,16 @@
     </main>
 </div>
 @code {
-    [Parameter]
-    public string Title { get; set; } = "Default Title"; // Default title value
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        // Put here code that checks the value of ShowFooter and acts in
-        // accordance with your dear wishes
-        Title = Title;
+        var userSettings = await SettingsDatabase.GetItemAsync("UIMode"); // Assume this method retrieves user settings
+        string theme = userSettings?.SetStr?? "dark"; // Default to "light" if no settings exist
+        SetTheme(theme);
+    }
+
+    private void SetTheme(string theme)
+    {
+        // Use JS interop to set the theme in the HTML
+        JS.InvokeVoidAsync("setTheme", theme);
     }
 }
