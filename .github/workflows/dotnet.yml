@@ -28,7 +28,7 @@ jobs:
         vs-prerelease: true
         
     - name: Install MAUI workloads
-      run: dotnet workload install maui /FinPal/FinPal.csproj
+      run: dotnet workload install maui
       
     - name: Restore dependencies
       run: dotnet restore 
