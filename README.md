@@ -1,6 +1,6 @@
 # FinPal
 
-**FinPal** is a finance management app designed to help users manage their financial data effectively. This project is still in the testing phase, and we welcome feedback from testers.
+**FinPal** is a finance management app designed to help users manage their financial data effectively. This project is still in the testing and development phase, and we welcome feedback from testers.
 
 ## Table of Contents
 - [Features](#features)
