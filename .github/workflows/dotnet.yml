@@ -10,29 +10,10 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build-android:
+  build-windows:
 
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Install MAUI workloads
-      run: dotnet workload install maui-android
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release
-    - name: Test
-      run: dotnet test
-
-  build-ios:
-
-    runs-on: macos-latest
+    runs-on: windows-2022
+    name: Windows Build
 
     steps:
     - name: Checkout code
@@ -41,11 +22,19 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+      with:
+        vs-prerelease: true
+        
     - name: Install MAUI workloads
-      run: dotnet workload install maui-ios
+      run: dotnet workload install maui src/FinPal/FinPal.csproj
+      
     - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
+      run: dotnet restore 
+      
+    - name: Build MAUI Windows
       run: dotnet build --configuration Release
+      
     - name: Test
       run: dotnet test
