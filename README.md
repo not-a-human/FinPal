@@ -5,12 +5,13 @@
 ## Table of Contents
 - [Features](#features)
 - [Technologies Used](#technologies-used)
+- [Planned Features](#planned-features)
 
 ## Features
 - Track financial instalments such as bills and loans.
 - Manage monthly salaries and planning.
 - Light/Dark mode support.
-- Export data for analysis. (To be added)
+
 
 ## Technologies Used
 - .NET 8
@@ -18,3 +19,10 @@
 - SQLite for data persistence
 - Bootstrap for responsive design
 - Javascript for utilizing DOM control, such as dynamically switching between dark and light modes without restarting the application.
+
+## Planned Features
+- [ ] Enhance the light mode.
+- [ ] Implement user authentication.
+- [ ] Export/import data to/from an Excel file.
+- [ ] Enhance the "Bill" screen.
+- [ ] Add the "Settings > Category" screen to update the Categories.
