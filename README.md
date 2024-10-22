@@ -23,6 +23,8 @@
 ## Planned Features
 
 ### Functionality
+- [ ] Dashboard in "Home" screen.
+- The Dashboard will display allocated funds based on the Plan and Salary.
 - [ ] Add the "Settings > Category" screen to update the Categories.
 - [ ] Export/import data to/from an Excel file.
 - [ ] Implement user authentication.
