@@ -5,8 +5,6 @@
 ## Table of Contents
 - [Features](#features)
 - [Technologies Used](#technologies-used)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 - Track financial instalments such as bills and loans.
@@ -20,17 +18,3 @@
 - SQLite for data persistence
 - Bootstrap for responsive design
 - Javascript for utilizing DOM control, such as dynamically switching between dark and light modes without restarting the application.
-
-## Contributing
- 1. Fork the repository.
- 2. Create your feature branch:  
-    `git checkout -b feature/YourFeature`
- 4. Commit your changes:  
-    `git commit -m 'Add some feature'`
- 4. Push to the branch:  
-    `git push origin feature/YourFeature`
-
-## License
-
-
-
