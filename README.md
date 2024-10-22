@@ -21,8 +21,15 @@
 - Javascript for utilizing DOM control, such as dynamically switching between dark and light modes without restarting the application.
 
 ## Planned Features
-- [ ] Enhance the light mode.
-- [ ] Implement user authentication.
-- [ ] Export/import data to/from an Excel file.
-- [ ] Enhance the "Bill" screen.
+
+### Functionality
 - [ ] Add the "Settings > Category" screen to update the Categories.
+- [ ] Export/import data to/from an Excel file.
+- [ ] Implement user authentication.
+      
+### UI Enhancements
+- [ ] Enhance the light mode.
+- [ ] Change the "Bill" screen from table to list card view.
+- [ ] Change the navigation menu from the menu button to the tabbed menu in Mobile view.
+
+
