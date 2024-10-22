@@ -28,6 +28,7 @@
 - [ ] Add the "Settings > Category" screen to update the Categories.
 - [ ] Export/import data to/from an Excel file.
 - [ ] Implement user authentication.
+- [ ] "Settings > About Us".
       
 ### UI Enhancements
 - [ ] Enhance the light mode.
