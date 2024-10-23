@@ -23,16 +23,23 @@
 ## Planned Features
 
 ### Functionality
-- [ ] Dashboard in "Home" screen.
-- The Dashboard will display allocated funds based on the Plan and Salary.
-- [ ] Add the "Settings > Category" screen to update the Categories.
-- [ ] Export/import data to/from an Excel file.
-- [ ] Implement user authentication.
-- [ ] "Settings > About Us".
+- [ ] **Dashboard in "Home" screen**  
+      Display allocated funds based on the user's financial plan and salary.
+- [ ] **"Settings > Category" Screen**  
+      Add a screen to update and manage financial categories for better customization.
+- [ ] **Data Export/Import**  
+      Enable users to export or import their data in Excel format for backup or external analysis.
+- [ ] **User Authentication**  
+      Implement secure user authentication to protect user data and allow personalized experiences.
+- [ ] **"Settings > About Us"**  
+      Provide information about the app, team, and the purpose of the project in the "About Us" section.
       
 ### UI Enhancements
-- [ ] Enhance the light mode.
-- [ ] Change the "Bill" screen from table to list card view.
-- [ ] Change the navigation menu from the menu button to the tabbed menu in Mobile view.
+- [ ] **Light Mode Enhancement**  
+      Improve the UI/UX for light mode to enhance visibility and user comfort.
+- [ ] **"Bill" Screen Redesign**  
+      Change the current "Bill" screen from a table format to a more visual list card view for better readability.
+- [ ] **Mobile Navigation Update**  
+      Replace the current menu button with a more user-friendly tabbed menu for mobile view navigation.
 
 
