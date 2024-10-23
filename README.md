@@ -25,6 +25,8 @@
 ### Functionality
 - [ ] **Dashboard in "Home" screen**  
       Display allocated funds based on the user's financial plan and salary.
+- [ ] **Notifications**  
+      Reminders for the Finance Name on the Payment Date.
 - [ ] **"Settings > Category" Screen**  
       Add a screen to update and manage financial categories for better customization.
 - [ ] **Data Export/Import**  
