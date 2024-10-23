@@ -39,6 +39,17 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+      <AndroidLinkTool>r8</AndroidLinkTool>
+      <DebugSymbols>True</DebugSymbols>
+      <AndroidKeyStore>False</AndroidKeyStore>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+      <RunAOTCompilation>False</RunAOTCompilation>
+      <AndroidKeyStore>False</AndroidKeyStore>
+    </PropertyGroup>
+
     <ItemGroup>
         <!-- App Icon -->
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -55,6 +66,122 @@
 
         <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Platforms\Windows\Assets\%24placeholder%24.scale-100.png" />
+      <None Remove="Platforms\Windows\Assets\%24placeholder%24.scale-125.png" />
+      <None Remove="Platforms\Windows\Assets\%24placeholder%24.scale-150.png" />
+      <None Remove="Platforms\Windows\Assets\%24placeholder%24.scale-200.png" />
+      <None Remove="Platforms\Windows\Assets\%24placeholder%24.scale-400.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.scale-100.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.scale-125.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.scale-150.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.scale-200.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.scale-400.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-16.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-16_altform-lightunplated.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-16_altform-unplated.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-24.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-24_altform-lightunplated.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-24_altform-unplated.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-256.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-256_altform-lightunplated.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-256_altform-unplated.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-32.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-32_altform-lightunplated.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-32_altform-unplated.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-48.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-48_altform-lightunplated.png" />
+      <None Remove="Platforms\Windows\Assets\AppIcon.targetsize-48_altform-unplated.png" />
+      <None Remove="Platforms\Windows\Assets\BadgeLogo.scale-100.png" />
+      <None Remove="Platforms\Windows\Assets\BadgeLogo.scale-125.png" />
+      <None Remove="Platforms\Windows\Assets\BadgeLogo.scale-150.png" />
+      <None Remove="Platforms\Windows\Assets\BadgeLogo.scale-200.png" />
+      <None Remove="Platforms\Windows\Assets\BadgeLogo.scale-400.png" />
+      <None Remove="Platforms\Windows\Assets\LargeTitle.scale-100.png" />
+      <None Remove="Platforms\Windows\Assets\LargeTitle.scale-125.png" />
+      <None Remove="Platforms\Windows\Assets\LargeTitle.scale-150.png" />
+      <None Remove="Platforms\Windows\Assets\LargeTitle.scale-200.png" />
+      <None Remove="Platforms\Windows\Assets\LargeTitle.scale-400.png" />
+      <None Remove="Platforms\Windows\Assets\MediumTile.scale-100.png" />
+      <None Remove="Platforms\Windows\Assets\MediumTile.scale-125.png" />
+      <None Remove="Platforms\Windows\Assets\MediumTile.scale-150.png" />
+      <None Remove="Platforms\Windows\Assets\MediumTile.scale-200.png" />
+      <None Remove="Platforms\Windows\Assets\MediumTile.scale-400.png" />
+      <None Remove="Platforms\Windows\Assets\PackageLogo.scale-100.png" />
+      <None Remove="Platforms\Windows\Assets\PackageLogo.scale-125.png" />
+      <None Remove="Platforms\Windows\Assets\PackageLogo.scale-150.png" />
+      <None Remove="Platforms\Windows\Assets\PackageLogo.scale-200.png" />
+      <None Remove="Platforms\Windows\Assets\PackageLogo.scale-400.png" />
+      <None Remove="Platforms\Windows\Assets\smallTile.scale-100.png" />
+      <None Remove="Platforms\Windows\Assets\smallTile.scale-125.png" />
+      <None Remove="Platforms\Windows\Assets\smallTile.scale-150.png" />
+      <None Remove="Platforms\Windows\Assets\smallTile.scale-200.png" />
+      <None Remove="Platforms\Windows\Assets\smallTile.scale-400.png" />
+      <None Remove="Platforms\Windows\Assets\WideTitle.scale-100.png" />
+      <None Remove="Platforms\Windows\Assets\WideTitle.scale-125.png" />
+      <None Remove="Platforms\Windows\Assets\WideTitle.scale-150.png" />
+      <None Remove="Platforms\Windows\Assets\WideTitle.scale-200.png" />
+      <None Remove="Platforms\Windows\Assets\WideTitle.scale-400.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Platforms\Windows\Assets\$placeholder$.scale-100.png" />
+      <Content Include="Platforms\Windows\Assets\$placeholder$.scale-125.png" />
+      <Content Include="Platforms\Windows\Assets\$placeholder$.scale-150.png" />
+      <Content Include="Platforms\Windows\Assets\$placeholder$.scale-200.png" />
+      <Content Include="Platforms\Windows\Assets\$placeholder$.scale-400.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.scale-100.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.scale-125.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.scale-150.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.scale-200.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.scale-400.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-16.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-16_altform-lightunplated.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-16_altform-unplated.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-24.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-24_altform-lightunplated.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-24_altform-unplated.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-256.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-256_altform-lightunplated.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-256_altform-unplated.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-32.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-32_altform-lightunplated.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-32_altform-unplated.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-48.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-48_altform-lightunplated.png" />
+      <Content Include="Platforms\Windows\Assets\AppIcon.targetsize-48_altform-unplated.png" />
+      <Content Include="Platforms\Windows\Assets\BadgeLogo.scale-100.png" />
+      <Content Include="Platforms\Windows\Assets\BadgeLogo.scale-125.png" />
+      <Content Include="Platforms\Windows\Assets\BadgeLogo.scale-150.png" />
+      <Content Include="Platforms\Windows\Assets\BadgeLogo.scale-200.png" />
+      <Content Include="Platforms\Windows\Assets\BadgeLogo.scale-400.png" />
+      <Content Include="Platforms\Windows\Assets\LargeTitle.scale-100.png" />
+      <Content Include="Platforms\Windows\Assets\LargeTitle.scale-125.png" />
+      <Content Include="Platforms\Windows\Assets\LargeTitle.scale-150.png" />
+      <Content Include="Platforms\Windows\Assets\LargeTitle.scale-200.png" />
+      <Content Include="Platforms\Windows\Assets\LargeTitle.scale-400.png" />
+      <Content Include="Platforms\Windows\Assets\MediumTile.scale-100.png" />
+      <Content Include="Platforms\Windows\Assets\MediumTile.scale-125.png" />
+      <Content Include="Platforms\Windows\Assets\MediumTile.scale-150.png" />
+      <Content Include="Platforms\Windows\Assets\MediumTile.scale-200.png" />
+      <Content Include="Platforms\Windows\Assets\MediumTile.scale-400.png" />
+      <Content Include="Platforms\Windows\Assets\PackageLogo.scale-100.png" />
+      <Content Include="Platforms\Windows\Assets\PackageLogo.scale-125.png" />
+      <Content Include="Platforms\Windows\Assets\PackageLogo.scale-150.png" />
+      <Content Include="Platforms\Windows\Assets\PackageLogo.scale-200.png" />
+      <Content Include="Platforms\Windows\Assets\PackageLogo.scale-400.png" />
+      <Content Include="Platforms\Windows\Assets\smallTile.scale-100.png" />
+      <Content Include="Platforms\Windows\Assets\smallTile.scale-125.png" />
+      <Content Include="Platforms\Windows\Assets\smallTile.scale-150.png" />
+      <Content Include="Platforms\Windows\Assets\smallTile.scale-200.png" />
+      <Content Include="Platforms\Windows\Assets\smallTile.scale-400.png" />
+      <Content Include="Platforms\Windows\Assets\WideTitle.scale-100.png" />
+      <Content Include="Platforms\Windows\Assets\WideTitle.scale-125.png" />
+      <Content Include="Platforms\Windows\Assets\WideTitle.scale-150.png" />
+      <Content Include="Platforms\Windows\Assets\WideTitle.scale-200.png" />
+      <Content Include="Platforms\Windows\Assets\WideTitle.scale-400.png" />
     </ItemGroup>
 
     <ItemGroup>
