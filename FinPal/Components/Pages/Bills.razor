@@ -1,4 +1,4 @@
-﻿@page "/bills"
+﻿@page "/bills/{CreateSuccess:bool?}"
 @inject BillDatabase BDatabase
 @inject IJSRuntime JS
 <h3 class="mb-5">Bills</h3>
@@ -35,21 +35,33 @@
         </tfoot>
     </table>
 </div>
-
+<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.BottomRight" />
 @code {
+    [Parameter]
+    public bool CreateSuccess { get; set; } = false;
+
     private List<FinPal.Models.BillwithFC> bItems = new List<FinPal.Models.BillwithFC>();
+
+    List<ToastMessage> messages = new List<ToastMessage>();
+
 
 
     protected override async Task OnInitializedAsync()
     {
-        int fnCount = await BDatabase.GetCountAsync();
-
-        // Check if database is NULL or 0
-        if (fnCount != 0)
-        {
-            bItems = await BDatabase.GetItemsAsyncWithFC();
-            await JS.InvokeVoidAsync("logToConsole", bItems);
-        }
+        
+        bItems = await BDatabase.GetItemsAsyncWithFC();
+        
+        if (CreateSuccess)
+            ShowMessage(ToastType.Dark, "Bill data created successfully.");
     }
+
+    private void ShowMessage(ToastType toastType, string msg) => messages.Add(CreateToastMessage(toastType, msg));
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string msg)
+    => new ToastMessage
+        {
+            Type = toastType,
+            Message = msg,
+        };
 
 }
