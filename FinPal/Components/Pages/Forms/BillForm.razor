@@ -3,18 +3,19 @@
 @inject FinanceNameDatabase FnDatabase
 @inject CategoryDatabase CDatabase
 @inject NavigationManager Navigation
+
 @using FinPal.Utility
 
-<h3 class="mb-5">Add Bill</h3>
+<h3  class="mb-5">Add Bill</h3>
 
 <form>
     <div class="mb-3 position-relative">
         <label for="totalPrice" class="form-label">Amount due</label>
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
-            <input type="number" class="form-control @(UIHelper.GetFormValidClass(isAmount))" required id="totalPrice" @bind="formModel.amountDue" placeholder="Amount due" />
+            <input @ref="firstInput"  type="number" class="form-control @(UIHelper.GetFormValidClass(isAmount,0))" required id="totalPrice" @bind="formModel.amountDue" placeholder="Amount due" />
         </div>
-        <div class="invalid-tooltip">
+        <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isAmount,1))">
             Amount due cannot be 0!
         </div>
     </div>
@@ -23,7 +24,7 @@
         <label for="category" class="form-label">Category</label>
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
-            <select class="form-select @(UIHelper.GetFormValidClass(isCategory))" required @bind="formModel.category">
+            <select class="form-select @(UIHelper.GetFormValidClass(isCategory,0))" required @bind="formModel.category">
                 <option>Select Category</option>
                 @foreach (var item in cItems)
                 {
@@ -31,15 +32,16 @@
                 }
             </select>
         </div>
-        <div class="invalid-tooltip">
+        <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isCategory,1))">
             Please select a category.
         </div>
     </div>
+
     <div class="mb-3 position-relative">
         <label for="financeCode" class="form-label">Finance Name</label>
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-bank2"></i></span>
-            <select class="form-select @(UIHelper.GetFormValidClass(isFinance))" required @bind="formModel.financeCode">
+            <select class="form-select @(UIHelper.GetFormValidClass(isFinance,0))" required @bind="formModel.financeCode">
                 <option>Please Select</option>
                 @foreach (var item in fnItems)
                 {
@@ -47,18 +49,18 @@
                 }
             </select>
         </div>
-        
-        <div class="invalid-tooltip">
+        <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isFinance,1))">
             Please select a valid finance name. If none is available, please create one in the Settings > Finance Name or click <a class="text-white" href="settings/finance">here</a>.
         </div>
     </div>
+
     <div class="mb-3 position-relative">
         <label for="itemName" class="form-label">Item Name</label>
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-type"></i></span>
-            <input type="text" class="form-control @(UIHelper.GetFormValidClass(isName))" required id="itemName" @bind="formModel.itemName" placeholder="Enter item name" />
+            <input type="text" class="form-control @(UIHelper.GetFormValidClass(isName,0))" required id="itemName" @bind="formModel.itemName" placeholder="Enter item name" />
         </div>
-        <div class="invalid-tooltip">
+        <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isName,1))">
             Please input the item name.
         </div>
     </div>
@@ -70,8 +72,8 @@
             <label for="category" class="form-label">Repeat Option</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-repeat"></i></span>
-                <select class="form-select @(UIHelper.GetFormValidClass(isRepeat))" @bind="formModel.repeat">
-                    <option>Select repeat option</option>
+                <select class="form-select @(UIHelper.GetFormValidClass(isRepeat,0))" @bind="formModel.repeat">
+                    <option value="">Select repeat option</option>
                     <option value="N">None</option>
                     <option value="D">Daily</option>
                     <option value="W">Weekly</option>
@@ -81,15 +83,18 @@
                     <option value="A">Anually</option>
                 </select>
             </div>
+            <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isRepeat,1))">
+                Please select a valid repeat option.
+            </div>
         </div>
 
         <div class="col-md-6 position-relative">
             <label for="period" class="form-label">Repeat for</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-repeat-1"></i></span>
-                <input type="number" class="form-control @(UIHelper.GetFormValidClass(isPeriod))" id="period" min="0" max="1000" @bind="formModel.period" placeholder="Enter Installment Period" />
+                <input type="number" class="form-control @(UIHelper.GetFormValidClass(isPeriod,0))" id="period" min="0" max="1000" @bind="formModel.period" placeholder="Enter Installment Period" />
             </div>
-            <div class="invalid-tooltip">
+            <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isPeriod,1))">
                 Repeat time must be more than 1!
             </div>
         </div>
@@ -103,11 +108,14 @@
                 <input type="date" class="form-control" id="startDate" min="1970-12-31" @bind="formModel.startDate" @onblur="setEndDate" @oninput="setEndDate" placeholder="Select Start Date" />
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 position-relative">
             <label for="endDate" class="form-label">End Date</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
-                <input type="date" class="form-control" id="endDate" @bind="formModel.endDate" placeholder="Select End Date" />
+                <input type="date" class="form-control @(UIHelper.GetFormValidClass(isEndDate,0))" id="endDate" @bind="formModel.endDate" placeholder="Select End Date" />
+            </div>
+            <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isEndDate,1))">
+                The end date must be after the start date.
             </div>
         </div>
     </div>
@@ -160,7 +168,8 @@
 
 @code {
     // 0 = none, 1 = not valid, 2 valid
-    private int isAmount = 0, isCategory = 0, isName = 0, isFinance = 0, isRepeat = 0, isPeriod = 0;
+    private int isAmount = 0, isCategory = 0, isName = 0, isFinance = 0, isRepeat = 0, isPeriod = 0, isEndDate = 0;
+    private ElementReference firstInput;
     private List<FinPal.Models.FinanceName> fnItems = new List<FinPal.Models.FinanceName>();
     private List<FinPal.Models.Category> cItems = new List<FinPal.Models.Category>();
     private FormModel formModel = new FormModel
@@ -184,6 +193,7 @@
         isFinance = UIHelper.IsZeroEmpty(formModel.financeCode);
         isRepeat = UIHelper.IsZeroEmpty(formModel.repeat);
         isPeriod = UIHelper.IsZeroEmpty(formModel.period);
+        isEndDate = formModel.startDate > formModel.endDate ? 1 : 2;
 
         if (isAmount == 2 && isCategory == 2 && isName == 2 && isFinance == 2 && isRepeat == 2 && isPeriod == 2)
         {
@@ -206,6 +216,10 @@
             await BDatabase.SaveItemAsync(newBill);
             Navigation.NavigateTo("/bills");
         }
+        else
+        {
+            await firstInput.FocusAsync();
+        }
     }
 
     private void setEndDate()
@@ -216,11 +230,11 @@
     private class FormModel
     {
         public decimal amountDue { get; set; }
-        public string category { get; set; }
-        public string financeCode { get; set; }
-        public string itemName { get; set; }
-        public string repeat { get; set; }
-        public string note { get; set; }
+        public string category { get; set; } = "";
+        public string financeCode { get; set; } = "";
+        public string itemName { get; set; } = "";
+        public string repeat { get; set; } = "";
+        public string note { get; set; } = "";
         public int period { get; set; }
         public DateTime startDate { get; set; }
         public DateTime endDate { get; set; }
