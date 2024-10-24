@@ -9,14 +9,25 @@ namespace FinPal.Utility
    public static class UIHelper
     {
 
-        public static string GetFormValidClass(int isValid)
+        public static string GetFormValidClass(int isValid, int display)
         {
-            return isValid switch
+            switch(display)
             {
-                1 => "is-invalid",
-                2 => "is-valid",
-                _ => ""
+                case 1 :
+                    return isValid switch
+                    {
+                        1 => "d-block",
+                        _ => ""
+                    };
+                default:
+                    return isValid switch
+                    {
+                        1 => "is-invalid",
+                        2 => "is-valid",
+                        _ => ""
+                    };
             };
+            
         }
 
         // 0 = none, 1 = not valid, 2 valid
