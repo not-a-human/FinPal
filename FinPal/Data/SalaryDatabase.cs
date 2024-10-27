@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,6 +43,24 @@ namespace FinPal.Data
             return await Database.Table<Salary>()
                                   .Where(s => s.Year == year && s.Active)
                                   .ToListAsync();
+        }
+
+        public async Task<decimal> GetSalaryByMonth(int year, int month)
+        {
+            await Init();
+
+            var salaries = await Database.Table<Salary>().Where(x => x.Year == year && x.Month == month && x.Active).ToListAsync();
+
+            return salaries.FirstOrDefault().Amount;
+        }
+
+        public async Task<decimal> SumSalariesByYear(int year)
+        {
+            await Init();
+
+            var salaries = await GetSalariesByYear(year);
+
+            return salaries.Sum(x => x.Amount);
         }
 
         public async Task CreateNewYear(int year)

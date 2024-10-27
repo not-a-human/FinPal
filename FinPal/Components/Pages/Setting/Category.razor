@@ -1,0 +1,150 @@
+﻿@page "/settings/category"
+@inject CategoryDatabase CDatabase
+@inject NavigationManager Navigation
+<h3 class="mb-5">Settings</h3>
+<form>
+    <div class="mb-3 position-relative">
+        <label for="name" class="form-label">Category Name</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-bank2"></i></span>
+            <input @ref="firstInput" type="text" class="form-control @(UIHelper.GetFormValidClass(isName,0))" required id="name" @bind="formModel.name" placeholder="Enter Category Name" />
+        </div>
+        <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isName,1))">
+            Please enter a name.
+        </div>
+    </div>
+       
+    <div class="mb-3">
+        <label for="note" class="form-label col-md-2">Note</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+            <textarea class="form-control" id="note" @bind="formModel.note" placeholder="Enter Note"></textarea>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="active" @bind="formModel.active" />
+            <label class="form-check-label" for="active">
+                <i class="bi bi-toggles"></i> Activehttps://0.0.0.0/plan
+            </label>
+        </div>
+    </div>
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end my-5">
+        <button type="button" @onclick="createCategory" class="btn btn-primary">Submit</button>
+        <button type="button" @onclick="cancelCategory" class="btn btn-primary">Cancel</button>
+    </div>
+</form>
+<div>
+    @foreach (var category in categoryList)
+    {
+        <div class="card mb-2">
+            <div class="card-header">
+                @category.Name
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-10">
+                        <p class="card-text">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="bi bi-toggles"></i> @category.Active</li>
+                                <li class="mb-2"><i class="bi bi-card-text"></i> @category.Note</li>
+                            </ul>
+                        </p>
+                    </div>
+                    <div class="col-md-2 d-flex justify-content-end align-items-end">
+                        <a @onclick="() => updateCategory(category.Name,category.Note,category.Id,category.Active)" class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
+                        <a @onclick="() => deleteCategory(category)" class="btn btn-danger disabled"><i class="bi bi-trash-fill"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" />
+
+@code {
+
+    // 0 = none, 1 = not valid, 2 valid
+    private int isName = 0, isCategory = 0;
+
+    public int id = 0;
+    private FormModel formModel = new FormModel();
+    private List<FinPal.Models.Category> categoryList = new List<FinPal.Models.Category>();
+    private List<ToastMessage> messages = new List<ToastMessage>();
+    private ElementReference firstInput;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categoryList = await CDatabase.GetItemsAsync();
+    }
+
+    private async Task createCategory()
+    {
+        isName = UIHelper.IsZeroEmpty(formModel.name);
+
+        if (!string.IsNullOrWhiteSpace(formModel.name))
+        {
+            var category = new FinPal.Models.Category
+                {
+                    Id = id,
+                    Name = formModel.name,
+                    Note = formModel.note,
+                    Active = formModel.active
+                };
+            await CDatabase.SaveItemAsync(category);
+
+            categoryList = await CDatabase.GetItemsAsync();
+
+            ShowMessage(ToastType.Dark, "Record saved successfully.");
+
+            id = 0; formModel.name = ""; formModel.note = "";
+        }
+        else
+        {
+            await firstInput.FocusAsync();
+        }
+    }
+
+    private async Task deleteCategory(FinPal.Models.Category category)
+    {
+        await CDatabase.DeleteItemAsync(category);
+        categoryList = await CDatabase.GetItemsAsync();
+    }
+
+    private void updateCategory(string uName, string uNote, int uId, bool uActive)
+    {
+        id = uId;
+        formModel.name = uName;
+        formModel.note = uNote;
+        formModel.active = uActive;
+    }
+
+    private void cancelCategory()
+    {
+        if (string.IsNullOrEmpty(formModel.name))
+        {
+            Navigation.NavigateTo("/settings");
+        }
+
+        id = 0; formModel.name = ""; formModel.note = "";
+    }
+
+    private void ShowMessage(ToastType toastType, string msg) => messages.Add(CreateToastMessage(toastType, msg));
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string msg)
+    => new ToastMessage
+        {
+            Type = toastType,
+            Message = msg,
+        };
+
+    private class FormModel()
+    {
+        public string name { get; set; } = "";
+        public string note { get; set; } = "";
+        public bool active { get; set; } = true;
+    }
+}

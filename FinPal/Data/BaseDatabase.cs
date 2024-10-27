@@ -61,5 +61,11 @@ namespace FinPal.Data
                 return await Database.Table<T>().CountAsync();
             }
         }
+
+        public async void DropTable()
+        {
+            await Database.ExecuteAsync($"DROP TABLE IF EXISTS {typeof(T).Name}");
+            await Database.CreateTableAsync<T>();
+        }
     }
 }

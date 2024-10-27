@@ -12,7 +12,7 @@ namespace FinPal.Models
     {
         [PrimaryKey, AutoIncrement]
         public int Id { set; get; }
-        public int Amount { set; get; }
+        public decimal Amount { set; get; }
         public int Month { set; get; }
         public int Year { set; get; }
         public bool Active { set; get; }

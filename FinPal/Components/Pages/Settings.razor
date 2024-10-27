@@ -1,4 +1,8 @@
 ﻿@inject SettingsDatabase SettingDatabase
+@inject BillDatabase BDatabase
+@inject CategoryDatabase CDatabase
+@inject FinanceNameDatabase FDatabase
+@inject SalaryDatabase SDatabase
 @inject IJSRuntime JS
 @page "/settings"
 <h3>Settings</h3>
@@ -6,6 +10,11 @@
     <div class="row justify-content-center">
         <div class="col-12 mx-auto">
             <div class="my-4">
+
+                <hr class="my-4" />
+                <strong class="mb-0">System Data</strong>
+                <p>Add or update the system data.</p>
+
                 <div class="list-group mb-5 shadow">
                     <a class="list-group-item list-group-item-action" href="settings/finance">
                         <div class="lign-items-center">
@@ -13,12 +22,19 @@
                             <p class="text-muted mb-0">Add/Update finance names.</p>
                         </div>
                     </a>
-                    <a class="list-group-item list-group-item-action" href="#">
+                    <a class="list-group-item list-group-item-action" href="settings/category">
                         <div class="align-items-center">
                             <strong class="mb-0">Categories</strong>
                             <p class="text-muted mb-0">Add/Update categories.</p>
                         </div>
                     </a>
+                </div>
+
+                <hr class="my-4" />
+                <strong class="mb-0">UI Customisation</strong>
+                <p>Customise the application looks.</p>
+
+                <div class="list-group mb-5 shadow">
                     <a class="list-group-item list-group-item-action" @onclick="updateUIMode">
                         <div class="align-items-center">
                             <strong class="mb-0">Dark/Light Mode</strong>
@@ -26,12 +42,45 @@
                         </div>
                     </a>
                 </div>
+
+                <hr class="my-4" />
+                <strong class="mb-0">Tester Function</strong>
+                <p>Only available during the testing period.</p>
+
+                <div class="list-group mb-5 shadow">
+                    <div class="list-group-item list-group-item-action" @onclick="OnShowModalClick">
+                        <div class="lign-items-center" >
+                            <strong class="mb-0">Delete All Data</strong>
+                            <p class="text-muted mb-0">Please perform this after an update.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            
+
+
         </div>
     </div>
 </div>
 
+<Modal @ref="modal" title="Delete All Data" IsVerticallyCentered="true">
+    <BodyTemplate>
+        Are you sure you want to proceed with data deletion? This action is permanent and cannot be undone.
+        @FinPal.Services.DatabaseHelper.GetDatabasePath("SinarSQLite.db3")
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">No</Button>
+        <Button Color="ButtonColor.Primary" @onclick="DeleteData">Yes</Button>
+    </FooterTemplate>
+</Modal>
+
+<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" />
+
 @code {
+    private Modal modal;
+    List<ToastMessage> messages = new List<ToastMessage>();
+
     private async Task updateUIMode()
     {
         var result = await SettingDatabase.GetItemAsync("UIMode");
@@ -39,4 +88,32 @@
         await SettingDatabase.ChangeUIMode(result);
         await JS.InvokeVoidAsync("setTheme", result.SetStr);
     }
+
+    private void DeleteData()
+    {
+        CDatabase.DropTable();
+        FDatabase.DropTable();
+        SDatabase.DropTable();
+        BDatabase.DropTable();
+        ShowMessage(ToastType.Dark, "Data deleted.");
+    }
+
+    private async Task OnShowModalClick()
+    {
+        await modal?.ShowAsync();
+    }
+
+    private async Task OnHideModalClick()
+    {
+        await modal?.HideAsync();
+    }
+
+    private void ShowMessage(ToastType toastType, string msg) => messages.Add(CreateToastMessage(toastType, msg));
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string msg)
+    => new ToastMessage
+        {
+            Type = toastType,
+            Message = msg,
+        };
 }

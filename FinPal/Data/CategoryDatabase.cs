@@ -42,5 +42,53 @@ namespace FinPal.Data
             await Init();
             return await Database.Table<Category>().Where(i => i.Id == id).FirstOrDefaultAsync();
         }
+
+        public async Task<Category> GetItemAsync(string name)
+        {
+            await Init();
+            return await Database.Table<Category>().Where(i => i.Name == name).FirstOrDefaultAsync();
+        }
+
+        public async Task<List<JSChartArray>> GetPlanChartAsync()
+        {
+            await Init();
+            var query = @"SELECT Name, Percentage FROM Category";
+
+            var categories = await Database.QueryAsync<Category>(query);
+            
+            // Map to JSChartArray
+            var chartData = categories.Select(c => new JSChartArray
+            {
+                Name = c.Name,
+                Value = (decimal)c.Percentage
+            }).ToList();
+
+            return chartData;
+        }
+
+        public async Task<List<AllocatedFunds>> GetAllocatedFundsAsync()
+        {
+            await Init();
+
+            int currentMonth = DateTime.Now.Month;
+            int currentYear = DateTime.Now.Year;
+
+            var query = @"SELECT * FROM Salary WHERE Month = ? AND Year = ? AND Active = 1";
+            var salaries = await Database.QueryAsync<Salary>(query, currentMonth, currentYear);
+
+            var categories = await Database.Table<Category>().ToListAsync();
+
+            var fund = categories.Select(c => new AllocatedFunds
+            {
+                Id = c.Id, 
+                Name = c.Name,
+                Note = c.Note,
+                Percentage = c.Percentage,
+                funds = salaries.FirstOrDefault().Amount * (c.Percentage / 100),
+             }).ToList();
+
+
+            return fund;
+        }
     }
 }

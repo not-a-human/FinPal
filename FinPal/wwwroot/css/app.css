@@ -6,6 +6,17 @@
 */
 
 /*--------------------------------------------------------------
+# Root variables
+--------------------------------------------------------------*/
+
+:root {
+    --primary-color: #4e73df;
+    --success-color: #1cc88a;
+    --info-color: #36b9cc;
+    --warning-color: #f6c23e;
+}
+
+/*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
 
@@ -22,6 +33,96 @@ a {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: "Raleway", sans-serif;
+}
+
+.border-left-primary {
+    border-left: .25rem solid var(--primary-color) !important;
+}
+
+.border-left-success {
+    border-left: .25rem solid var(--success-color) !important;
+}
+
+.border-left-info {
+    border-left: .25rem solid var(--info-color) !important;
+}
+
+.border-left-warning {
+    border-left: .25rem solid var(--warning-color) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+text-success {
+    color: var(--success-color) !important;
+}
+
+bg-info {
+    background-color: var(--success-info) !important;
+}
+
+bg-warning {
+    background-color: var(--warning-color) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+bg-success {
+    background-color: var(--success-color) !important;
+}
+
+text-info {
+    color: var(--success-info) !important;
+}
+
+text-warning {
+    color: var(--warning-color) !important;
+}
+
+.font-weight-bold {
+    font-weight: 700 !important;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.text-xs {
+    font-size: .7rem;
+}
+
+.fa-2x {
+    font-size: 2em;
+}
+
+.text-gray-300 {
+    color: #dddfeb !important;
+}
+
+.light-mode-bg {
+    background-color: #f8f9fc;
+}
+
+.mr-2, .mx-2 {
+    margin-right: .5rem !important;
+}
+
+.pt-4, .py-4 {
+    padding-top: 1.5rem !important;
+}
+
+.pb-2, .py-2 {
+    padding-bottom: .5rem !important;
+}
+
+.mb-4, .my-4 {
+    margin-bottom: 1.5rem !important;
 }
 
 /*--------------------------------------------------------------
@@ -171,7 +272,7 @@ h1, h2, h3, h4, h5, h6 {
         }
 
             .nav-menu a:hover i, .nav-menu .active i, .nav-menu .active:focus i, .nav-menu li:hover > a i {
-                color: #149ddd;
+                color: var(--primary-color);
             }
 
 /* Mobile Navigation */
@@ -325,7 +426,25 @@ section {
         padding-right: 20px 15px;
     }
 }
+/*--------------------------------------------------------------
+# Charts
+--------------------------------------------------------------*/
 
+.chart-pie {
+    position: relative;
+    height: 15rem;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .chart-pie {
+        height: calc(20rem - 43px) !important;
+    }
+}
+
+/*--------------------------------------------------------------
+# Blazor default
+--------------------------------------------------------------*/
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
