@@ -12,7 +12,7 @@ namespace FinPal
             InitializeComponent();
 
             CDatabase = new CategoryDatabase();
-            FDatabase = new FinanceNameDatabase();
+            FDatabase = new FinanceNameDatabase(CDatabase);
             SDatabase = new SettingsDatabase();
 
             SeedDatabase();

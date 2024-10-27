@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject SettingsDatabase SettingsDatabase
 @inject IJSRuntime JS
-<div class="page">
+<div id="mainPageBG" class="page @UiTheme">
 
     <!-- ======= Mobile nav toggle button ======= -->
     <i class="bi bi-list mobile-nav-toggle d-xl-none"></i>
@@ -17,6 +17,8 @@
         </div>
     </header>
 
+
+
     <main id="main">
         
 
@@ -28,11 +30,14 @@
     </main>
 </div>
 @code {
+    private string UiTheme { get; set; } = "";
+
     protected override async Task OnInitializedAsync()
     {
         var userSettings = await SettingsDatabase.GetItemAsync("UIMode"); // Assume this method retrieves user settings
         string theme = userSettings?.SetStr?? "dark"; // Default to "light" if no settings exist
         SetTheme(theme);
+        UiTheme = theme == "dark" ? "" : "light-mode-bg";
     }
 
     private void SetTheme(string theme)

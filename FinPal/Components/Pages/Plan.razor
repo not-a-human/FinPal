@@ -2,9 +2,6 @@
 @inject CategoryDatabase CDatabase
 <h3 class="mb-5">Plan</h3>
 
-
-
-
 <div class="row justify-content-center">
     <div class="col-12 mx-auto">
         <div class="my-4">
@@ -41,6 +38,7 @@
     <button class="btn btn-primary px-5" @onclick="UpdateItems">Update</button>
 </div>
 
+<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" />
 
 <script>
     function calculateTotalPercentage() {
@@ -66,8 +64,8 @@
 
 @code {
     private List<FinPal.Models.Category> cItems = new List<FinPal.Models.Category>();
-    private double totalPercent;
-
+    private decimal totalPercent;
+    List<ToastMessage> messages = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -75,18 +73,26 @@
         CalculateTotalPercentage();
     }
 
-    // Function to process the updated items
     private async Task UpdateItems()
     {
-        // Here you can process or save the updated percentages
         foreach (var item in cItems)
         {
             await CDatabase.SaveItemAsync(item);
         }
+        ShowMessage(ToastType.Dark, "Plans updated successfully.");
     }
 
     private void CalculateTotalPercentage()
     {
         totalPercent = cItems.Sum(item => item.Percentage);
     }
+
+    private void ShowMessage(ToastType toastType, string msg) => messages.Add(CreateToastMessage(toastType, msg));
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string msg)
+    => new ToastMessage
+        {
+            Type = toastType,
+            Message = msg,
+        };
 }

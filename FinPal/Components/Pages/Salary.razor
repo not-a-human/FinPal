@@ -7,7 +7,7 @@
         <label for="selectedYear" class="form-label">Please select a year:</label>
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-calendar-fill"></i></span>
-            <select name="selectedYear" class="form-control" @bind-value="selectedYear" @onchange="LoadSalaries" @bind-value:event="oninput">
+            <select name="selectedYear" class="form-select" @bind-value="selectedYear" @onchange="LoadSalaries" @bind-value:event="oninput">
                 @for (int year = DateTime.Now.Year - 5; year <= DateTime.Now.Year + 5; year++)
                 {
                     <option value="@year">@year</option>
@@ -46,10 +46,12 @@
     <button class="btn btn-primary px-5" @onclick="UpdateItems">Update</button>
 </div>
 
+<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" />
+
 @code {
     private List<FinPal.Models.Salary> sItems = new List<FinPal.Models.Salary>();
     private int selectedYear = DateTime.Now.Year;
-
+    List<ToastMessage> messages = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -67,11 +69,20 @@
         {
             await SDatabase.UpdateItemAsync(salary);
         }
-        // Optionally reload or show a success message
+        ShowMessage(ToastType.Dark, "Salaries updated successfully.");
     }
 
     private string GetMonthName(int month)
     {
         return new DateTime(1, month, 1).ToString("MMMM");
     }
+
+    private void ShowMessage(ToastType toastType, string msg) => messages.Add(CreateToastMessage(toastType, msg));
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string msg)
+    => new ToastMessage
+        {
+            Type = toastType,
+            Message = msg,
+        };
 }

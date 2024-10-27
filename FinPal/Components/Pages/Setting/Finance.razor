@@ -1,14 +1,36 @@
 ﻿@page "/settings/finance"
-@inject FinanceNameDatabase Database
+@inject FinanceNameDatabase FDatabase
+@inject CategoryDatabase CDatabase
 @inject NavigationManager Navigation
 <h3 class="mb-5" >Settings</h3>
 <form>
+
+    <div class="mb-3 position-relative">
+        <label for="category" class="form-label col-md-2">Category</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
+            <select @ref="firstInput" class="form-select @(UIHelper.GetFormValidClass(isCategory,0))" id="category" @bind-value="formModel.category" @bind-value:event="oninput">
+                <option value="0">Please select a category.</option>
+                @foreach (var item in categoryList)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </select>
+        </div>
+        <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isCategory,1))">
+            Please select a category. If there is none, please create one here.
+        </div>
+    </div>
+
     <div class="row mb-3">
-        <div class="mb-3 col-md-6">
+        <div class="mb-3 col-md-6 position-relative">
             <label for="name" class="form-label">Finance Name</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-bank2"></i></span>
-                <input type="text" class="form-control" required id="name" @bind="formModel.name" placeholder="Enter Finance Name" />
+                <input type="text" class="form-control @(UIHelper.GetFormValidClass(isName,0))" required id="name" @bind="formModel.name" placeholder="Enter Finance Name" />
+            </div>
+            <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isName,1))">
+                Please enter a name.
             </div>
         </div>
         <div class="col-md-6">
@@ -74,7 +96,7 @@
                         </p>
                     </div>
                     <div class="col-md-2 d-flex justify-content-end align-items-end">
-                        <a @onclick="() => updateFinance(finance.Name,finance.Note,finance.Id)" class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
+                        <a @onclick="() => updateFinance(finance.Name,finance.Note,finance.Id,finance.CategoryId)" class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
                         <a @onclick="() => deleteFinance(finance)" class="btn btn-danger disabled"><i class="bi bi-trash-fill"></i></a>
                     </div>
                 </div>
@@ -82,42 +104,67 @@
         </div>
     }
 </div>
+
+<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" />
+
 @code {
+
+    // 0 = none, 1 = not valid, 2 valid
+    private int isName = 0, isCategory = 0;
+
     public int id = 0;
     private FormModel formModel = new FormModel();
     private List<FinanceName> financeList = new List<FinanceName>();
+    private List<FinPal.Models.Category> categoryList = new List<FinPal.Models.Category>();
+    private List<ToastMessage> messages = new List<ToastMessage>();
+    private ElementReference firstInput;
 
     protected override async Task OnInitializedAsync()
     {
-        financeList = await Database.GetItemsAsync();
+        financeList = await FDatabase.GetItemsAsync();
+        categoryList = await CDatabase.GetItemsAsync();
     }
 
     private async Task createFinance()
     {
-        if (!string.IsNullOrWhiteSpace(formModel.name))
+        isName = UIHelper.IsZeroEmpty(formModel.name);
+        isCategory = UIHelper.IsZeroEmpty(formModel.category);
+
+        if (!string.IsNullOrWhiteSpace(formModel.name) && formModel.category != 0)
         {
             var finance = new FinanceName { 
                 Id = id, 
+                CategoryId = formModel.category,
                 Name = formModel.name, 
                 Note = formModel.note,
                 PayDate = formModel.payDate,
                 Active = formModel.active,
                 Reminder = formModel.reminder
             };
-            await Database.SaveItemAsync(finance);
-            financeList = await Database.GetItemsAsync();
+            await FDatabase.SaveItemAsync(finance);
+
+            financeList = await FDatabase.GetItemsAsync();
+
+            ShowMessage(ToastType.Dark, "Record saved successfully.");
+
+            id = 0; formModel.name = ""; formModel.note = ""; formModel.category = 0;
+        }
+        else
+        {
+            await firstInput.FocusAsync();
         }
     }
 
     private async Task deleteFinance(FinanceName finance)
     {
-        await Database.DeleteItemAsync(finance);
-        financeList = await Database.GetItemsAsync();
+        await FDatabase.DeleteItemAsync(finance);
+        financeList = await FDatabase.GetItemsAsync();
     }
 
-    private void updateFinance(string uName, string uNote, int uId)
+    private void updateFinance(string uName, string uNote, int uId, int categoryId)
     {
         id = uId;
+        formModel.category = categoryId;
         formModel.name = uName;
         formModel.note = uNote;
         formModel.payDate = DateTime.Today;
@@ -127,18 +174,28 @@
 
     private void cancelFinance()
     {
-        if (string.IsNullOrEmpty(formModel.name))
+        if (string.IsNullOrEmpty(formModel.name) && formModel.category == 0)
         {
             Navigation.NavigateTo("/settings");
         }
-        
-        id = 0; formModel.name = ""; formModel.note = "";
+
+        id = 0; formModel.name = ""; formModel.note = ""; formModel.category = 0;
     }
+
+    private void ShowMessage(ToastType toastType, string msg) => messages.Add(CreateToastMessage(toastType, msg));
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string msg)
+    => new ToastMessage
+        {
+            Type = toastType,
+            Message = msg,
+        };
 
     private class FormModel()
     {
-        public string? name { get; set; } 
-        public string? note { get; set; }
+        public int category { get; set; } = 0;
+        public string name { get; set; } = "";
+        public string note { get; set; } = "";
         public bool reminder { get; set; } = false;
         public bool active { get; set; } = true;
         public DateTime payDate { get; set; } = DateTime.Today;

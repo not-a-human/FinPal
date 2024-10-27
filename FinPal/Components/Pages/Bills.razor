@@ -26,7 +26,7 @@
                     <td>@iItem.ItemName</td>
                     <td>@iItem.AmountDue</td>
                     <td>@iItem.Period</td>
-                    <td>@iItem.StartDate.ToString("yyyy-MMM")</td>
+                    <td>@iItem.StartDate</td>
                     <td>@iItem.EndDate.ToString("yyyy-MMM")</td>
                 </tr>
             }
@@ -35,7 +35,7 @@
         </tfoot>
     </table>
 </div>
-<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.BottomRight" />
+<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" />
 @code {
     [Parameter]
     public bool CreateSuccess { get; set; } = false;
