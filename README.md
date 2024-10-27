@@ -23,11 +23,11 @@
 ## Planned Features
 
 ### Functionality
-- [ ] **Dashboard in "Home" screen**  
+- [x] **Dashboard in "Home" screen**  
       Display allocated funds based on the user's financial plan and salary.
 - [ ] **Notifications**  
       Reminders for the Finance Name on the Payment Date.
-- [ ] **"Settings > Category" Screen**  
+- [x] **"Settings > Category" Screen**  
       Add a screen to update and manage financial categories for better customization.
 - [ ] **Data Export/Import**  
       Enable users to export or import their data in Excel format for backup or external analysis.
