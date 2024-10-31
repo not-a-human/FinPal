@@ -1,44 +1,53 @@
 ﻿@page "/plan"
 @inject CategoryDatabase CDatabase
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
 <h3 class="mb-5">Plan</h3>
 
-<div class="row justify-content-center">
-    <div class="col-12 mx-auto">
-        <div class="my-4">
-            <div class="list-group mb-5 shadow">
-                @foreach (var items in cItems)
-                {
-                    <div class="list-group-item list-group-item-action">
-                        <div class="row">
-                            <div class="col-8">
-                                <strong class="mb-0">@items.Name</strong>
-                                <p class="text-muted mb-0">@items.Note</p>
-                            </div>
-                            <div class="col-4">
-                                <div class="input-group">
-                                    <input onchange="calculateTotalPercentage()" type="number" class="form-control input-percent" id="percentage-@items.Id" placeholder="Enter Percentage" @bind-value="items.Percentage" @bind-value:event="oninput" min="0" max="100" />
-                                    <span class="input-group-text"><i class="bi bi-percent"></i></span>
+<div id="category-not-0" class="d-none">
+    <div class="row justify-content-center">
+        <div class="col-12 mx-auto">
+            <div class="my-4">
+                <div class="list-group mb-5 shadow">
+                    @foreach (var items in cItems)
+                    {
+                        <div class="list-group-item list-group-item-action">
+                            <div class="row">
+                                <div class="col-8">
+                                    <strong class="mb-0">@items.Name</strong>
+                                    <p class="text-muted mb-0">@items.Note</p>
+                                </div>
+                                <div class="col-4">
+                                    <div class="input-group">
+                                        <input onchange="calculateTotalPercentage()" type="number" class="form-control input-percent" id="percentage-@items.Id" placeholder="Enter Percentage" @bind-value="items.Percentage" @bind-value:event="oninput" min="0" max="100" />
+                                        <span class="input-group-text"><i class="bi bi-percent"></i></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                }
-                <div class="list-group-item">
-                    <div class="row">
-                        <div class="col-8"></div>
-                        <div id="totalPercentDiv" class="col-4 text-center @(totalPercent>100 ? "text-danger" : "text-success")"><span id="totalPercent">@totalPercent</span> <span><i class="bi bi-percent"></i></span></div>
+                    }
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-8"></div>
+                            <div id="totalPercentDiv" class="col-4 text-center @(totalPercent>100 ? "text-danger" : "text-success")"><span id="totalPercent">@totalPercent</span> <span><i class="bi bi-percent"></i></span></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="container text-center">
+        <button class="btn btn-primary px-5" @onclick="UpdateItems">Update</button>
+    </div>
 </div>
 
-<div class="container text-center">
-    <button class="btn btn-primary px-5" @onclick="UpdateItems">Update</button>
+<div id="category-is-0" class="d-none">
+    <p class="m-4">
+        It looks like no categories have been set up yet. You can create a new category <span class="text-primary cursor-pointer" @onclick="goToCategory"><strong><u>here</u></strong></span> to get started.
+    </p>
 </div>
-
-<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" />
 
 <script>
     function calculateTotalPercentage() {
@@ -65,12 +74,22 @@
 @code {
     private List<FinPal.Models.Category> cItems = new List<FinPal.Models.Category>();
     private decimal totalPercent;
-    List<ToastMessage> messages = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
         cItems = await CDatabase.GetItemsAsync();
-        CalculateTotalPercentage();
+
+        if(cItems.Count != 0)
+        {
+            CalculateTotalPercentage();
+            await JS.InvokeVoidAsync("hideOrShowElement", "category-not-0");
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("hideOrShowElement", "category-is-0");
+        }
+
+
     }
 
     private async Task UpdateItems()
@@ -79,7 +98,8 @@
         {
             await CDatabase.SaveItemAsync(item);
         }
-        ShowMessage(ToastType.Dark, "Plans updated successfully.");
+        await JS.InvokeVoidAsync("showToast", "Update", "Plans updated successfully.");
+
     }
 
     private void CalculateTotalPercentage()
@@ -87,12 +107,8 @@
         totalPercent = cItems.Sum(item => item.Percentage);
     }
 
-    private void ShowMessage(ToastType toastType, string msg) => messages.Add(CreateToastMessage(toastType, msg));
-
-    private ToastMessage CreateToastMessage(ToastType toastType, string msg)
-    => new ToastMessage
-        {
-            Type = toastType,
-            Message = msg,
-        };
+    private void goToCategory()
+    {
+        Navigation.NavigateTo("/settings/category");
+    }
 }

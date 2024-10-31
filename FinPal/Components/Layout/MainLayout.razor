@@ -3,9 +3,6 @@
 @inject IJSRuntime JS
 <div id="mainPageBG" class="page @UiTheme">
 
-    <!-- ======= Mobile nav toggle button ======= -->
-    <i class="bi bi-list mobile-nav-toggle d-xl-none"></i>
-
     <header id="header">
         <div class="sidebar">
             <div class="d-flex flex-column">
@@ -28,14 +25,18 @@
             </div>
         </section>
     </main>
+
 </div>
+
+    <div id="mainToastContainer" class="toast-container p-3 mt-3 top-0 start-50 translate-middle-x position-fixed"></div>
+
 @code {
     private string UiTheme { get; set; } = "";
 
     protected override async Task OnInitializedAsync()
     {
         var userSettings = await SettingsDatabase.GetItemAsync("UIMode"); // Assume this method retrieves user settings
-        string theme = userSettings?.SetStr?? "dark"; // Default to "light" if no settings exist
+        string theme = userSettings?.SetStr?? "dark"; // Default to "dark" if no settings exist
         SetTheme(theme);
         UiTheme = theme == "dark" ? "" : "light-mode-bg";
     }

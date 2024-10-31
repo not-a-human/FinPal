@@ -35,16 +35,11 @@
         </tfoot>
     </table>
 </div>
-<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" />
 @code {
     [Parameter]
     public bool CreateSuccess { get; set; } = false;
 
     private List<FinPal.Models.BillwithFC> bItems = new List<FinPal.Models.BillwithFC>();
-
-    List<ToastMessage> messages = new List<ToastMessage>();
-
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,16 +47,9 @@
         bItems = await BDatabase.GetItemsAsyncWithFC();
         
         if (CreateSuccess)
-            ShowMessage(ToastType.Dark, "Bill data created successfully.");
+            await JS.InvokeVoidAsync("showToast", "Create", "Bill data created successfully.");
+
     }
 
-    private void ShowMessage(ToastType toastType, string msg) => messages.Add(CreateToastMessage(toastType, msg));
-
-    private ToastMessage CreateToastMessage(ToastType toastType, string msg)
-    => new ToastMessage
-        {
-            Type = toastType,
-            Message = msg,
-        };
 
 }

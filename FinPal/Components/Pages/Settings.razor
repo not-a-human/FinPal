@@ -3,6 +3,7 @@
 @inject CategoryDatabase CDatabase
 @inject FinanceNameDatabase FDatabase
 @inject SalaryDatabase SDatabase
+@inject NavigationManager Navigation
 @inject IJSRuntime JS
 @page "/settings"
 <h3>Settings</h3>
@@ -16,18 +17,21 @@
                 <p>Add or update the system data.</p>
 
                 <div class="list-group mb-5 shadow">
-                    <a class="list-group-item list-group-item-action" href="settings/finance">
-                        <div class="lign-items-center">
-                            <strong class="mb-0">Finance Name</strong>
-                            <p class="text-muted mb-0">Add/Update finance names.</p>
-                        </div>
-                    </a>
-                    <a class="list-group-item list-group-item-action" href="settings/category">
+
+                    <div class="list-group-item list-group-item-action cursor-pointer" @onclick='() => Navigation.NavigateTo("settings/category")'>
                         <div class="align-items-center">
                             <strong class="mb-0">Categories</strong>
                             <p class="text-muted mb-0">Add/Update categories.</p>
                         </div>
-                    </a>
+                    </div>
+
+                    <div class="list-group-item list-group-item-action cursor-pointer" @onclick='() => Navigation.NavigateTo("settings/finance")'>
+                        <div class="lign-items-center">
+                            <strong class="mb-0">Finance Name</strong>
+                            <p class="text-muted mb-0">Add/Update finance names.</p>
+                        </div>
+                    </div>
+                   
                 </div>
 
                 <hr class="my-4" />
@@ -35,7 +39,7 @@
                 <p>Customise the application looks.</p>
 
                 <div class="list-group mb-5 shadow">
-                    <a class="list-group-item list-group-item-action" @onclick="updateUIMode">
+                    <a class="list-group-item list-group-item-action cursor-pointer" @onclick="updateUIMode">
                         <div class="align-items-center">
                             <strong class="mb-0">Dark/Light Mode</strong>
                             <p class="text-muted mb-0">Switch between dark or light mode.</p>
@@ -48,7 +52,7 @@
                 <p>Only available during the testing period.</p>
 
                 <div class="list-group mb-5 shadow">
-                    <div class="list-group-item list-group-item-action" @onclick="OnShowModalClick">
+                    <div class="list-group-item list-group-item-action cursor-pointer" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
                         <div class="lign-items-center" >
                             <strong class="mb-0">Delete All Data</strong>
                             <p class="text-muted mb-0">Please perform this after an update.</p>
@@ -64,22 +68,28 @@
     </div>
 </div>
 
-<Modal @ref="modal" title="Delete All Data" IsVerticallyCentered="true">
-    <BodyTemplate>
-        Are you sure you want to proceed with data deletion? This action is permanent and cannot be undone.
-        @FinPal.Services.DatabaseHelper.GetDatabasePath("SinarSQLite.db3")
-    </BodyTemplate>
-    <FooterTemplate>
-        <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">No</Button>
-        <Button Color="ButtonColor.Primary" @onclick="DeleteData">Yes</Button>
-    </FooterTemplate>
-</Modal>
-
-<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" />
+<div class="modal" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalCenterTitle">Delete all Data</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-break">
+                    Are you sure you want to proceed with data deletion? This action is permanent and cannot be undone.
+                    @FinPal.Services.DatabaseHelper.GetDatabasePath("SinarSQLite.db3")
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" @onclick="DeleteData" class="btn btn-primary" data-bs-dismiss="modal">Proceed</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
-    private Modal modal;
-    List<ToastMessage> messages = new List<ToastMessage>();
 
     private async Task updateUIMode()
     {
@@ -89,31 +99,16 @@
         await JS.InvokeVoidAsync("setTheme", result.SetStr);
     }
 
-    private void DeleteData()
+    private async void DeleteData()
     {
         CDatabase.DropTable();
         FDatabase.DropTable();
         SDatabase.DropTable();
         BDatabase.DropTable();
-        ShowMessage(ToastType.Dark, "Data deleted.");
+        await JS.InvokeVoidAsync("showToast", "Delete", "Data deleted.");
+
     }
 
-    private async Task OnShowModalClick()
-    {
-        await modal?.ShowAsync();
-    }
 
-    private async Task OnHideModalClick()
-    {
-        await modal?.HideAsync();
-    }
-
-    private void ShowMessage(ToastType toastType, string msg) => messages.Add(CreateToastMessage(toastType, msg));
-
-    private ToastMessage CreateToastMessage(ToastType toastType, string msg)
-    => new ToastMessage
-        {
-            Type = toastType,
-            Message = msg,
-        };
+   
 }

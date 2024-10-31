@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FinPal.Constant;
 using FinPal.Interfaces;
+using System.Diagnostics;
 
 namespace FinPal.Data
 {
@@ -64,7 +65,9 @@ namespace FinPal.Data
 
         public async void DropTable()
         {
+            await Init();
             await Database.ExecuteAsync($"DROP TABLE IF EXISTS {typeof(T).Name}");
+            Debug.WriteLine("Table " + typeof(T).Name + " dropped");
             await Database.CreateTableAsync<T>();
         }
     }

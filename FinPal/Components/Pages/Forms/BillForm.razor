@@ -24,8 +24,8 @@
         <label for="category" class="form-label">Category</label>
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
-            <select class="form-select @(UIHelper.GetFormValidClass(isCategory,0))" required @bind="formModel.category">
-                <option>Select Category</option>
+            <select class="form-select @(UIHelper.GetFormValidClass(isCategory,0))" required @bind-value="formModel.category" @bind-value:event="oninput" @onchange="checkCategory">
+                <option value="">Select Category</option>
                 @foreach (var item in cItems)
                 {
                     <option value="@item.Id">@item.Name</option>
@@ -41,9 +41,9 @@
         <label for="financeCode" class="form-label">Finance Name</label>
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-bank2"></i></span>
-            <select class="form-select @(UIHelper.GetFormValidClass(isFinance,0))" required @bind="formModel.financeCode">
-                <option>Please Select</option>
-                @foreach (var item in fnItems)
+            <select disabled="@financeDisable" class="form-select @(UIHelper.GetFormValidClass(isFinance,0))" id="financeCode" required @bind="formModel.financeCode">
+                <option value="">Please Select</option>
+                @foreach (var item in financeBasedOnCategory)
                 {
                     <option value="@item.Id">@item.Name</option>
                 }
@@ -72,7 +72,7 @@
             <label for="category" class="form-label">Repeat Option</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-repeat"></i></span>
-                <select class="form-select @(UIHelper.GetFormValidClass(isRepeat,0))" @bind="formModel.repeat">
+                <select class="form-select @(UIHelper.GetFormValidClass(isRepeat,0))" @bind-value="formModel.repeat" @bind-value:event="oninput" @onchange="setEndDate">
                     <option value="">Select repeat option</option>
                     <option value="N">None</option>
                     <option value="D">Daily</option>
@@ -92,7 +92,7 @@
             <label for="period" class="form-label">Repeat for</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-repeat-1"></i></span>
-                <input type="number" class="form-control @(UIHelper.GetFormValidClass(isPeriod,0))" id="period" min="0" max="1000" @bind="formModel.period" placeholder="Enter Installment Period" />
+                <input type="number" class="form-control @(UIHelper.GetFormValidClass(isPeriod,0))" id="period" min="0" max="1000" @bind-value="formModel.period" @bind-value:event="oninput" @onchange="setEndDate" placeholder="Enter Installment Period" />
             </div>
             <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isPeriod,1))">
                 Repeat time must be more than 1!
@@ -105,14 +105,14 @@
             <label for="startDate" class="form-label">Start Date</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-                <input type="date" class="form-control" id="startDate" min="1970-12-31" @bind="formModel.startDate" @onblur="setEndDate" @oninput="setEndDate" placeholder="Select Start Date" />
+                <input type="date" class="form-control" id="startDate" min="1970-12-31" @bind-value="formModel.startDate" @bind-value:event="oninput" @onchange="setEndDate" placeholder="Select Start Date" />
             </div>
         </div>
         <div class="col-md-6 position-relative">
             <label for="endDate" class="form-label">End Date</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
-                <input type="date" class="form-control @(UIHelper.GetFormValidClass(isEndDate,0))" id="endDate" @bind="formModel.endDate" placeholder="Select End Date" />
+                <input type="date" class="form-control @(UIHelper.GetFormValidClass(isEndDate,0))" id="endDate" disabled @bind="formModel.endDate" placeholder="Select End Date" />
             </div>
             <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isEndDate,1))">
                 The end date must be after the start date.
@@ -170,7 +170,10 @@
     // 0 = none, 1 = not valid, 2 valid
     private int isAmount = 0, isCategory = 0, isName = 0, isFinance = 0, isRepeat = 0, isPeriod = 0, isEndDate = 0;
     private ElementReference firstInput;
+    private bool financeDisable = true;
+
     private List<FinPal.Models.FinanceName> fnItems = new List<FinPal.Models.FinanceName>();
+    private List<FinPal.Models.FinanceName> financeBasedOnCategory = new List<FinPal.Models.FinanceName>();
     private List<FinPal.Models.Category> cItems = new List<FinPal.Models.Category>();
     private FormModel formModel = new FormModel
         {
@@ -224,7 +227,21 @@
 
     private void setEndDate()
     {
-        formModel.endDate = formModel.startDate.AddMonths(formModel.period - 1);
+        formModel.endDate = BDatabase.AddInterval(formModel.startDate, formModel.repeat, formModel.period);
+    }
+
+    private void checkCategory()
+    {
+        if (!string.IsNullOrEmpty(formModel.category))
+        {
+            financeBasedOnCategory = fnItems.Where(c => c.CategoryId == Convert.ToInt32(formModel.category)).ToList();
+            financeDisable = false;
+            formModel.financeCode = "";
+        }
+        else
+        {
+            financeDisable = true; formModel.financeCode = "";
+        }
     }
 
     private class FormModel
@@ -233,7 +250,7 @@
         public string category { get; set; } = "";
         public string financeCode { get; set; } = "";
         public string itemName { get; set; } = "";
-        public string repeat { get; set; } = "";
+        public string repeat { get; set; }
         public string note { get; set; } = "";
         public int period { get; set; }
         public DateTime startDate { get; set; }

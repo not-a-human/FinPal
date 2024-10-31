@@ -32,9 +32,9 @@ namespace FinPal.Data
 
             var financename = new List<FinanceName>
             {
-                new FinanceName {Name = "Maybank Credit Card", CategoryId = cItem.Id },
-                new FinanceName {Name = "ShopeePayLater", CategoryId = cItem.Id},
-                new FinanceName {Name = "Maxis", CategoryId = cItem2.Id}
+                new FinanceName {Name = "Maybank Credit Card", CategoryId = cItem?.Id?? 1 },
+                new FinanceName {Name = "ShopeePayLater", CategoryId = cItem?.Id?? 1 },
+                new FinanceName {Name = "Maxis", CategoryId = cItem?.Id?? 1}
             };
 
             foreach (var item in financename)

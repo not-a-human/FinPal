@@ -1,5 +1,7 @@
 ﻿@page "/salary"
 @inject SalaryDatabase SDatabase
+@inject IJSRuntime JS
+
 <h3 class="mb-5">Salary</h3>
 
 <div class="row justify-content-center">
@@ -46,12 +48,9 @@
     <button class="btn btn-primary px-5" @onclick="UpdateItems">Update</button>
 </div>
 
-<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" />
-
 @code {
     private List<FinPal.Models.Salary> sItems = new List<FinPal.Models.Salary>();
     private int selectedYear = DateTime.Now.Year;
-    List<ToastMessage> messages = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,20 +68,12 @@
         {
             await SDatabase.UpdateItemAsync(salary);
         }
-        ShowMessage(ToastType.Dark, "Salaries updated successfully.");
+        
+        await JS.InvokeVoidAsync("showToast", "Update", "Salaries updated successfully.");
     }
 
     private string GetMonthName(int month)
     {
         return new DateTime(1, month, 1).ToString("MMMM");
     }
-
-    private void ShowMessage(ToastType toastType, string msg) => messages.Add(CreateToastMessage(toastType, msg));
-
-    private ToastMessage CreateToastMessage(ToastType toastType, string msg)
-    => new ToastMessage
-        {
-            Type = toastType,
-            Message = msg,
-        };
 }

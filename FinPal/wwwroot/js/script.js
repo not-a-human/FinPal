@@ -86,3 +86,58 @@ function getRandomColor() {
     }
     return color;
 }
+
+function hideOrShowElement(elementID) {
+    var el = document.getElementById(elementID);
+    el.classList.toggle("d-none");
+}
+
+function showToast(title, message) {
+    // Get the container element
+    const toastContainer = document.getElementById("mainToastContainer");
+
+    // Create the toast element
+    const toastElement = document.createElement("div");
+    toastElement.className = "toast fade show";
+    toastElement.setAttribute("role", "alert");
+    toastElement.setAttribute("aria-live", "assertive");
+    toastElement.setAttribute("aria-atomic", "true");
+
+    // Create the header element
+    const toastHeader = document.createElement("div");
+    toastHeader.className = "toast-header";
+
+    // Strong element for the title
+    const strong = document.createElement("strong");
+    strong.className = "me-auto";
+    strong.textContent = title;
+
+    // Small element for the time
+    const small = document.createElement("small");
+    small.className = "text-body-secondary";
+    small.textContent = "";
+
+    // Button element for close
+    const button = document.createElement("button");
+    button.className = "btn-close";
+    button.setAttribute("type", "button");
+    button.setAttribute("data-bs-dismiss", "toast");
+    button.setAttribute("aria-label", "Close");
+
+    // Append title, time, and button to the header
+    toastHeader.appendChild(strong);
+    toastHeader.appendChild(small);
+    toastHeader.appendChild(button);
+
+    // Create the body element
+    const toastBody = document.createElement("div");
+    toastBody.className = "toast-body";
+    toastBody.textContent = message;
+
+    // Append the header and body to the toast element
+    toastElement.appendChild(toastHeader);
+    toastElement.appendChild(toastBody);
+
+    // Append the toast element to the toast container
+    toastContainer.appendChild(toastElement);
+}
