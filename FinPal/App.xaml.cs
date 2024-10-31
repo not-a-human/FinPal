@@ -18,7 +18,8 @@ namespace FinPal
             SeedDatabase();
 
             MainPage = new MainPage();
-        }
+
+            }
 
         private async void SeedDatabase()
         {

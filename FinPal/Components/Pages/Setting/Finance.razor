@@ -2,6 +2,7 @@
 @inject FinanceNameDatabase FDatabase
 @inject CategoryDatabase CDatabase
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 <h3 class="mb-5" >Settings</h3>
 <form>
 
@@ -105,8 +106,6 @@
     }
 </div>
 
-<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" />
-
 @code {
 
     // 0 = none, 1 = not valid, 2 valid
@@ -116,7 +115,6 @@
     private FormModel formModel = new FormModel();
     private List<FinanceName> financeList = new List<FinanceName>();
     private List<FinPal.Models.Category> categoryList = new List<FinPal.Models.Category>();
-    private List<ToastMessage> messages = new List<ToastMessage>();
     private ElementReference firstInput;
 
     protected override async Task OnInitializedAsync()
@@ -145,14 +143,14 @@
 
             financeList = await FDatabase.GetItemsAsync();
 
-            ShowMessage(ToastType.Dark, "Record saved successfully.");
+            await JS.InvokeVoidAsync("showToast", "Save", "Record saved successfully.");
+
 
             id = 0; formModel.name = ""; formModel.note = ""; formModel.category = 0;
         }
-        else
-        {
-            await firstInput.FocusAsync();
-        }
+        
+        await firstInput.FocusAsync();
+        
     }
 
     private async Task deleteFinance(FinanceName finance)
@@ -161,7 +159,7 @@
         financeList = await FDatabase.GetItemsAsync();
     }
 
-    private void updateFinance(string uName, string uNote, int uId, int categoryId)
+    private async void updateFinance(string uName, string uNote, int uId, int categoryId)
     {
         id = uId;
         formModel.category = categoryId;
@@ -170,9 +168,10 @@
         formModel.payDate = DateTime.Today;
         formModel.reminder = false;
         formModel.active = true;
+        await firstInput.FocusAsync();
     }
 
-    private void cancelFinance()
+    private async void cancelFinance()
     {
         if (string.IsNullOrEmpty(formModel.name) && formModel.category == 0)
         {
@@ -180,16 +179,8 @@
         }
 
         id = 0; formModel.name = ""; formModel.note = ""; formModel.category = 0;
+        await firstInput.FocusAsync();
     }
-
-    private void ShowMessage(ToastType toastType, string msg) => messages.Add(CreateToastMessage(toastType, msg));
-
-    private ToastMessage CreateToastMessage(ToastType toastType, string msg)
-    => new ToastMessage
-        {
-            Type = toastType,
-            Message = msg,
-        };
 
     private class FormModel()
     {

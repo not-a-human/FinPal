@@ -72,9 +72,13 @@ namespace FinPal.Data
 
             int currentMonth = DateTime.Now.Month;
             int currentYear = DateTime.Now.Year;
+            decimal salary = 0;
 
             var query = @"SELECT * FROM Salary WHERE Month = ? AND Year = ? AND Active = 1";
             var salaries = await Database.QueryAsync<Salary>(query, currentMonth, currentYear);
+            
+            if(salaries.Count != 0)
+                salary = salaries.FirstOrDefault().Amount;
 
             var categories = await Database.Table<Category>().ToListAsync();
 
@@ -84,7 +88,7 @@ namespace FinPal.Data
                 Name = c.Name,
                 Note = c.Note,
                 Percentage = c.Percentage,
-                funds = salaries.FirstOrDefault().Amount * (c.Percentage / 100),
+                funds = salary * (c.Percentage / 100),
              }).ToList();
 
 

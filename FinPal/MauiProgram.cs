@@ -20,11 +20,9 @@ namespace FinPal
             // Delete the old database file if it exists
             //DatabaseHelper.DeleteDatabase("SinarSQLite.db3");
 
-            builder.Services.AddMauiBlazorWebView(); 
-            builder.Services.AddBlazorBootstrap();
+            builder.Services.AddMauiBlazorWebView();
 
             builder.Services.AddSingleton<SettingsDatabase>();
-            builder.Services.AddSingleton<InstallmentDatabase>();
             builder.Services.AddSingleton<BillDatabase>();
             builder.Services.AddSingleton<CategoryDatabase>();
             builder.Services.AddSingleton<FinanceNameDatabase>();

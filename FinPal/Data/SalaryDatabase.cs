@@ -10,6 +10,18 @@ namespace FinPal.Data
 {
     public class SalaryDatabase : BaseDatabase<Salary>
     {
+        public async Task SeedDataAsync()
+        {
+            await Init();
+            // Check if the database is empty
+            if (await GetCountAsync() > 0)
+            {
+                return; // If not empty, do not seed
+            }
+
+            int year = DateTime.Today.Year;
+            await CreateNewYear(year);
+        }
         public async Task<Salary> GetItemAsync(int id)
         {
             await Init();
@@ -48,6 +60,11 @@ namespace FinPal.Data
         public async Task<decimal> GetSalaryByMonth(int year, int month)
         {
             await Init();
+
+            if (!await CheckIfMonthAndYearExistAsync(year, 1))
+            {
+                await CreateNewYear(year);
+            }
 
             var salaries = await Database.Table<Salary>().Where(x => x.Year == year && x.Month == month && x.Active).ToListAsync();
 
