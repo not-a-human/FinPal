@@ -297,6 +297,10 @@ text-warning {
         width: 100%;
     }
 
+    .modal-backdrop.show{
+        display:none;
+    }
+
     #header {
         width: 100%;
         height: auto;
