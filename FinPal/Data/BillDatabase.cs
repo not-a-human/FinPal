@@ -61,6 +61,7 @@ namespace FinPal.Data
 
         public DateTime AddInterval(DateTime startDate, string frequency, int value)
         {
+            value = value - 1;
             switch (frequency.ToLower())
             {
                 case "d":
