@@ -5,6 +5,7 @@
 ## Table of Contents
 - [Features](#features)
 - [Technologies Used](#technologies-used)
+- [Testing Opportunities](#testing-opportunities)
 - [Planned Features](#planned-features)
 
 ## Features
@@ -19,6 +20,9 @@
 - SQLite for data persistence
 - Bootstrap for responsive design
 - Javascript for utilizing DOM control, such as dynamically switching between dark and light modes without restarting the application.
+
+## Testing Opportunities
+We are currently looking for testers to help us improve FinPal. If you're interested in testing the app on Android, please reach out to us at [notahuman.palz@gmail.com](notahuman.palz@gmail.com).
 
 ## Planned Features
 
