@@ -22,7 +22,7 @@
 - Javascript for utilizing DOM control, such as dynamically switching between dark and light modes without restarting the application.
 
 ## Testing Opportunities
-We are currently looking for testers to help us improve FinPal. If you're interested in testing the app on Android, please reach out to us at [notahuman.palz@gmail.com](notahuman.palz@gmail.com) or [ohayouhiragana@gmail.com](ohayouhiragana@gmail.com).
+We are currently looking for testers to help us improve FinPal. If you're interested in testing the app on Android, please reach out to us at [notahuman.palz@gmail.com](mailto:notahuman.palz@gmail.com) or [ohayouhiragana@gmail.com](mailto:ohayouhiragana@gmail.com).
 
 ## Planned Features
 
