@@ -19,7 +19,7 @@ function scrollToTop() {
     window.scrollToTop();
 }
 
-function pieChart(id, legend, myArray) {
+function pieChart(id, legend, myArray, salary = 0) {
     var ctx = document.getElementById(id);
     const legendContainer = document.getElementById(legend);
 
@@ -54,8 +54,16 @@ function pieChart(id, legend, myArray) {
     });
 
     myArray.forEach(element => {
-        let randomColor  = getRandomColor();
+        let randomColor = getRandomColor();
+        const textNode = document.createTextNode(` ${element.name}`);
+
+        if (salary != 0) {
+            element.name += " - " + (salary * (element.value / 100)).toFixed(2) + " $";
+        }
+
         myPieChart.data.labels.push(element.name);
+        
+        
         myPieChart.data.datasets[0].data.push(element.value);
         myPieChart.data.datasets[0].backgroundColor.push(randomColor);
 
@@ -66,7 +74,7 @@ function pieChart(id, legend, myArray) {
         icon.classList.add('bi', 'bi-circle-fill');
         icon.style.color = randomColor;
 
-        const textNode = document.createTextNode(` ${element.name}`);
+        
 
         span.appendChild(icon);
         span.appendChild(textNode);

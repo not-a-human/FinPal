@@ -6,14 +6,16 @@ namespace FinPal
     {
         public static CategoryDatabase CDatabase { get; private set; }
         public static FinanceNameDatabase FDatabase { get; private set; }
-        public static SettingsDatabase SDatabase { get; private set; }
+        public static SettingsDatabase SetDatabase { get; private set; }
+        public static SalaryDatabase SDatabase { get; private set; }
         public App()
         {
             InitializeComponent();
 
             CDatabase = new CategoryDatabase();
             FDatabase = new FinanceNameDatabase(CDatabase);
-            SDatabase = new SettingsDatabase();
+            SetDatabase = new SettingsDatabase();
+            SDatabase = new SalaryDatabase();
 
             SeedDatabase();
 
@@ -26,6 +28,7 @@ namespace FinPal
             await CDatabase.SeedDataAsync();
             await FDatabase.SeedDataAsync();
             await SDatabase.SeedDataAsync();
+            await SetDatabase.SeedDataAsync();
         }
     }
 }

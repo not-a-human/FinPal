@@ -24,21 +24,35 @@ namespace FinPal.Data
 
         public async Task<List<BillwithFC>> GetItemsWithFCThisMonthAsync()
         {
-            var query = @"SELECT 
-                            b.Name AS FName, 
-                            b.Note AS FNote, 
-                            c.Name AS CName, 
-                            c.Note AS CNote, 
-                            a.* 
-                        FROM Bill a 
-                        JOIN FinanceName b ON a.FinanceCode = b.Id 
-                        JOIN Category c ON a.CategoryCode = c.Id 
-                        WHERE 
-                            (datetime((StartDate / 10000000) - 62135596800, 'unixepoch') >= date('now', 'start of month') 
-                             AND datetime((StartDate / 10000000) - 62135596800, 'unixepoch') < date('now', 'start of month', '+1 month'))
-                        OR 
-                            (datetime((EndDate / 10000000) - 62135596800, 'unixepoch') >= date('now', 'start of month') 
-                             AND datetime((EndDate / 10000000) - 62135596800, 'unixepoch') < date('now', 'start of month', '+1 month'));";
+            var query = @"
+            
+                WITH BillDates AS (
+                    SELECT 
+                        b.Name AS FName, 
+                        b.Note AS FNote, 
+                        c.Name AS CName, 
+                        c.Note AS CNote, 
+                        a.*, 
+                        datetime((a.StartDate / 10000000) - 62135596800, 'unixepoch') AS StartDateConverted,
+                        datetime((a.EndDate / 10000000) - 62135596800, 'unixepoch') AS EndDateConverted
+                    FROM Bill a
+                    JOIN FinanceName b ON a.FinanceCode = b.Id
+                    JOIN Category c ON a.CategoryCode = c.Id
+                )
+                SELECT *
+                FROM BillDates
+                WHERE 
+                     -- Condition 1: Start or end date is within the current month
+                    (StartDateConverted BETWEEN date('now', 'start of month') AND date('now', 'start of month', '+1 month', '-1 day'))
+                    OR 
+                    (EndDateConverted BETWEEN date('now', 'start of month') AND date('now', 'start of month', '+1 month', '-1 day'))
+                    OR
+                    -- Condition 2: Payment spans the entire month (start date is before and end date is after the month)
+                    (StartDateConverted < date('now', 'start of month') 
+                     AND EndDateConverted > date('now', 'start of month', '+1 month', '-1 day'));
+
+
+            ";
 
             await Init();
 
@@ -69,6 +83,30 @@ namespace FinPal.Data
 
                 default:
                     return startDate;
+            }
+        }
+
+        public string intervalSting(string frequency)
+        {
+            switch (frequency.ToLower())
+            {
+                case "d":
+                    return "Daily";
+
+                case "w":
+                    return "Weekly";
+
+                case "b-w":
+                    return "Bi-Weekly";
+
+                case "m":
+                    return "Monthly";
+
+                case "a":
+                    return "Anually";
+
+                default:
+                    return "None";
             }
         }
 

@@ -76,23 +76,12 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Application Progress
+                                Total Bills (@today.ToString("yyyy-MMM"))
                             </div>
-                            <div class="row no-gutters align-items-center">
-                                <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">75%</div>
-                                </div>
-                                <div class="col">
-                                    <div class="progress progress-sm mr-2">
-                                        <div class="progress-bar bg-info" role="progressbar"
-                                             style="width: 75%" aria-valuenow="75" aria-valuemin="0"
-                                             aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">$@bItems.Sum(b => b.AmountDue)</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                            <i class="bi bi-credit-card fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -183,7 +172,7 @@
 
             }).ToList().ToArray();
 
-        await JS.InvokeVoidAsync("pieChart", "myPlanChart", "planChartLegend", planItems);
+        await JS.InvokeVoidAsync("pieChart", "myPlanChart", "planChartLegend", planItems, salaryMonth);
         await JS.InvokeVoidAsync("pieChart", "myCategoryChart", "categoryChartLegend", categoryArray);
     }
 }
