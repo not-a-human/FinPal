@@ -20,6 +20,10 @@
 # General
 --------------------------------------------------------------*/
 
+html, body {
+    overflow-x:hidden;
+}
+
 body::-webkit-scrollbar {
     display: none;
 }
@@ -227,6 +231,7 @@ text-warning {
 
 #main {
     margin-left: 300px;
+    overflow:auto;
 }
 
 
@@ -280,7 +285,9 @@ text-warning {
 
     #main {
         margin-left: 0;
-        margin-bottom: 8%;
+        height: 92%;
+        position: fixed;
+        width: 100%;
     }
 
     #header {
@@ -292,7 +299,6 @@ text-warning {
         padding: 10px 0;
         display: flex;
         justify-content: center;
-
     }
 
         #header .sidebar {
