@@ -30,12 +30,8 @@ We are currently looking for testers to help us improve FinPal. If you're intere
 ## Planned Features
 
 ### Functionality
-- [x] **Dashboard in "Home" screen**  
-      Display allocated funds based on the user's financial plan and salary.
 - [ ] **Notifications**  
       Reminders for the Finance Name on the Payment Date.
-- [x] **"Settings > Category" Screen**  
-      Add a screen to update and manage financial categories for better customization.
 - [ ] **Data Export/Import**  
       Enable users to export or import their data in Excel format for backup or external analysis.
 - [ ] **User Authentication**  
@@ -46,9 +42,5 @@ We are currently looking for testers to help us improve FinPal. If you're intere
 ### UI Enhancements
 - [ ] **Light Mode Enhancement**  
       Improve the UI/UX for light mode to enhance visibility and user comfort.
-- [x] **"Bill" Screen Redesign**  
-      Change the current "Bill" screen from a table format to a more visual list card view for better readability.
-- [x] **Mobile Navigation Update**  
-      Replace the current menu button with a more user-friendly tabbed menu for mobile view navigation.
 
 
