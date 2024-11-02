@@ -39,7 +39,7 @@
 ### UI Enhancements
 - [ ] **Light Mode Enhancement**  
       Improve the UI/UX for light mode to enhance visibility and user comfort.
-- [ ] **"Bill" Screen Redesign**  
+- [x] **"Bill" Screen Redesign**  
       Change the current "Bill" screen from a table format to a more visual list card view for better readability.
 - [x] **Mobile Navigation Update**  
       Replace the current menu button with a more user-friendly tabbed menu for mobile view navigation.
