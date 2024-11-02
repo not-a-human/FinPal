@@ -14,6 +14,7 @@
     --success-color: #1cc88a;
     --info-color: #36b9cc;
     --warning-color: #f6c23e;
+    --danger-color: #e74a3b;
 }
 
 /*--------------------------------------------------------------
@@ -102,6 +103,12 @@ text-warning {
     color: #fff;
     background-color: var(--primary-color);
     border-color: var(--primary-color);
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
 }
 
 .text-xs {
@@ -290,6 +297,10 @@ text-warning {
         width: 100%;
     }
 
+    .modal-backdrop.show{
+        display:none;
+    }
+
     #header {
         width: 100%;
         height: auto;
@@ -469,39 +480,6 @@ section {
 }
 
 /*--------------------------------------------------------------
-# Footer
---------------------------------------------------------------*/
-#footer {
-    padding: 15px;
-    color: #f4f6fd;
-    font-size: 14px;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 300px;
-    z-index: 9999;
-    background: #040b14;
-}
-
-    #footer .copyright {
-        text-align: center;
-    }
-
-    #footer .credits {
-        padding-top: 5px;
-        text-align: center;
-        font-size: 13px;
-        color: #eaebf0;
-    }
-
-@media (max-width: 1199px) {
-    #footer {
-        position: static;
-        width: auto;
-        padding-right: 20px 15px;
-    }
-}
-/*--------------------------------------------------------------
 # Charts
 --------------------------------------------------------------*/
 
@@ -515,6 +493,21 @@ section {
     .chart-pie {
         height: calc(20rem - 43px) !important;
     }
+}
+
+/*--------------------------------------------------------------
+# Bill
+--------------------------------------------------------------*/
+
+.bill-ul {
+    list-style: none;
+    margin:0;
+    padding:0;
+}
+
+.bill-ul li {
+    margin: 0;
+
 }
 
 /*--------------------------------------------------------------

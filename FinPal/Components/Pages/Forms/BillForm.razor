@@ -1,14 +1,16 @@
-﻿@page "/bills/form"
+﻿@page "/bills/form/{Id:int?}"
 @inject BillDatabase BDatabase
 @inject FinanceNameDatabase FnDatabase
 @inject CategoryDatabase CDatabase
 @inject NavigationManager Navigation
 
+@inject IJSRuntime JS
+
 @using FinPal.Utility
 
-<h3  class="mb-5">Add Bill</h3>
+<h3  class="mb-5">@(Id != 0 ? "Edit" : "Create") Bill</h3>
 
-<form>
+
     <div class="mb-3 position-relative">
         <label for="totalPrice" class="form-label">Amount due</label>
         <div class="input-group">
@@ -161,12 +163,39 @@
 
 
     <div class="d-grid gap-2 d-md-flex justify-content-md-end my-5">
-        <button type="button" @onclick="submitForm" class="btn btn-primary">Submit</button>
+        <button type="button" @onclick="submitForm" class="btn btn-primary">Update</button>
         <a href="bills" class="btn btn-primary">Cancel</a>
+        @if(Id != 0)
+        {
+            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Delete</button>
+        }
     </div>
-</form>
+
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalCenterTitle">Delete @bItems.ItemName</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-break">
+                    Are you sure you want to delete this record? This action is permanent and cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" @onclick="deleteForm" data-bs-dismiss="modal">Proceed</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
+
     // 0 = none, 1 = not valid, 2 valid
     private int isAmount = 0, isCategory = 0, isName = 0, isFinance = 0, isRepeat = 0, isPeriod = 0, isEndDate = 0;
     private ElementReference firstInput;
@@ -175,6 +204,8 @@
     private List<FinPal.Models.FinanceName> fnItems = new List<FinPal.Models.FinanceName>();
     private List<FinPal.Models.FinanceName> financeBasedOnCategory = new List<FinPal.Models.FinanceName>();
     private List<FinPal.Models.Category> cItems = new List<FinPal.Models.Category>();
+    private FinPal.Models.Bill bItems = new FinPal.Models.Bill();
+
     private FormModel formModel = new FormModel
         {
             period = 1,
@@ -186,6 +217,27 @@
     {
         fnItems = await FnDatabase.GetActiveItemsAsync();
         cItems = await CDatabase.GetActiveItemsAsync();
+
+        if(Id != 0)
+        {
+            bItems = await BDatabase.GetItemAsync(Id);
+            formModel.itemName = bItems.ItemName;
+            formModel.amountDue = bItems.AmountDue;
+            formModel.period = bItems.Period;
+            formModel.category = bItems.CategoryCode;
+            checkCategory();
+
+            formModel.financeCode = bItems.FinanceCode.ToString();
+            formModel.total = bItems.Total;
+            formModel.adminFee = bItems.AdminFee;
+            formModel.interestRate = bItems.InterestRate;
+            formModel.repeat = bItems.Repeat;
+            formModel.startDate = bItems.StartDate;
+            formModel.endDate = bItems.EndDate;
+            formModel.note = bItems.Note;
+        }
+
+        JS.InvokeVoidAsync("logToConsole",Navigation.Uri);
     }
 
     private async Task submitForm()
@@ -202,6 +254,7 @@
         {
             var newBill = new Bill
                 {
+                    Id = Id,
                     FinanceCode = Convert.ToInt32(formModel.financeCode),
                     ItemName = formModel.itemName,
                     AmountDue = formModel.amountDue,
@@ -225,6 +278,12 @@
         }
     }
 
+    private async Task deleteForm()
+    {
+        await BDatabase.DeleteItemAsync(bItems);
+        Navigation.NavigateTo("/bills");
+    }
+
     private void setEndDate()
     {
         formModel.endDate = BDatabase.AddInterval(formModel.startDate, formModel.repeat, formModel.period);
@@ -236,7 +295,8 @@
         {
             financeBasedOnCategory = fnItems.Where(c => c.CategoryId == Convert.ToInt32(formModel.category)).ToList();
             financeDisable = false;
-            formModel.financeCode = "";
+            if(Id != 0)
+                formModel.financeCode = "";
         }
         else
         {
