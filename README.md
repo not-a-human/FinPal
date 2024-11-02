@@ -1,6 +1,7 @@
 # FinPal
 
-**FinPal** is a finance management app designed to help users manage their financial data effectively. This project is still in the testing and development phase, and we welcome feedback from testers.
+**FinPal** is a finance management app designed to help users plan allocated funds based on a percentage of their monthly salary. Users can create records for bills and loans, and the app notifies them when any bill or loan exceeds the allocated fund for the specified category. Additionally, users can track their monthly salary within the app. This project is still in the testing and development phase, and we welcome feedback from testers.
+
 
 ## Table of Contents
 - [Features](#features)
@@ -9,8 +10,10 @@
 - [Planned Features](#planned-features)
 
 ## Features
-- Track financial instalments such as bills and loans.
-- Manage monthly salaries and planning.
+- Plan allocated funds based on a percentage of the user's salary for the month.
+- Create and manage bill and loan records.
+- Notify the user when bills or loans exceed allocated funds for specified categories.
+- Track monthly salary from the app.
 - Light/Dark mode support.
 
 
