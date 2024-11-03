@@ -10,7 +10,7 @@
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-calendar-fill"></i></span>
             <select name="selectedYear" class="form-select" @bind-value="selectedYear" @onchange="LoadSalaries" @bind-value:event="oninput">
-                @for (int year = DateTime.Now.Year - 5; year <= DateTime.Now.Year + 5; year++)
+                @for (int year = DateTime.Now.Year - 5; year <= DateTime.Now.Year + 1; year++)
                 {
                     <option value="@year">@year</option>
                 }

@@ -97,5 +97,17 @@ namespace FinPal.Data
             }
 
         }
+
+        public override async Task<int> SaveItemAsync(Salary item)
+        {
+            await Init();
+
+            if (await GetItemAsync(item.Id) != null)
+                return await Database.UpdateAsync(item);
+
+            item.Id = await GetCountAsync() + 1;
+            return await Database.InsertAsync(item);
+
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace FinPal.Models
 {
     public class Bill :IModel
     {
-        [PrimaryKey, AutoIncrement]
+        [PrimaryKey]
         public int Id { get; set; }
         public decimal AmountDue { get; set; }
         public string CategoryCode { get; set; }

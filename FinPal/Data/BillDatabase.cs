@@ -59,8 +59,21 @@ namespace FinPal.Data
             return await Database.QueryAsync<BillwithFC>(query);
         }
 
+        public override async Task<int> SaveItemAsync(Bill item)
+        {
+            await Init();
+
+            if (await GetItemAsync(item.Id) != null)
+                return await Database.UpdateAsync(item);
+
+            item.Id = await GetCountAsync() + 1;
+            return await Database.InsertAsync(item);
+
+        }
+
         public DateTime AddInterval(DateTime startDate, string frequency, int value)
         {
+            value = value - 1;
             switch (frequency.ToLower())
             {
                 case "d":

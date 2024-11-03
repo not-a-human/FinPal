@@ -43,7 +43,19 @@ namespace FinPal.Data
                 Debug.WriteLine($"Inserted {item.Name}, result: {result}");
             }
         }
-        
+
+        public override async Task<int> SaveItemAsync(FinanceName item)
+        {
+            await Init();
+
+            if (await GetItemAsync(item.Id) != null)
+                return await Database.UpdateAsync(item);
+
+            item.Id = await GetCountAsync() + 1;
+            return await Database.InsertAsync(item);
+
+        }
+
         public async Task<FinanceName> GetItemAsync(int id)
         {
             await Init();

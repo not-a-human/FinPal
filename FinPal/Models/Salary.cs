@@ -10,7 +10,7 @@ namespace FinPal.Models
 {
     public class Salary : IModel
     {
-        [PrimaryKey, AutoIncrement]
+        [PrimaryKey]
         public int Id { set; get; }
         public decimal Amount { set; get; }
         public int Month { set; get; }

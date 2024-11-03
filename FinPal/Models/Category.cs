@@ -10,7 +10,7 @@ namespace FinPal.Models
 {
     public class Category : IModel
     {
-        [PrimaryKey, AutoIncrement]
+        [PrimaryKey]
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? Note { get; set; }
