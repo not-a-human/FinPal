@@ -46,7 +46,7 @@ function pieChart(id, legend, myArray, salary = 0) {
             },
             plugins: {
                 legend: {
-                    display: false // Ensure this is set to false
+                    display: false
                 }
             }, 
             cutoutPercentage: 80,

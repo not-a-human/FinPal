@@ -52,13 +52,14 @@ namespace FinPal.Data
         public async Task<List<JSChartArray>> GetPlanChartAsync()
         {
             await Init();
-            var query = @"SELECT Name, Percentage FROM Category";
+            var query = @"SELECT Id, Name, Percentage FROM Category";
 
             var categories = await Database.QueryAsync<Category>(query);
             
             // Map to JSChartArray
             var chartData = categories.Select(c => new JSChartArray
             {
+                Id = c.Id,
                 Name = c.Name,
                 Value = (decimal)c.Percentage
             }).ToList();

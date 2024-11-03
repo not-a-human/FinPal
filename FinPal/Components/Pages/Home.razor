@@ -125,16 +125,26 @@
                     <h6 class="m-0 font-weight-bold text-primary">Allocated Funds</h6>
                 </div>
                 <div class="card-body">
-                        <ul class="list-group list-group-flush">
+                        <ul class="list-group">
                         @foreach(var item in aItems)
                         {
-                            <li class="list-group-item">
+                            <li class="list-group-item border-0">
                                 <div class="row">
-                                    <div class="col-6">@item.Name</div>
-                                    <div class="col-3">@item.Percentage <i class="bi bi-percent"></i></div>
-                                    <div class="col-3">@item.funds <i class="bi bi-currency-dollar"></i></div>
+                                    <div class="col-9 border-bottom">@item.Name</div>
+                                    <div class="col-3 border-bottom text-end">@item.Percentage <i class="bi bi-percent"></i></div>
+                                    <div class="col-12 row align-items-center">
+                                        <div class="col border-end row">
+                                            <small class="col-12 text-muted">Allocated</small>
+                                            <p class="col-12 mb-0">@item.funds <i class="bi bi-currency-dollar"></i></p>
+                                        </div>
+                                        <div class="col row ms-1 row">
+                                            <small class="col-12 text-muted">Total (@today.ToString("yyyy-MMM"))</small>
+                                            <p class="col-12 mb-0 @(totalCategory(item.Id) > item.funds ? "text-danger" : "text-success")">@totalCategory(item.Id) <i class="bi bi-currency-dollar"></i></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </li>
+                            allocatedIndex++;
                         }
                         </ul>
                 </div>
@@ -149,8 +159,9 @@
     private List<FinPal.Models.BillwithFC> bItems = new List<FinPal.Models.BillwithFC>();
     //private List<FinPal.Models.Salary> sItems = new List<FinPal.Models.Salary>();
     private List<FinPal.Models.AllocatedFunds> aItems = new List<FinPal.Models.AllocatedFunds>();
+    private List<JSChartArray> categoryArray = new List<JSChartArray>();
 
-    private int billsCount = 0;
+    private int billsCount = 0, allocatedIndex = 0;
     private decimal salaryAnnual = 0, salaryMonth = 0;
     private DateTime today = @DateTime.Now;
 
@@ -163,16 +174,27 @@
         salaryAnnual = await SDatabase.SumSalariesByYear(today.Year);
         salaryMonth = await SDatabase.GetSalaryByMonth(today.Year,today.Month);
 
-        JSChartArray[] categoryArray = bItems
+        categoryArray = bItems
         .GroupBy(e => e.CategoryCode)
         .Select(g => new JSChartArray
             {
-                Name = bItems.Where(z => z.CategoryCode == g.Key).Select(z => z.CName).FirstOrDefault(),
+                Id = Int32.Parse(g.Key),
+                Name = g.Select(z => z.CName).FirstOrDefault(),
                 Value = g.Sum(e => e.AmountDue)
 
-            }).ToList().ToArray();
+            }).ToList();
 
         await JS.InvokeVoidAsync("pieChart", "myPlanChart", "planChartLegend", planItems, salaryMonth);
         await JS.InvokeVoidAsync("pieChart", "myCategoryChart", "categoryChartLegend", categoryArray);
+    }
+
+    private decimal totalCategory(int Id)
+    {
+        var q = categoryArray.Where(x => x.Id == Id).Select(z => z.Value).FirstOrDefault();
+
+        if (q != null)
+            return q;
+
+        return 0;
     }
 }
