@@ -4,8 +4,11 @@
 @inject FinanceNameDatabase FDatabase
 @inject SalaryDatabase SDatabase
 @inject NavigationManager Navigation
+@inject ExcelDataHelper ExcelHelper
 @inject IJSRuntime JS
+
 @page "/settings"
+
 <h3>Settings</h3>
 <div class="container">
     <div class="row justify-content-center">
@@ -39,12 +42,37 @@
                 <p>Customise the application looks.</p>
 
                 <div class="list-group mb-5 shadow">
-                    <a class="list-group-item list-group-item-action cursor-pointer" @onclick="updateUIMode">
+                    <div class="list-group-item list-group-item-action cursor-pointer" @onclick="updateUIMode">
                         <div class="align-items-center">
                             <strong class="mb-0">Dark/Light Mode</strong>
                             <p class="text-muted mb-0">Switch between dark or light mode.</p>
                         </div>
-                    </a>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+                <strong class="mb-0">Export/Import Data</strong>
+                <p>Export or import all data.</p>
+
+                <div class="list-group mb-5 shadow">
+                    <div class="list-group-item list-group-item-action cursor-pointer" @onclick="generateReport">
+                        <div class="align-items-center">
+                            <strong class="mb-0">Generate Report</strong>
+                            <p class="text-muted mb-0">Generate a report. - Still under development.</p>
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action cursor-pointer" @onclick="exportData">
+                        <div class="align-items-center">
+                            <strong class="mb-0">Export Data</strong>
+                            <p class="text-muted mb-0">Export all data to an Excel file.</p>
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action cursor-pointer" @onclick="importData">
+                        <div class="align-items-center">
+                            <strong class="mb-0">Import Data</strong>
+                            <p class="text-muted mb-0">Existing data will be erased before importing the new data.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <hr class="my-4" />
@@ -86,6 +114,7 @@
 </div>
 
 @code {
+    private string message;
 
     private async Task updateUIMode()
     {
@@ -102,7 +131,47 @@
         SDatabase.DropTable();
         BDatabase.DropTable();
         await JS.InvokeVoidAsync("showToast", "Delete", "Data deleted.");
+    }
 
+    private async void exportData()
+    {
+        message = await ExcelHelper.ExportDataToExcel();
+        await JS.InvokeVoidAsync("showToast", "Data Export", message);
+    }
+
+    private async void generateReport()
+    {
+        message = await ExcelHelper.GenerateExcelReport();
+        await JS.InvokeVoidAsync("showToast", "Report Generation", message);
+    }
+
+    private async void importData()
+    {
+
+        var file = await FilePicker.PickAsync();
+
+        if (file != null)
+        {
+            //DeleteData();
+
+            using (var stream = await file.OpenReadAsync())
+            {
+                try
+                {
+                    await ExcelHelper.ImportDataFromExcel(stream);
+                    message = "Data imported successfully!";
+                }
+                catch (Exception ex)
+                {
+                    message = $"Error importing data: {ex.Message}";
+                }
+            }
+        }
+        else
+        {
+            message = "No file selected.";
+        }
+        await JS.InvokeVoidAsync("showToast", "Data Import", message);
     }
 
 
