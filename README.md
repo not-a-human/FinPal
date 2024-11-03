@@ -15,6 +15,7 @@
 - Notify the user when bills or loans exceed allocated funds for specified categories.
 - Track monthly salary from the app.
 - Light/Dark mode support.
+- Export/import data.
 
 
 ## Technologies Used
@@ -32,8 +33,6 @@ We are currently looking for testers to help us improve FinPal. If you're intere
 ### Functionality
 - [ ] **Notifications**  
       Reminders for the Finance Name on the Payment Date.
-- [ ] **Data Export/Import**  
-      Enable users to export or import their data in Excel format for backup or external analysis.
 - [ ] **User Authentication**  
       Implement secure user authentication to protect user data and allow personalized experiences.
 - [ ] **"Settings > About Us"**  
