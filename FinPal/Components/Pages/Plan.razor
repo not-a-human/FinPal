@@ -10,17 +10,17 @@
         <div class="col-12 mx-auto">
             <div class="my-4">
                 <div class="list-group mb-5 shadow">
-                    @foreach (var items in cItems)
+                    @foreach (var item in cItems)
                     {
                         <div class="list-group-item list-group-item-action">
                             <div class="row">
                                 <div class="col-8">
-                                    <strong class="mb-0">@items.Name</strong>
-                                    <p class="text-muted mb-0">@items.Note</p>
+                                    <strong class="mb-0">@item.Name</strong>
+                                    <p class="text-muted mb-0">@item.Note</p>
                                 </div>
                                 <div class="col-4">
                                     <div class="input-group">
-                                        <input onchange="calculateTotalPercentage()" type="number" class="form-control input-percent" id="percentage-@items.Id" placeholder="Enter Percentage" @bind-value="items.Percentage" @bind-value:event="oninput" min="0" max="100" />
+                                        <input type="number" class="form-control" placeholder="Enter Percentage" @bind-value="item.Percentage" @bind-value:event="oninput" @onchange="CalculateTotalPercentage" min="0" max="100" />
                                         <span class="input-group-text"><i class="bi bi-percent"></i></span>
                                     </div>
                                 </div>
@@ -48,28 +48,6 @@
         It looks like no categories have been set up yet. You can create a new category <span class="text-primary cursor-pointer" @onclick="goToCategory"><strong><u>here</u></strong></span> to get started.
     </p>
 </div>
-
-<script>
-    function calculateTotalPercentage() {
-        var total = 0;
-        var inputs = document.querySelectorAll(".input-percent");
-        inputs.forEach(function (input) {
-            var value = parseFloat(input.value);
-            if (!isNaN(value)) {
-                total += value;
-            }
-        });
-        document.getElementById("totalPercent").innerText = total;
-
-        if (total > 100) {
-            document.getElementById("totalPercentDiv").classList.remove("text-success");
-            document.getElementById("totalPercentDiv").classList.add("text-danger");
-        } else {
-            document.getElementById("totalPercentDiv").classList.remove("text-danger");
-            document.getElementById("totalPercentDiv").classList.add("text-success");
-        }
-    }
-</script>
 
 @code {
     private List<FinPal.Models.Category> cItems = new List<FinPal.Models.Category>();
