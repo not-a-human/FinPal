@@ -71,32 +71,10 @@ namespace FinPal.Data
 
         }
 
-        public DateTime AddInterval(DateTime startDate, string frequency, int value)
+        public DateTime AddInterval(DateTime startDate, int value)
         {
             value = value - 1;
-            switch (frequency.ToLower())
-            {
-                case "d":
-                    return startDate.AddDays(value);
-
-                case "w":
-                    return startDate.AddDays(value * 7);
-
-                case "b-w":
-                    return startDate.AddDays(value * 14);
-
-                case "m":
-                    return startDate.AddMonths(value);
-
-                case "b-m":
-                    return startDate.AddMonths(value * 2);
-
-                case "a":
-                    return startDate.AddYears(value);
-
-                default:
-                    return startDate;
-            }
+            return startDate.AddMonths(value);
         }
 
         public string intervalSting(string frequency)
