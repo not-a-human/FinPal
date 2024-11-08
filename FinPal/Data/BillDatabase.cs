@@ -1,4 +1,5 @@
 ﻿using FinPal.Models;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,7 @@ namespace FinPal.Data
                     FROM Bill a
                     JOIN FinanceName b ON a.FinanceCode = b.Id
                     JOIN Category c ON a.CategoryCode = c.Id
+                    WHERE c.Active AND b.Active
                 )
                 SELECT *
                 FROM BillDates
@@ -49,9 +51,9 @@ namespace FinPal.Data
                     OR
                     -- Condition 2: Payment spans the entire month (start date is before and end date is after the month)
                     (StartDateConverted < date('now', 'start of month') 
-                     AND EndDateConverted > date('now', 'start of month', '+1 month', '-1 day'));
-
-
+                     AND EndDateConverted > date('now', 'start of month', '+1 month', '-1 day'))
+                    OR
+                    (Continuous);
             ";
 
             await Init();
@@ -71,32 +73,10 @@ namespace FinPal.Data
 
         }
 
-        public DateTime AddInterval(DateTime startDate, string frequency, int value)
+        public DateTime AddInterval(DateTime startDate, int value)
         {
             value = value - 1;
-            switch (frequency.ToLower())
-            {
-                case "d":
-                    return startDate.AddDays(value);
-
-                case "w":
-                    return startDate.AddDays(value * 7);
-
-                case "b-w":
-                    return startDate.AddDays(value * 14);
-
-                case "m":
-                    return startDate.AddMonths(value);
-
-                case "b-m":
-                    return startDate.AddMonths(value * 2);
-
-                case "a":
-                    return startDate.AddYears(value);
-
-                default:
-                    return startDate;
-            }
+            return startDate.AddMonths(value);
         }
 
         public string intervalSting(string frequency)
@@ -120,6 +100,29 @@ namespace FinPal.Data
 
                 default:
                     return "None";
+            }
+        }
+
+        public async Task<int> GetActiveCountAsync()
+        {
+            await Init();
+            if (Database == null)
+                return 0;
+            else
+            {
+                /*Database.Table<Bill>().
+                    Join(Database.Table<Category>(), 
+                    Id => Bill.CategoryCode,
+
+                    )*/
+                var query = @"SELECT COUNT(a.id) FROM Bill a
+                            JOIN Category b
+                            ON a.CategoryCode = b.Id
+                            JOIN FinanceName c
+                            ON a.FinanceCode = c.Id
+                            WHERE b.Active AND c.Active;";
+
+                return await Database.ExecuteScalarAsync<int>(query);
             }
         }
 

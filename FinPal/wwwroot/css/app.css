@@ -22,13 +22,13 @@
 --------------------------------------------------------------*/
 
 html, body {
-    overflow-x:hidden;
-    cursor:default;
+    overflow-x: hidden;
+    cursor: default;
 }
 
-body::-webkit-scrollbar {
-    display: none;
-}
+    body::-webkit-scrollbar {
+        display: none;
+    }
 
 
 
@@ -70,15 +70,15 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--primary-color) !important;
 }
 
-text-success {
+.text-success {
     color: var(--success-color) !important;
 }
 
-bg-info {
+.bg-info {
     background-color: var(--success-info) !important;
 }
 
-bg-warning {
+.bg-warning {
     background-color: var(--warning-color) !important;
 }
 
@@ -86,15 +86,19 @@ bg-warning {
     background-color: var(--primary-color) !important;
 }
 
-bg-success {
+.bg-success {
     background-color: var(--success-color) !important;
 }
 
-text-info {
+.bg-none {
+    background: none;
+}
+
+.text-info {
     color: var(--success-info) !important;
 }
 
-text-warning {
+.text-warning {
     color: var(--warning-color) !important;
 }
 
@@ -208,7 +212,7 @@ text-warning {
 
 #main {
     margin-left: 300px;
-    overflow:auto;
+    overflow: auto;
 }
 
 
@@ -228,9 +232,15 @@ text-warning {
     border-radius: 10px;
 }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+@media (max-width: 1199px) {
+    ::-webkit-scrollbar {
+        width: 0;
+    }
 }
 
 /*--------------------------------------------------------------
@@ -288,8 +298,8 @@ text-warning {
         width: 100%;
     }
 
-    .modal-backdrop.show{
-        display:none;
+    .modal-backdrop.show {
+        display: none;
     }
 
     #header {
@@ -325,24 +335,24 @@ text-warning {
                 text-align: center;
             }
 
-            #navbar ul li a {
-                display:inline-grid;
-                text-align: center;
-                margin-left:10px;
-                margin-right: 10px;
-            }
-
-                #navbar ul li a i {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding:0;
-                    padding-bottom:5px;
+                #navbar ul li a {
+                    display: inline-grid;
+                    text-align: center;
+                    margin-left: 10px;
+                    margin-right: 10px;
                 }
 
-                #navbar ul li a span {
-                    display:none;
-                }
+                    #navbar ul li a i {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 0;
+                        padding-bottom: 5px;
+                    }
+
+                    #navbar ul li a span {
+                        display: none;
+                    }
 
     .profile {
         display: none;
@@ -360,11 +370,11 @@ text-warning {
     .nav-menu a, .nav-menu a:focus {
         padding: 10px;
         font-size: 14px;
-        margin-bottom:0;
-        padding-bottom:0;
+        margin-bottom: 0;
+        padding-bottom: 0;
     }
 
-       
+
     /* Hide sidebar and make header fixed on top */
     .mobile-nav-toggle {
         display: block;
@@ -492,14 +502,13 @@ section {
 
 .bill-ul {
     list-style: none;
-    margin:0;
-    padding:0;
-}
-
-.bill-ul li {
     margin: 0;
-
+    padding: 0;
 }
+
+    .bill-ul li {
+        margin: 0;
+    }
 
 /*--------------------------------------------------------------
 # Blazor default

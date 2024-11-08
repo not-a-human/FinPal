@@ -170,7 +170,7 @@
     {
         planItems = await CDatabase.GetPlanChartAsync();
         bItems = await BDatabase.GetItemsWithFCThisMonthAsync();
-        billsCount = await BDatabase.GetCountAsync();
+        billsCount = await BDatabase.GetActiveCountAsync();
         aItems = await CDatabase.GetAllocatedFundsAsync();
         salaryAnnual = await SDatabase.SumSalariesByYear(today.Year);
         salaryMonth = await SDatabase.GetSalaryByMonth(today.Year,today.Month);

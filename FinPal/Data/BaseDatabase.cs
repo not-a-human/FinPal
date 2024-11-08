@@ -70,5 +70,14 @@ namespace FinPal.Data
             Debug.WriteLine("Table " + typeof(T).Name + " dropped");
             await Database.CreateTableAsync<T>();
         }
+
+        public async Task<int> ToggleItemAsync(T item)
+        {
+            await Init();
+
+            ((IModel)item).Active = !((IModel)item).Active;
+
+            return await Database.UpdateAsync(item);
+        }
     }
 }

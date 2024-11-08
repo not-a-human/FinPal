@@ -55,7 +55,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        cItems = await CDatabase.GetItemsAsync();
+        cItems = await CDatabase.GetActiveItemsAsync();
 
         if(cItems.Count != 0)
         {

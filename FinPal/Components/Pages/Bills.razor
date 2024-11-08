@@ -21,14 +21,19 @@
                             <h6 class="card-subtitle mb-2 text-body-secondary">@item.FName</h6>
                             <p class="card-text">
                                 <ul class="row bill-ul">
-                                    <li class="col-auto"><i class="bi bi-calendar-fill me-2"></i> @item.StartDate.ToString("yyyy-MMM") - @item.EndDate.ToString("yyyy-MMM")</li>
-                                    <li class="col-auto"><i class="bi bi-repeat me-2"></i> 
-                                        @BDatabase.intervalSting(item.Repeat)
-                                        @if(item.Repeat != "N")
-                                        {
-                                            <i class="bi bi-x mx-1"></i>@item.Period
-                                        }
+                                    @if (!item.Continuous)
+                                    {
+                                        <li class="col-auto"><i class="bi bi-calendar-fill me-2"></i> @item.StartDate.ToString("yyyy-MMM") - @item.EndDate.ToString("yyyy-MMM")</li>
+                                        <li class="col-auto"><i class="bi bi-repeat me-2"></i> 
+                                            @BDatabase.intervalSting(item.Repeat)
+                                            @if(item.Repeat != "N")
+                                            {
+                                                <i class="bi bi-x mx-1"></i>@item.Period
+                                            }
                                         </li>
+                                    }else{
+                                        <li><i class="bi bi-repeat me-2"></i> Continuous Billing</li>
+                                    }
                                 </ul>
                             </p>
                         </div>

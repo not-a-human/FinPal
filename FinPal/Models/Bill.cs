@@ -16,8 +16,9 @@ namespace FinPal.Models
         public string CategoryCode { get; set; }
         public int FinanceCode { get; set; }
         public string ItemName { get; set; }
-        public string Repeat { get; set; }
+        public string Repeat { get; set; } = "M";
         public int Period { get; set; }
+        public bool Continuous { get; set; } = false;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal Total { get; set; }

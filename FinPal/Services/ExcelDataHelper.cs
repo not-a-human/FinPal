@@ -31,7 +31,7 @@ namespace FinPal.Services
             {
                 // Worksheet for Bill
                 var billSheet = workbook.Worksheets.Add("Bills");
-                var billHeaders = new[] { "ID", "Category ID", "Finance ID", "Item Name", "Amount Due", "Repeat", "Period",
+                var billHeaders = new[] { "ID", "Category ID", "Finance ID", "Item Name", "Amount Due", "Continuous","Period",
                                   "Start Date", "End Date", "Total", "Interest Rate", "Admin Fee", "Note", "Active", 
                                     "", "", "Category Name", "Finance Name"
                                    };
@@ -49,10 +49,10 @@ namespace FinPal.Services
                     billSheet.Cell(billRow, 3).Value = bill.FinanceCode;
                     billSheet.Cell(billRow, 4).Value = bill.ItemName;
                     billSheet.Cell(billRow, 5).Value = bill.AmountDue;
-                    billSheet.Cell(billRow, 6).Value = bill.Repeat;
+                    billSheet.Cell(billRow, 6).Value = bill.Continuous;
                     billSheet.Cell(billRow, 7).Value = bill.Period;
-                    billSheet.Cell(billRow, 8).Value = bill.StartDate;
-                    billSheet.Cell(billRow, 9).Value = bill.EndDate;
+                    billSheet.Cell(billRow, 8).Value = bill.StartDate.ToString("dd-MMM-yyyy");
+                    billSheet.Cell(billRow, 9).Value = bill.EndDate.ToString("dd-MMM-yyyy");
                     billSheet.Cell(billRow, 10).Value = bill.Total;
                     billSheet.Cell(billRow, 11).Value = bill.InterestRate;
                     billSheet.Cell(billRow, 12).Value = bill.AdminFee;
@@ -60,7 +60,6 @@ namespace FinPal.Services
                     billSheet.Cell(billRow, 14).Value = bill.Active;
                     billSheet.Cell(billRow, 17).FormulaA1 = $"=INDEX(Categories!B: B, MATCH(B"+billRow+", Categories!A: A, 0))";
                     billSheet.Cell(billRow, 18).FormulaA1 = $"=INDEX(Finances!C: C, MATCH(C"+billRow+", Finances!A: A, 0))";
-
 
                     billRow++;
                 }
@@ -106,7 +105,7 @@ namespace FinPal.Services
                     financeSheet.Cell(financeRow, 2).Value = finance.CategoryId;
                     financeSheet.Cell(financeRow, 3).Value = finance.Name;
                     financeSheet.Cell(financeRow, 4).Value = finance.Note;
-                    financeSheet.Cell(financeRow, 5).Value = finance.PayDate;
+                    financeSheet.Cell(financeRow, 5).Value = finance.PayDate.ToString("dd-MMM-yyyy");
                     financeSheet.Cell(financeRow, 6).Value = finance.Reminder;
                     financeSheet.Cell(financeRow, 7).Value = finance.Active;
 
@@ -172,7 +171,7 @@ namespace FinPal.Services
             {
                 // Worksheet for Bill
                 var billSheet = workbook.Worksheets.Add("Bills");
-                var billHeaders = new[] { "Category", "Finance", "Item Name", "Monthly Payment", "Repeat", "Period",
+                var billHeaders = new[] { "Category", "Finance", "Item Name", "Monthly Payment", "Period",
                                   "Start Date", "End Date", "Total", "Interest Rate", "Admin Fee", "Note", "Active"
                                    };
 
@@ -189,15 +188,14 @@ namespace FinPal.Services
                     billSheet.Cell(billRow, 2).Value = bill.FName;
                     billSheet.Cell(billRow, 3).Value = bill.ItemName;
                     billSheet.Cell(billRow, 4).Value = bill.AmountDue;
-                    billSheet.Cell(billRow, 5).Value = bill.Repeat;
-                    billSheet.Cell(billRow, 6).Value = bill.Period;
-                    billSheet.Cell(billRow, 7).Value = bill.StartDate;
-                    billSheet.Cell(billRow, 8).Value = bill.EndDate;
-                    billSheet.Cell(billRow, 9).Value = bill.Total;
-                    billSheet.Cell(billRow, 10).Value = bill.InterestRate;
-                    billSheet.Cell(billRow, 11).Value = bill.AdminFee;
-                    billSheet.Cell(billRow, 12).Value = bill.Note;
-                    billSheet.Cell(billRow, 13).Value = bill.Active;
+                    billSheet.Cell(billRow, 5).Value = bill.Period;
+                    billSheet.Cell(billRow, 6).Value = bill.StartDate;
+                    billSheet.Cell(billRow, 7).Value = bill.EndDate;
+                    billSheet.Cell(billRow, 8).Value = bill.Total;
+                    billSheet.Cell(billRow, 9).Value = bill.InterestRate;
+                    billSheet.Cell(billRow, 10).Value = bill.AdminFee;
+                    billSheet.Cell(billRow, 11).Value = bill.Note;
+                    billSheet.Cell(billRow, 12).Value = bill.Active;
 
                     billRow++;
                 }
@@ -296,7 +294,7 @@ namespace FinPal.Services
                         FinanceCode = row.Cell(3).IsEmpty() ? 1 : row.Cell(3).GetValue<int>(),
                         ItemName = row.Cell(4).GetString(),
                         AmountDue = row.Cell(5).GetValue<decimal>(),
-                        Repeat = row.Cell(6).IsEmpty() ? "N" : row.Cell(6).GetString(),
+                        Continuous = row.Cell(6).IsEmpty() ? false : row.Cell(6).GetValue<bool>(),
                         Period = row.Cell(7).IsEmpty() ? 0 : row.Cell(7).GetValue<int>(),
                         StartDate = ParseDate(row.Cell(8).GetString()),
                         EndDate = ParseDate(row.Cell(9).GetString()),
@@ -393,7 +391,7 @@ namespace FinPal.Services
         // Helper method to parse the date string with a specified format
         private DateTime ParseDate(string dateStr)
         {
-            string[] dateFormats = { "MM/dd/yyyy", "MM/dd/yyyy HH:mm:ss", "M/d/yyyy h:mm:ss tt" };
+            string[] dateFormats = { "dd-MMM-yyyy" };
             // Attempt to parse the date in the specified format
             DateTime parsedDate;
             if (DateTime.TryParseExact(dateStr, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
