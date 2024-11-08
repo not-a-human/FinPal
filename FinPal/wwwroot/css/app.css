@@ -70,15 +70,15 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--primary-color) !important;
 }
 
-text-success {
+.text-success {
     color: var(--success-color) !important;
 }
 
-bg-info {
+.bg-info {
     background-color: var(--success-info) !important;
 }
 
-bg-warning {
+.bg-warning {
     background-color: var(--warning-color) !important;
 }
 
@@ -86,15 +86,19 @@ bg-warning {
     background-color: var(--primary-color) !important;
 }
 
-bg-success {
+.bg-success {
     background-color: var(--success-color) !important;
 }
 
-text-info {
+.bg-none {
+    background: none;
+}
+
+.text-info {
     color: var(--success-info) !important;
 }
 
-text-warning {
+.text-warning {
     color: var(--warning-color) !important;
 }
 
