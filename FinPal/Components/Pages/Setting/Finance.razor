@@ -72,33 +72,57 @@
     </div>
     
     
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end my-5">
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end my-4">
         <button type="button" @onclick="createFinance" class="btn btn-primary">Submit</button>
         <button type="button" @onclick="cancelFinance" class="btn btn-primary">Cancel</button>
     </div>
 </form>
+
+<hr class="m-4" />
+
 <div>
-    @foreach (var finance in financeList)
+    <div class="input-group my-4">
+        <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
+        <select name="selectedCategory" class="form-select" @bind-value="selectedCategory" @onchange="LoadFinance" @bind-value:event="oninput">
+            <option value="0">Please select a category.</option>
+            @foreach (var item in categoryList)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+    </div>
+    @foreach (var item in fListwithC)
     {
-        <div class="card mb-2">
-            <div class="card-header">
-                @finance.Name
+        <div class="card mb-2 cursor-pointer" @onclick="() => updateFinance(item)">
+            <div class="card-header d-flex justify-content-between gap-1">
+                <span class="my-auto">@item.Name</span>
+                <span>
+                    @if (item.Reminder)
+                    {
+                        <i class="bi bi-bell-fill text-primary h5"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-bell-slash-fill text-danger h5"></i>
+                    }
+                    </span>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-10">
-                        <p class="card-text">
-                            <ul class="list-unstyled">
-                                <li class="mb-2"><i class="bi bi-calendar-event"></i> @finance.PayDate</li>
-                                <li class="mb-2"><i class="bi bi-bell"></i> @finance.Reminder</li>
-                                <li class="mb-2"><i class="bi bi-toggles"></i> @finance.Active</li>
-                                <li class="mb-2"><i class="bi bi-card-text"></i> @finance.Note</li>
+                <div class="d-flex justify-content-between gap-1">
+                    <div class=" d-flex">
+                        <p class="card-text align-self-center">
+                            <ul class="list-unstyled mb-0">
+                                <li class="@(string.IsNullOrEmpty(item.Note) ? "" : "mb-2")"><i class="bi bi-calendar-event"></i> @item.PayDate.ToString("dd-MMM")</li>
+                                @if (!string.IsNullOrEmpty(item.Note)) {
+                                    <li><i class="bi bi-card-text"></i> @item.Note</li>
+                                }
                             </ul>
                         </p>
                     </div>
-                    <div class="col-md-2 d-flex justify-content-end align-items-end">
-                        <a @onclick="() => updateFinance(finance.Name,finance.Note,finance.Id,finance.CategoryId)" class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
-                        <a @onclick="() => deleteFinance(finance)" class="btn btn-danger disabled"><i class="bi bi-trash-fill"></i></a>
+                    <div class="d-flex">
+                        <div class="btn btn-outline-@(item.Active ? "primary" : "danger") align-self-center border-0" @onclick="() => activeToggle(item)">
+                            <i class="bi bi-toggle-@(item.Active ? "on" : "off") h2"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -109,18 +133,20 @@
 @code {
 
     // 0 = none, 1 = not valid, 2 valid
-    private int isName = 0, isCategory = 0;
+    private int isName = 0, isCategory = 0, selectedCategory;
 
     public int id = 0;
     private FormModel formModel = new FormModel();
     private List<FinanceName> financeList = new List<FinanceName>();
+    private List<FinanceName> fListwithC = new List<FinanceName>();
     private List<FinPal.Models.Category> categoryList = new List<FinPal.Models.Category>();
     private ElementReference firstInput;
 
     protected override async Task OnInitializedAsync()
     {
         financeList = await FDatabase.GetItemsAsync();
-        categoryList = await CDatabase.GetItemsAsync();
+        categoryList = await CDatabase.GetActiveItemsAsync();
+        LoadFinance();
     }
 
     private async Task createFinance()
@@ -143,31 +169,39 @@
 
             financeList = await FDatabase.GetItemsAsync();
 
-            await JS.InvokeVoidAsync("showToast", "Save", "Record saved successfully.");
+            LoadFinance();
 
+            await JS.InvokeVoidAsync("showToast", "Save", "Record saved successfully.");
 
             id = 0; formModel.name = ""; formModel.note = ""; formModel.category = 0;
         }
-        
+
         await firstInput.FocusAsync();
-        
+
     }
 
-    private async Task deleteFinance(FinanceName finance)
+    private void LoadFinance()
     {
-        await FDatabase.DeleteItemAsync(finance);
-        financeList = await FDatabase.GetItemsAsync();
+        if(selectedCategory != 0)
+            fListwithC = financeList.Where(i => i.CategoryId == selectedCategory).ToList();
     }
 
-    private async void updateFinance(string uName, string uNote, int uId, int categoryId)
+    private async void activeToggle(Models.FinanceName item)
     {
-        id = uId;
-        formModel.category = categoryId;
-        formModel.name = uName;
-        formModel.note = uNote;
-        formModel.payDate = DateTime.Today;
-        formModel.reminder = false;
-        formModel.active = true;
+        await FDatabase.ToggleItemAsync(item);
+
+        LoadFinance();
+    }
+
+    private async void updateFinance(Models.FinanceName item)
+    {
+        id = item.Id;
+        formModel.category = item.CategoryId;
+        formModel.name = item.Name;
+        formModel.note = item.Note;
+        formModel.payDate = item.PayDate;
+        formModel.reminder = item.Reminder;
+        formModel.active = item.Active;
         await firstInput.FocusAsync();
     }
 

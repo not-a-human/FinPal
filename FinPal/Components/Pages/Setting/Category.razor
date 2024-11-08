@@ -38,26 +38,24 @@
     </div>
 </form>
 <div>
-    @foreach (var category in categoryList)
+    @foreach (var item in categoryList)
     {
-        <div class="card mb-2">
+        <div class="card mb-2 cursor-pointer" @onclick="() => updateCategory(item)">
             <div class="card-header">
-                @category.Name
+                @item.Name
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-10">
-                        <p class="card-text">
-                            <ul class="list-unstyled">
-                                <li class="mb-2"><i class="bi bi-toggles"></i> @category.Active</li>
-                                <li class="mb-2"><i class="bi bi-card-text"></i> @category.Note</li>
+                <div class="d-flex justify-content-between gap-1">
+                    <div class="d-flex">
+                        <p class="card-text align-self-center">
+                            <ul class="list-unstyled mb-0">
+                                <li><i class="bi bi-card-text"></i> @item.Note</li>
                             </ul>
                         </p>
                     </div>
-                    <div class="col-md-2 d-flex justify-content-end align-items-end">
-                        <div class="btn-group">
-                            <a @onclick="() => updateCategory(category.Name,category.Note,category.Id,category.Active)" class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
-                            <a @onclick="() => deleteCategory(category)" class="btn btn-danger disabled"><i class="bi bi-trash-fill"></i></a>
+                    <div class="d-flex">
+                        <div class="btn btn-outline-@(item.Active ? "primary" : "danger") align-self-center border-0" @onclick="() => activeToggle(item)">
+                            <i class="bi bi-toggle-@(item.Active ? "on" : "off") h2"></i>
                         </div>
                     </div>
                 </div>
@@ -109,18 +107,18 @@
         
     }
 
-    private async Task deleteCategory(FinPal.Models.Category category)
+    private async void activeToggle(Models.Category item)
     {
-        await CDatabase.DeleteItemAsync(category);
-        categoryList = await CDatabase.GetItemsAsync();
+        await CDatabase.ToggleItemAsync(item);
+       
     }
 
-    private async void updateCategory(string uName, string uNote, int uId, bool uActive)
+    private async void updateCategory(Models.Category item)
     {
-        id = uId;
-        formModel.name = uName;
-        formModel.note = uNote;
-        formModel.active = uActive;
+        id = item.Id;
+        formModel.name = item.Name;
+        formModel.note = item.Note;
+        formModel.active = item.Active;
         await firstInput.FocusAsync();
     }
 
