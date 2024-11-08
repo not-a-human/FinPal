@@ -91,7 +91,7 @@ namespace FinPal.Data
             if(salaries.Count != 0)
                 salary = salaries.FirstOrDefault().Amount;
 
-            var categories = await Database.Table<Category>().ToListAsync();
+            var categories = await Database.Table<Category>().Where(i => i.Active).ToListAsync();
 
             var fund = categories.Select(c => new AllocatedFunds
             {
