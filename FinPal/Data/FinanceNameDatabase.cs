@@ -9,14 +9,6 @@ namespace FinPal.Data
 {
     public class FinanceNameDatabase : BaseDatabase<FinanceName>
     {
-
-        private readonly CategoryDatabase cDatabase;
-
-        public FinanceNameDatabase(CategoryDatabase categoryDatabase)
-        {
-            cDatabase = categoryDatabase;
-        }
-
         // Check if data exists and insert default data
         public async Task SeedDataAsync()
         {
@@ -27,14 +19,11 @@ namespace FinPal.Data
                 return; // If not empty, do not seed
             }
 
-            Category cItem =  await cDatabase.GetItemAsync("Financial Services/Loans");
-            Category cItem2 =  await cDatabase.GetItemAsync("Bills & Utilities");
-
             var financename = new List<FinanceName>
             {
-                new FinanceName {Name = "Maybank Credit Card", CategoryId = cItem?.Id?? 1 },
-                new FinanceName {Name = "ShopeePayLater", CategoryId = cItem?.Id?? 1 },
-                new FinanceName {Name = "Maxis", CategoryId = cItem?.Id?? 1}
+                new FinanceName {Name = "Credit Card", CategoryId = 3 },
+                new FinanceName {Name = "ShopeePayLater", CategoryId = 2 },
+                new FinanceName {Name = "Phone Bill", CategoryId = 1 }
             };
 
             foreach (var item in financename)
