@@ -9,7 +9,10 @@
     @if(!bItems.Any())
     {
         <div class="d-flex justify-content-center align-content-center">
-            <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+            @if (!NoBill)
+            {
+                <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+            }
         </div>
     }
     else
@@ -66,6 +69,7 @@
     [Parameter]
     public bool CreateSuccess { get; set; } = false;
 
+    private bool NoBill = false;
     private List<FinPal.Models.BillwithFC> bItems = new List<FinPal.Models.BillwithFC>();
 
     protected override async Task OnInitializedAsync()
@@ -81,6 +85,7 @@
     private async Task LoadBills(){
         System.Threading.Thread.Sleep(1000);
         bItems = await BDatabase.GetItemsAsyncWithFC();
+        NoBill = true;
     }
 
     private void UpdateBill(int id)
