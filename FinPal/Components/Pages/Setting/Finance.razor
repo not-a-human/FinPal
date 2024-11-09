@@ -3,121 +3,131 @@
 @inject CategoryDatabase CDatabase
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
-<h3 class="mb-5" >Settings</h3>
-<form>
 
-    <div class="mb-3 position-relative">
-        <label for="category" class="form-label col-md-2">Category</label>
-        <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
-            <select @ref="firstInput" class="form-select @(UIHelper.GetFormValidClass(isCategory,0))" id="category" @bind-value="formModel.category" @bind-value:event="oninput">
-                <option value="0">Please select a category.</option>
-                @foreach (var item in categoryList)
-                {
-                    <option value="@item.Id">@item.Name</option>
-                }
-            </select>
+<SectionContent SectionName="page-title">Settings</SectionContent>
+<SectionContent SectionName="page-actions">
+    <div class="d-flex h5 m-0"><i class="align-self-center bi bi-@(CreateForm ? "x": "plus")-lg cursor-pointer" @onclick="ToggleForm"></i></div>
+</SectionContent>
+<SectionContent SectionName="page-actions-1">
+    <div @onclick='() => Navigation.NavigateTo("/settings")' class="h6 d-flex m-0"><span class="align-self-center cursor-pointer">Back</span></div>
+</SectionContent>
+
+<div class="top-panel-footer @(CreateForm ? "d-none" : "")">
+    <div class="row text-center">
+        <div class="col-3">
+            <i class="bi bi-arrow-left-circle-fill h6 cursor-pointer" @onclick="PreviousCategory"></i>
         </div>
-        <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isCategory,1))">
-            Please select a category. If there is none, please create one here.
+        <div class="col-6">@selectedCategoryStr</div>
+        <div class="col-3">
+            <i class="bi bi-arrow-right-circle-fill h6 cursor-pointer" @onclick="NextCategory"></i>
         </div>
     </div>
+</div>
 
-    <div class="row mb-3">
-        <div class="mb-3 col-md-6 position-relative">
-            <label for="name" class="form-label">Finance Name</label>
+<div class="@(CreateForm ? "" : "mt-5 mt-xl-0")">
+    <form class="@(CreateForm ? "" : "d-none")">
+        <div class="mb-3 position-relative">
+            <label for="category" class="form-label col-md-2">Category</label>
             <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-bank2"></i></span>
-                <input type="text" class="form-control @(UIHelper.GetFormValidClass(isName,0))" required id="name" @bind="formModel.name" placeholder="Enter Finance Name" />
+                <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
+                <select @ref="firstInput" class="form-select @(UIHelper.GetFormValidClass(isCategory,0))" id="category" @bind-value="formModel.category" @bind-value:event="oninput">
+                    <option value="0">Please select a category.</option>
+                    @foreach (var item in categoryList)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                </select>
             </div>
-            <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isName,1))">
-                Please enter a name.
+            <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isCategory,1))">
+                Please select a category. If there is none, please create one here.
             </div>
         </div>
-        <div class="col-md-6">
-            <label for="payDate" class="form-label">Payment Date</label>
+
+        <div class="row mb-3">
+            <div class="mb-3 col-md-6 position-relative">
+                <label for="name" class="form-label">Finance Name</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-bank2"></i></span>
+                    <input type="text" class="form-control @(UIHelper.GetFormValidClass(isName,0))" required id="name" @bind="formModel.name" placeholder="Enter Finance Name" />
+                </div>
+                <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isName,1))">
+                    Please enter a name.
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="payDate" class="form-label">Payment Date</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                    <input type="date" class="form-control" required id="payDate" @bind="formModel.payDate" placeholder="Enter Payment Date" />
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="note" class="form-label col-md-2">Note</label>
             <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
-                <input type="date" class="form-control" required id="payDate" @bind="formModel.payDate" placeholder="Enter Payment Date" />
+                <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                <textarea class="form-control" id="note" @bind="formModel.note" placeholder="Enter Note"></textarea>
             </div>
         </div>
-    </div>
 
-    <div class="mb-3">
-        <label for="note" class="form-label col-md-2">Note</label>
-        <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-            <textarea class="form-control" id="note" @bind="formModel.note" placeholder="Enter Note"></textarea>
-        </div>
-    </div>
-
-    <div class="row mb-3 mt-3">
-        <div class="mb-3 col-md-6">
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="reminder" @bind="formModel.reminder" />
-                <label class="form-check-label" for="reminder">
-                    <i class="bi bi-bell"></i> Reminder
-                </label>
-            </div>
-
-        </div>
-        <div class="col-md-6">
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="active" @bind="formModel.active" />
-                <label class="form-check-label" for="active">
-                    <i class="bi bi-toggles"></i> Active
+        <div class="row mb-3 mt-3">
+            <div class="mb-3 col-md-6">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="reminder" @bind="formModel.reminder" />
+                    <label class="form-check-label" for="reminder">
+                        <i class="bi bi-bell"></i> Reminder
                     </label>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="active" @bind="formModel.active" />
+                    <label class="form-check-label" for="active">
+                        <i class="bi bi-toggles"></i> Active
+                    </label>
+                </div>
             </div>
         </div>
-    </div>
-    
-    
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end my-4">
-        <button type="button" @onclick="createFinance" class="btn btn-primary">Submit</button>
-        <button type="button" @onclick="cancelFinance" class="btn btn-primary">Cancel</button>
-    </div>
-</form>
 
-<hr class="m-4" />
 
-<div>
-    <div class="input-group my-4">
-        <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
-        <select name="selectedCategory" class="form-select" @bind-value="selectedCategory" @onchange="LoadFinance" @bind-value:event="oninput">
-            <option value="0">Please select a category.</option>
-            @foreach (var item in categoryList)
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end my-4">
+            <button type="button" @onclick="createFinance" class="btn btn-primary">Submit</button>
+            <button type="button" @onclick="cancelFinance" class="btn btn-primary">Cancel</button>
+        </div>
+    </form>
+
+    <div class="@(CreateForm ? "d-none" : "")">
+        @if (!categoryList.Any())
+        {
+            <p class="m-4">
+                It looks like no categories have been set up yet. You can create a new category <span class="text-primary cursor-pointer" @onclick='() => Navigation.NavigateTo("/settings/category")'><strong><u>here</u></strong></span> to get started.
+            </p>
+        }
+        <div class="list-group list-group-flush">
+            @foreach (var item in fListwithC)
             {
-                <option value="@item.Id">@item.Name</option>
-            }
-        </select>
-    </div>
-    @foreach (var item in fListwithC)
-    {
-        <div class="card mb-2 cursor-pointer" @onclick="() => updateFinance(item)">
-            <div class="card-header d-flex justify-content-between gap-1">
-                <span class="my-auto">@item.Name</span>
-                <span>
-                    @if (item.Reminder)
-                    {
-                        <i class="bi bi-bell-fill text-primary h5"></i>
-                    }
-                    else
-                    {
-                        <i class="bi bi-bell-slash-fill text-danger h5"></i>
-                    }
-                    </span>
-            </div>
-            <div class="card-body">
-                <div class="d-flex justify-content-between gap-1">
-                    <div class=" d-flex">
-                        <p class="card-text align-self-center">
-                            <ul class="list-unstyled mb-0">
-                                <li class="@(string.IsNullOrEmpty(item.Note) ? "" : "mb-2")"><i class="bi bi-calendar-event"></i> @item.PayDate.ToString("dd-MMM")</li>
-                                @if (!string.IsNullOrEmpty(item.Note)) {
-                                    <li><i class="bi bi-card-text"></i> @item.Note</li>
-                                }
-                            </ul>
-                        </p>
+                <div class="list-group-item d-flex justify-content-between">
+                    <div class="row">
+                        <h3 class="mx-2 mb-0 align-self-center">
+                            @if (item.Reminder)
+                            {
+                                <i class="bi bi-bell-fill text-primary"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-bell-slash-fill text-danger"></i>
+                            }
+                        </h3>
+                    </div>
+                    <div class="cursor-pointer flex-fill row" @onclick="() => updateFinance(item)">
+                        <strong class="align-self-center col-12">@item.Name</strong>
+                        <span class="text-muted"><i class="bi bi-calendar-event"></i> @item.PayDate.ToString("dd-MMM")</span>
+                        @if (!string.IsNullOrEmpty(item.Note))
+                        {
+                            <p class="text-muted mb-0"><i class="bi bi-card-text"></i> @item.Note</p>
+                        }
                     </div>
                     <div class="d-flex">
                         <div class="btn btn-outline-@(item.Active ? "primary" : "danger") align-self-center border-0" @onclick="() => activeToggle(item)">
@@ -125,17 +135,17 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
-    }
+    </div>
 </div>
 
 @code {
 
     // 0 = none, 1 = not valid, 2 valid
-    private int isName = 0, isCategory = 0, selectedCategory;
-
-    public int id = 0;
+    private int isName = 0, isCategory = 0, id = 0, selectedCategory = 1, CategoryCount;
+    private bool CreateForm = false;
+    public string selectedCategoryStr = "";
     private FormModel formModel = new FormModel();
     private List<FinanceName> financeList = new List<FinanceName>();
     private List<FinanceName> fListwithC = new List<FinanceName>();
@@ -146,7 +156,10 @@
     {
         financeList = await FDatabase.GetItemsAsync();
         categoryList = await CDatabase.GetActiveItemsAsync();
-        LoadFinance();
+        CategoryCount = categoryList.Count();
+        
+        if(categoryList.Any())
+            LoadFinance();
     }
 
     private async Task createFinance()
@@ -169,11 +182,15 @@
 
             financeList = await FDatabase.GetItemsAsync();
 
+            selectedCategory = formModel.category;
+
             LoadFinance();
 
             await JS.InvokeVoidAsync("showToast", "Save", "Record saved successfully.");
 
             id = 0; formModel.name = ""; formModel.note = ""; formModel.category = 0;
+            isName = 0; isCategory = 0;
+            CreateForm = false;
         }
 
         await firstInput.FocusAsync();
@@ -182,8 +199,8 @@
 
     private void LoadFinance()
     {
-        if(selectedCategory != 0)
-            fListwithC = financeList.Where(i => i.CategoryId == selectedCategory).ToList();
+        fListwithC = financeList.Where(i => i.CategoryId == selectedCategory).ToList();
+        selectedCategoryStr = UIHelper.TruncateString(categoryList.FirstOrDefault(i => i.Id == selectedCategory).Name);
     }
 
     private async void activeToggle(Models.FinanceName item)
@@ -195,6 +212,7 @@
 
     private async void updateFinance(Models.FinanceName item)
     {
+        CreateForm = true;
         id = item.Id;
         formModel.category = item.CategoryId;
         formModel.name = item.Name;
@@ -207,13 +225,31 @@
 
     private async void cancelFinance()
     {
-        if (string.IsNullOrEmpty(formModel.name) && formModel.category == 0)
-        {
-            Navigation.NavigateTo("/settings");
-        }
-
+        CreateForm = false;     
         id = 0; formModel.name = ""; formModel.note = ""; formModel.category = 0;
-        await firstInput.FocusAsync();
+    }
+
+    private void NextCategory()
+    {
+        if(CategoryCount > selectedCategory)
+        {
+            selectedCategory++;
+            LoadFinance();
+        }
+    }
+
+    private void PreviousCategory()
+    {
+        if (selectedCategory <= CategoryCount && selectedCategory != 1)
+        {
+            selectedCategory--;
+            LoadFinance();
+        }
+    }
+
+    private void ToggleForm()
+    {
+        CreateForm = !CreateForm;
     }
 
     private class FormModel()

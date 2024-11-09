@@ -3,13 +3,16 @@
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 
-<h3 class="mb-5">Plan</h3>
+<SectionContent SectionName="page-title">Plan</SectionContent>
+<SectionContent SectionName="page-actions">
+    <i class="bi bi-plus-lg h5 cursor-pointer m-0" @onclick="goToCategory"></i>
+</SectionContent>
 
 <div id="category-not-0" class="d-none">
     <div class="row justify-content-center">
         <div class="col-12 mx-auto">
             <div class="my-4">
-                <div class="list-group mb-5 shadow">
+                <div class="list-group list-group-flush">
                     @foreach (var item in cItems)
                     {
                         <div class="list-group-item list-group-item-action">
@@ -18,11 +21,8 @@
                                     <strong class="mb-0">@item.Name</strong>
                                     <p class="text-muted mb-0">@item.Note</p>
                                 </div>
-                                <div class="col-4">
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" placeholder="Enter Percentage" @bind-value="item.Percentage" @bind-value:event="oninput" @onchange="CalculateTotalPercentage" min="0" max="100" />
-                                        <span class="input-group-text"><i class="bi bi-percent"></i></span>
-                                    </div>
+                                <div class="col-4 row">
+                                    <input type="number" class="form-control align-self-center" placeholder="Enter Percentage" @bind-value="item.Percentage" @bind-value:event="oninput" @onchange="CalculateTotalPercentage" min="0" max="100" />
                                 </div>
                             </div>
                         </div>
@@ -38,8 +38,8 @@
         </div>
     </div>
 
-    <div class="container text-center">
-        <button class="btn btn-primary px-5" @onclick="UpdateItems">Update</button>
+    <div class="btn-float btn btn-primary" @onclick="UpdateItems">
+        <i class="bi bi-check-lg"></i>
     </div>
 </div>
 
@@ -48,6 +48,8 @@
         It looks like no categories have been set up yet. You can create a new category <span class="text-primary cursor-pointer" @onclick="goToCategory"><strong><u>here</u></strong></span> to get started.
     </p>
 </div>
+
+
 
 @code {
     private List<FinPal.Models.Category> cItems = new List<FinPal.Models.Category>();
@@ -66,8 +68,6 @@
         {
             await JS.InvokeVoidAsync("hideOrShowElement", "category-is-0");
         }
-
-
     }
 
     private async Task UpdateItems()

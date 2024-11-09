@@ -2,8 +2,16 @@
 @inject CategoryDatabase CDatabase
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
-<h3 class="mb-5">Settings</h3>
-<form>
+
+<SectionContent SectionName="page-title">Settings</SectionContent>
+<SectionContent SectionName="page-actions">
+    <div class="d-flex h5 m-0"><i class="align-self-center bi bi-@(CreateForm ? "x": "plus")-lg cursor-pointer" @onclick="ToggleForm"></i></div>
+</SectionContent>
+<SectionContent SectionName="page-actions-1">
+    <div @onclick='() => Navigation.NavigateTo("/settings")' class="h6 d-flex m-0"><span class="align-self-center cursor-pointer">Back</span></div>
+</SectionContent>
+
+<form class="@(CreateForm ? "" : "d-none")">
     <div class="mb-3 position-relative">
         <label for="name" class="form-label">Category Name</label>
         <div class="input-group">
@@ -14,7 +22,7 @@
             Please enter a name.
         </div>
     </div>
-       
+
     <div class="mb-3">
         <label for="note" class="form-label col-md-2">Note</label>
         <div class="input-group">
@@ -37,31 +45,27 @@
         <button type="button" @onclick="cancelCategory" class="btn btn-primary">Cancel</button>
     </div>
 </form>
-<div>
-    @foreach (var item in categoryList)
-    {
-        <div class="card mb-2 cursor-pointer" @onclick="() => updateCategory(item)">
-            <div class="card-header">
-                @item.Name
-            </div>
-            <div class="card-body">
-                <div class="d-flex justify-content-between gap-1">
-                    <div class="d-flex">
-                        <p class="card-text align-self-center">
-                            <ul class="list-unstyled mb-0">
-                                <li><i class="bi bi-card-text"></i> @item.Note</li>
-                            </ul>
-                        </p>
-                    </div>
-                    <div class="d-flex">
-                        <div class="btn btn-outline-@(item.Active ? "primary" : "danger") align-self-center border-0" @onclick="() => activeToggle(item)">
-                            <i class="bi bi-toggle-@(item.Active ? "on" : "off") h2"></i>
-                        </div>
+
+<div class="@(!CreateForm ? "" : "d-none")">
+    <div class="list-group list-group-flush">
+        @foreach (var item in categoryList)
+        {
+            <div class="list-group-item d-flex justify-content-between">
+                <div class="cursor-pointer flex-fill row" @onclick="() => updateCategory(item)">
+                    <strong class="align-self-center col-12">@item.Name</strong>
+                    @if (!string.IsNullOrEmpty(item.Note))
+                    {
+                        <p class="text-muted mb-0"><i class="bi bi-card-text"></i> <span>@item.Note</span></p>
+                    }
+                </div>
+                <div class="d-flex">
+                    <div class="btn btn-outline-@(item.Active ? "primary" : "danger") align-self-center border-0" @onclick="() => activeToggle(item)">
+                        <i class="bi bi-toggle-@(item.Active ? "on" : "off") h2"></i>
                     </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
 
 @code {
@@ -73,6 +77,8 @@
     private FormModel formModel = new FormModel();
     private List<FinPal.Models.Category> categoryList = new List<FinPal.Models.Category>();
     private ElementReference firstInput;
+
+    private bool CreateForm = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -102,19 +108,20 @@
             id = 0; formModel.name = ""; formModel.note = "";
 
         }
-        
+
         await firstInput.FocusAsync();
-        
+
     }
 
     private async void activeToggle(Models.Category item)
     {
         await CDatabase.ToggleItemAsync(item);
-       
+
     }
 
     private async void updateCategory(Models.Category item)
     {
+        CreateForm = true;
         id = item.Id;
         formModel.name = item.Name;
         formModel.note = item.Note;
@@ -124,13 +131,14 @@
 
     private async void cancelCategory()
     {
-        if (string.IsNullOrEmpty(formModel.name))
-        {
-            Navigation.NavigateTo("/settings");
-        }
+        ToggleForm();
 
         id = 0; formModel.name = ""; formModel.note = "";
-        await firstInput.FocusAsync();
+    }
+
+    private void ToggleForm()
+    {
+        CreateForm = !CreateForm;
     }
 
     private class FormModel()

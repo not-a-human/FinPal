@@ -3,70 +3,98 @@
 @inject NavigationManager Navigate
 @inject IJSRuntime JS
 
+<SectionContent SectionName="page-title">Bills</SectionContent>
 
-<div class="container">
-    <div class="row justify-content-center mb-3">
-        <div class="col-6"><h3 class="mb-5">Bills</h3></div>
-        <div class="col-6 text-end"><a href="bills/form" class="btn btn-primary ">New</a></div>
-    </div>
 
-    <div class="row justify-content-center">
-        @foreach (var item in bItems)
-        {
-            <div class="card my-2 col-xl-10 col-12 p-0 cursor-pointer" @onclick="() => UpdateBill(item.Id)">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-12 col-md-9">
-                            <h5 class="card-title">@item.ItemName</h5>
-                            <h6 class="card-subtitle mb-2 text-body-secondary">@item.FName</h6>
-                            <p class="card-text">
-                                <ul class="row bill-ul">
-                                    @if (!item.Continuous)
-                                    {
-                                        <li class="col-auto"><i class="bi bi-calendar-fill me-2"></i> @item.StartDate.ToString("yyyy-MMM") - @item.EndDate.ToString("yyyy-MMM")</li>
-                                        <li class="col-auto"><i class="bi bi-repeat me-2"></i> 
-                                            @BDatabase.intervalSting(item.Repeat)
-                                            @if(item.Repeat != "N")
-                                            {
-                                                <i class="bi bi-x mx-1"></i>@item.Period
-                                            }
-                                        </li>
-                                    }else{
-                                        <li><i class="bi bi-repeat me-2"></i> Continuous Billing</li>
-                                    }
-                                </ul>
-                            </p>
-                        </div>
-                        <div class="col-md-3 col-12 row align-items-center">
-                            <h1 class="col p-0 m-0 pt-md-0 pt-2 text-end">@item.AmountDue <i class="bi bi-currency-dollar text-gray-300"></i></h1>
+    @if(!bItems.Any())
+    {
+        <div class="d-flex justify-content-center align-content-center">
+            @if (!NoBill)
+            {
+                <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="row justify-content-center px-1">
+            @foreach (var item in bItems)
+            {
+                <div class="card my-2 col-xl-10 col-12 p-0 cursor-pointer" @onclick="() => UpdateBill(item.Id)">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-9">
+                                <h5 class="card-title">@item.ItemName</h5>
+                                <h6 class="card-subtitle mb-2 text-body-secondary">@item.FName</h6>
+                                <p class="card-text">
+                                    <ul class="row bill-ul">
+                                        @if (!item.Continuous)
+                                        {
+                                            <li class="col-auto"><i class="bi bi-calendar-fill me-2"></i> @item.StartDate.ToString("yyyy-MMM") - @item.EndDate.ToString("yyyy-MMM")</li>
+                                            <li class="col-auto">
+                                                <i class="bi bi-repeat me-2"></i>
+                                                @BDatabase.intervalSting(item.Repeat)
+                                                @if (item.Repeat != "N")
+                                                {
+                                                    <i class="bi bi-x mx-1"></i>
+
+                                                    @item.Period
+                                                }
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li><i class="bi bi-repeat me-2"></i> Continuous Billing</li>
+                                        }
+                                    </ul>
+                                </p>
+                            </div>
+                            <div class="col-md-3 col-12 row align-items-center">
+                                <h1 class="col p-0 m-0 pt-md-0 pt-2 text-end">@item.AmountDue <i class="bi bi-currency-dollar text-gray-300"></i></h1>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-        }
-    </div>
+            }
+        </div>
+    }
+
+
+<div class="btn-float btn btn-primary" @onclick="CreateBill">
+    <i class="bi bi-plus-lg"></i>
 </div>
 
 @code {
     [Parameter]
     public bool CreateSuccess { get; set; } = false;
 
+    private bool NoBill = false;
     private List<FinPal.Models.BillwithFC> bItems = new List<FinPal.Models.BillwithFC>();
 
     protected override async Task OnInitializedAsync()
     {
 
-        bItems = await BDatabase.GetItemsAsyncWithFC();
+        await Task.Run(LoadBills);
 
         if (CreateSuccess)
             await JS.InvokeVoidAsync("showToast", "Saved", "Bill data saved successfully.");
 
     }
 
+    private async Task LoadBills(){
+        System.Threading.Thread.Sleep(1000);
+        bItems = await BDatabase.GetItemsAsyncWithFC();
+        NoBill = true;
+    }
+
     private void UpdateBill(int id)
     {
         Navigate.NavigateTo("bills/form/" + id.ToString());
+    }
+
+    private void CreateBill(){
+        Navigate.NavigateTo("bills/form");
     }
 
 

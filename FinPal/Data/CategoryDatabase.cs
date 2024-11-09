@@ -21,13 +21,9 @@ namespace FinPal.Data
 
             var categories = new List<Category>
             {
-                new Category {Name = "Bills & Utilities", Note = "Telco bill, electric bills etc", Percentage = 5},
-                new Category {Name = "Financial Services/Loans", Note = "Credit Card, loans etc", Percentage = 30},
-                new Category {Name = "Investment", Note = "Saving for the future.", Percentage = 20},
-                new Category {Name = "Sinking Fund", Note = "For emergency, 1st layer.", Percentage = 5},
-                new Category {Name = "Emergency Fund", Note = "For emergency, 2nd layer.", Percentage = 10},
-                new Category {Name = "Personal", Note = "Eat, Fuel etc", Percentage = 20},
-                new Category {Name = "Household", Note = "Household funds.", Percentage = 10}
+                new Category {Id= 1, Name = "Needs", Note = "Bills, food, and transportation", Percentage = 50},
+                new Category {Id= 2, Name = "Wants", Note = "Dining out, shopping, and subscriptions", Percentage = 30},
+                new Category {Id= 3, Name = "Savings", Note = "Emergency savings, investments, or paying off debt", Percentage = 20}
             };
 
             foreach (var item in categories)

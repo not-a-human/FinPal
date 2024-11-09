@@ -15,7 +15,7 @@ namespace FinPal.Services
     {
 
         public static CategoryDatabase CDatabase { get; private set; } = new CategoryDatabase();
-        public static FinanceNameDatabase FDatabase { get; private set; } = new FinanceNameDatabase(CDatabase);
+        public static FinanceNameDatabase FDatabase { get; private set; } = new FinanceNameDatabase();
         public static SalaryDatabase SDatabase { get; private set; } = new SalaryDatabase();
         public static BillDatabase BDatabase { get; private set; } = new BillDatabase();
 

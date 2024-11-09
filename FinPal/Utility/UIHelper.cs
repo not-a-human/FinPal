@@ -53,5 +53,11 @@ namespace FinPal.Utility
             else
                 return 2;
         }
+
+        public static string TruncateString(string input, int max = 20)
+        {
+            return input.Length > max ? input.Substring(0, max) + "..." : input;
+        }
+
     }
 }

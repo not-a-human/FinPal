@@ -2,31 +2,32 @@
 @inject SalaryDatabase SDatabase
 @inject IJSRuntime JS
 
-<h3 class="mb-5">Salary</h3>
+<SectionContent SectionName="page-title">Salary</SectionContent>
+
+<div class="top-panel-footer">
+    <div class="row text-center">
+        <div class="col-3">
+            <i class="bi bi-arrow-left-circle-fill h6 cursor-pointer" @onclick="PreviousYear"></i>
+        </div>
+        <div class="col-6">@selectedYear</div>
+        <div class="col-3">
+            <i class="bi bi-arrow-right-circle-fill h6 cursor-pointer" @onclick="NextYear"></i>
+        </div>
+    </div>
+</div>
 
 <div class="row justify-content-center">
-    <div class="col-12 mx-auto">
-        <label for="selectedYear" class="form-label">Please select a year:</label>
-        <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-calendar-fill"></i></span>
-            <select name="selectedYear" class="form-select" @bind-value="selectedYear" @onchange="LoadSalaries" @bind-value:event="oninput">
-                @for (int year = DateTime.Now.Year - 5; year <= DateTime.Now.Year + 1; year++)
-                {
-                    <option value="@year">@year</option>
-                }
-            </select>
-        </div>
-        
+    <div class="col-12 mx-auto">     
         @if(sItems != null)
         {
             <div class="my-4">
-                <div class="list-group mb-5 shadow">
+                <div class="list-group list-group-flush">
                     @foreach (var item in sItems)
                     {
-                        <div class="list-group-item list-group-item-action">
+                        <div class="list-group-item">
                             <div class="row">
                                 <div class="col-6">
-                                    <strong class="mb-0">@GetMonthName(item.Month)-@item.Year</strong>
+                                    <strong class="mb-0">@GetMonthName(item.Month)</strong>
                                     <p class="text-muted mb-0"></p>
                                 </div>
                                 <div class="col-6">
@@ -44,7 +45,11 @@
     </div>
 </div>
 
-<div class="container text-center">
+<div class="btn-float btn btn-primary" @onclick="UpdateItems">
+    <i class="bi bi-check-lg"></i>
+</div>
+
+<div class="d-none 2container text-center">
     <button class="btn btn-primary px-5" @onclick="UpdateItems">Update</button>
 </div>
 
@@ -54,6 +59,19 @@
 
     protected override async Task OnInitializedAsync()
     {
+
+        await LoadSalaries();
+    }
+
+    private async Task PreviousYear()
+    {
+        selectedYear--;
+        await LoadSalaries();
+    }
+
+    private async Task NextYear()
+    {
+        selectedYear++;
         await LoadSalaries();
     }
 

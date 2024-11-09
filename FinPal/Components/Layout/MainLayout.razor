@@ -14,11 +14,13 @@
         </div>
     </header>
 
-
+    <div class="top-panel d-flex justify-content-between">
+        <SectionOutlet SectionName="page-actions-1" />
+        <h3 id="page-title"><SectionOutlet SectionName="page-title" /></h3>
+        <SectionOutlet SectionName="page-actions" />
+    </div>
 
     <main id="main">
-        
-
         <section class="inner-page">
             <div class="container">
                 @Body
@@ -28,7 +30,7 @@
 
 </div>
 
-    <div id="mainToastContainer" class="toast-container p-3 mt-3 top-0 start-50 translate-middle-x position-fixed"></div>
+    <div id="mainToastContainer" class="toast-container p-3 mt-3 start-50 translate-middle-x position-fixed"></div>
 
 @code {
     private string UiTheme { get; set; } = "";
