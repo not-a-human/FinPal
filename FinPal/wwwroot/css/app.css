@@ -294,7 +294,7 @@ i.cursor-pointer:hover {
 }
 
 /*--------------------------------------------------------------
-# Top Panel
+# Floating button
 --------------------------------------------------------------*/
 
 .btn-float {
@@ -693,6 +693,25 @@ section {
     .bill-ul li {
         margin: 0;
     }
+
+@media (max-width: 768px) {
+    .bill-price {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0.1rem 1rem;
+        width: fit-content;
+    }
+
+        .bill-price h1 {
+            font-size: large;
+        }
+
+    .bill-ul li {
+        font-size: small;
+    }
+}
 
 /*--------------------------------------------------------------
 # Blazor default

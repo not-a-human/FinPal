@@ -143,7 +143,7 @@
 @code {
 
     // 0 = none, 1 = not valid, 2 valid
-    private int isName = 0, isCategory = 0, id = 0, selectedCategory = 1, CategoryCount;
+    private int isName = 0, isCategory = 0, id = 0, selectedCategory, CategoryCount, categoryLastID, CategoryIndex = 0;
     private bool CreateForm = false;
     public string selectedCategoryStr = "";
     private FormModel formModel = new FormModel();
@@ -157,9 +157,13 @@
         financeList = await FDatabase.GetItemsAsync();
         categoryList = await CDatabase.GetActiveItemsAsync();
         CategoryCount = categoryList.Count();
-        
-        if(categoryList.Any())
+
+        if (categoryList.Any())
+        {
+            selectedCategory = categoryList.FirstOrDefault(i => i.Active).Id;
+            categoryLastID = categoryList.LastOrDefault(i => i.Active).Id;
             LoadFinance();
+        }
     }
 
     private async Task createFinance()
@@ -199,8 +203,11 @@
 
     private void LoadFinance()
     {
-        fListwithC = financeList.Where(i => i.CategoryId == selectedCategory).ToList();
-        selectedCategoryStr = UIHelper.TruncateString(categoryList.FirstOrDefault(i => i.Id == selectedCategory).Name);
+        if (categoryList.FirstOrDefault(i => i.Id == selectedCategory) != null)
+        {
+            fListwithC = financeList.Where(i => i.CategoryId == selectedCategory).ToList();
+            selectedCategoryStr = UIHelper.TruncateString(categoryList.FirstOrDefault(i => i.Id == selectedCategory).Name);
+        }
     }
 
     private async void activeToggle(Models.FinanceName item)
@@ -231,18 +238,20 @@
 
     private void NextCategory()
     {
-        if(CategoryCount > selectedCategory)
+        if(CategoryIndex < (CategoryCount-1))
         {
-            selectedCategory++;
+            CategoryIndex++;
+            selectedCategory = categoryList.Skip(CategoryIndex).FirstOrDefault(i => i.Active).Id;
             LoadFinance();
         }
     }
 
     private void PreviousCategory()
     {
-        if (selectedCategory <= CategoryCount && selectedCategory != 1)
+        if (CategoryIndex > 0)
         {
-            selectedCategory--;
+            CategoryIndex--;
+            selectedCategory = categoryList.Skip(CategoryIndex).FirstOrDefault(i => i.Active).Id;
             LoadFinance();
         }
     }

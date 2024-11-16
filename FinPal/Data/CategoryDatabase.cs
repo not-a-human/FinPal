@@ -58,7 +58,7 @@ namespace FinPal.Data
         public async Task<List<JSChartArray>> GetPlanChartAsync()
         {
             await Init();
-            var query = @"SELECT Id, Name, Percentage FROM Category";
+            var query = @"SELECT Id, Name, Percentage FROM Category WHERE Active";
 
             var categories = await Database.QueryAsync<Category>(query);
             
