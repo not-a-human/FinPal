@@ -23,6 +23,13 @@ function pieChart(id, legend, myArray, salary = 0) {
     var ctx = document.getElementById(id);
     const legendContainer = document.getElementById(legend);
 
+    // Create the table
+    const table = document.createElement('table');
+    table.classList.add('table', 'table-sm', 'align-self-center', 'mb-0');
+
+    // Create the table body
+    const tbody = document.createElement('tbody');
+
     var myPieChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -30,6 +37,8 @@ function pieChart(id, legend, myArray, salary = 0) {
             datasets: [{
                 data: [],
                 backgroundColor: [],
+                borderColor: 'rgba(0, 0, 0, 0)',
+                fill: true, // To show a filled area beneath the line
             }],
         },
         options: {
@@ -57,30 +66,54 @@ function pieChart(id, legend, myArray, salary = 0) {
         let randomColor = getRandomColor();
         const textNode = document.createTextNode(` ${element.name}`);
 
+        myPieChart.data.datasets[0].data.push(element.value);
+        myPieChart.data.datasets[0].backgroundColor.push(randomColor);
+
+        // Create a table row
+        const tr = document.createElement('tr');
+        tr.classList.add('border-0');
+
+        // Icon cell
+        const iconCell = document.createElement('td');
+        iconCell.classList.add('border-0');
+        const icon = document.createElement('i');
+        icon.classList.add('bi', 'bi-circle-fill'); // Bootstrap icon
+        icon.style.color = randomColor;
+        iconCell.appendChild(icon);
+        tr.appendChild(iconCell);
+
+        // Name cell
+        const nameCell = document.createElement('td');
+        nameCell.classList.add('text-left', 'border-0');
+        nameCell.textContent = element.name;
+        tr.appendChild(nameCell);
+
+        // Value cell
+        const valueCell = document.createElement('td');
+        valueCell.classList.add('border-0');
+
+        if (salary == 0) {
+            valueCell.textContent = element.value;
+        } else {
+            valueCell.textContent = element.value + "%";
+        }
+        
+        tr.appendChild(valueCell);
+
+        // Append the row to the tbody
+        tbody.appendChild(tr);
+
         if (salary != 0) {
             element.name += " - " + (salary * (element.value / 100)).toFixed(2) + " $";
         }
 
         myPieChart.data.labels.push(element.name);
-        
-        
-        myPieChart.data.datasets[0].data.push(element.value);
-        myPieChart.data.datasets[0].backgroundColor.push(randomColor);
-
-        const span = document.createElement('span');
-        span.classList.add('mr-2');
-
-        const icon = document.createElement('i');
-        icon.classList.add('bi', 'bi-circle-fill');
-        icon.style.color = randomColor;
-
-        
-
-        span.appendChild(icon);
-        span.appendChild(textNode);
-
-        legendContainer.appendChild(span);
     });
+
+    // Append the tbody to the table
+    table.appendChild(tbody);
+
+    legendContainer.appendChild(table);
 
     myPieChart.update();
     console.log(myArray);
