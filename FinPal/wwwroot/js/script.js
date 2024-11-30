@@ -95,7 +95,7 @@ function pieChart(id, legend, myArray, salary = 0) {
         if (salary == 0) {
             valueCell.textContent = element.value;
         } else {
-            valueCell.textContent = element.value + "%";
+            valueCell.textContent = Math.trunc(element.value) + "%";
         }
         
         tr.appendChild(valueCell);
