@@ -55,24 +55,30 @@
 
 @code {
     private List<FinPal.Models.Salary> sItems = new List<FinPal.Models.Salary>();
-    private int selectedYear = DateTime.Now.Year;
+    private int currentYear = DateTime.Now.Year, selectedYear;
 
     protected override async Task OnInitializedAsync()
     {
-
+        selectedYear = currentYear;
         await LoadSalaries();
     }
 
     private async Task PreviousYear()
     {
-        selectedYear--;
-        await LoadSalaries();
+        if(selectedYear > (currentYear - 2))
+        {
+            selectedYear--;
+            await LoadSalaries();
+        }
     }
 
     private async Task NextYear()
     {
-        selectedYear++;
-        await LoadSalaries();
+        if (selectedYear < (currentYear + 2))
+        {
+            selectedYear++;
+            await LoadSalaries();
+        }
     }
 
     private async Task LoadSalaries()
