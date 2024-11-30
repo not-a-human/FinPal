@@ -116,7 +116,6 @@ function pieChart(id, legend, myArray, salary = 0) {
     legendContainer.appendChild(table);
 
     myPieChart.update();
-    console.log(myArray);
 }
 
 function getRandomColor() {
