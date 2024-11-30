@@ -83,7 +83,7 @@
     }
 
     private async Task LoadBills(){
-        System.Threading.Thread.Sleep(1000);
+        System.Threading.Thread.Sleep(500);
         bItems = await BDatabase.GetItemsAsyncWithFC();
         NoBill = true;
     }
