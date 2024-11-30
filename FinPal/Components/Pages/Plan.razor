@@ -1,5 +1,6 @@
 ﻿@page "/plan"
 @inject CategoryDatabase CDatabase
+@inject SalaryDatabase SDatabase
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 
@@ -15,22 +16,48 @@
                 <div class="list-group list-group-flush">
                     @foreach (var item in cItems)
                     {
-                        <div class="list-group-item list-group-item-action">
-                            <div class="row">
-                                <div class="col-8">
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between pb-1">
+                                <div>
                                     <strong class="mb-0">@item.Name</strong>
-                                    <p class="text-muted mb-0">@item.Note</p>
                                 </div>
-                                <div class="col-4 row">
-                                    <input type="number" class="form-control align-self-center" placeholder="Enter Percentage" @bind-value="item.Percentage" @bind-value:event="oninput" @onchange="CalculateTotalPercentage" min="0" max="100" />
+                                <div class="d-flex align-items-center">
+                                    <div class="btn-group-sm">
+                                        <button class="btn @(!item.FixedOrPerc ? "btn-primary" :  "btn-outline-primary")" @onclick='() => item.FixedOrPerc = false'><i class="bi bi-currency-dollar"></i></button>
+                                        <button class="btn @(item.FixedOrPerc ? "btn-primary" :  "btn-outline-primary")" @onclick='() => item.FixedOrPerc = true'><i class="bi bi-percent"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">                             
+                                <div class="col">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                                        <input type="number" disabled="@item.FixedOrPerc" class="form-control align-self-center" placeholder="Fixed amount" @bind-value="item.FixedAmount" @bind-value:event="oninput" @onchange="(e) => UpdatePercentage(item)" />
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-percent"></i></span>
+                                        <input type="number" disabled="@(item.FixedOrPerc == false)" class="form-control align-self-center" placeholder="Percentage" @bind-value="item.Percentage" @bind-value:event="oninput" @onchange="(e) => UpdateFixedAmount(item)" min="0" max="100" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     }
                     <div class="list-group-item">
                         <div class="row">
-                            <div class="col-8"></div>
-                            <div id="totalPercentDiv" class="col-4 text-center @(totalPercent>100 ? "text-danger" : "text-success")"><span id="totalPercent">@totalPercent</span> <span><i class="bi bi-percent"></i></span></div>
+                            <div class="col">
+                                <div id="totalPercentDiv" class="text-center @(totalPercent>100 ? "text-danger" : "text-success")">@cItems.Sum(i => i.FixedAmount) 
+                                    @if(salary > 0)
+                                    {
+                                        <span>/ @salary</span>
+                                    }
+                                    <span><i class="bi bi-currency-dollar"></i></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div id="totalPercentDiv" class="text-center @(totalPercent>100 ? "text-danger" : "text-success")">@totalPercent <span><i class="bi bi-percent"></i></span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -49,15 +76,32 @@
     </p>
 </div>
 
-
-
 @code {
     private List<FinPal.Models.Category> cItems = new List<FinPal.Models.Category>();
-    private decimal totalPercent;
+    private decimal totalPercent, salary;
+    private DateTime today = DateTime.Now;
 
     protected override async Task OnInitializedAsync()
     {
         cItems = await CDatabase.GetActiveItemsAsync();
+        salary = await SDatabase.GetSalaryByMonth(today.Year, today.Month);
+
+        foreach (var item in cItems)
+        {
+            if(item.FixedAmount == 0 && item.Percentage > 0)
+            {
+                UpdateFixedAmount(item);
+            }
+
+            if (item.FixedOrPerc && salary > 0)  // False = FixedAmount , (True = Percentage)
+            {
+                UpdateFixedAmount(item);
+            }
+            else if (!item.FixedOrPerc && salary > 0) // (False = FixedAmount) , True = Percentage
+            {
+                UpdatePercentage(item);
+            }
+        }
 
         if(cItems.Count != 0)
         {
@@ -68,7 +112,7 @@
         {
             await JS.InvokeVoidAsync("hideOrShowElement", "category-is-0");
         }
-    }
+    }    
 
     private async Task UpdateItems()
     {
@@ -78,6 +122,24 @@
         }
         await JS.InvokeVoidAsync("showToast", "Update", "Plans updated successfully.");
 
+    }
+
+    private void UpdatePercentage(FinPal.Models.Category item)
+    {
+        if (salary > 0)
+        {
+            item.Percentage = (item.FixedAmount / salary) * 100;
+        }
+        CalculateTotalPercentage();
+    }
+
+    private void UpdateFixedAmount(FinPal.Models.Category item)
+    {
+        if (item.Percentage > 0 && salary > 0)
+        {
+            item.FixedAmount = (item.Percentage / 100) * salary;
+        }
+        CalculateTotalPercentage();
     }
 
     private void CalculateTotalPercentage()
