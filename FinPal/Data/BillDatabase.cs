@@ -126,5 +126,24 @@ namespace FinPal.Data
             }
         }
 
+        public async Task<List<int>> GetActiveFinanceID()
+        {
+            await Init();
+
+            var activeCategories = await Database.Table<Category>()
+                                          .Where(c => c.Active)
+                                          .ToListAsync();
+
+            var activeCategoryIds = activeCategories.Select(c => c.Id).ToList();
+
+            var activeFinanceNames = await Database.Table<FinanceName>()
+                                            .Where(b => b.Active && activeCategoryIds.Contains(b.CategoryId))
+                                            .ToListAsync();
+
+            var activeFinanceIds = activeFinanceNames.Select(b => b.Id).ToList();
+
+            return activeFinanceIds;
+        }
+
     }
 }

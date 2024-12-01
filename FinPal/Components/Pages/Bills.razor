@@ -4,6 +4,21 @@
 @inject IJSRuntime JS
 
 <SectionContent SectionName="page-title">Recurring Items</SectionContent>
+<SectionContent SectionName="page-actions">
+    <i class="bi bi-three-dots-vertical h5 cursor-pointer m-0" data-bs-toggle="dropdown" aria-expanded="false"></i>
+</SectionContent>
+<SectionContent SectionName="dropdown-menu-items">
+    <ul class="dropdown-menu dropdown-menu-dark">
+        @if (ActiveRecord)
+        {
+            <li @onclick='ToggleActive'><a class="dropdown-item"><i class="bi bi-check-square"></i> Active</a></li>
+        }
+        else
+        {
+            <li @onclick='ToggleActive'><a class="dropdown-item"><i class="bi bi-square"></i> Inactive</a></li>
+        }
+    </ul>
+</SectionContent>
 
 
     @if(!bItems.Any())
@@ -18,7 +33,7 @@
     else
     {
         <div class="row justify-content-center px-1">
-            @foreach (var item in bItems)
+            @foreach (var item in FilteredItems)
             {
                 <div class="card my-2 col-xl-10 col-12 p-0 cursor-pointer" @onclick="() => UpdateBill(item.Id)">
                 <div class="card-body position-relative">
@@ -69,23 +84,42 @@
     [Parameter]
     public bool CreateSuccess { get; set; } = false;
 
-    private bool NoBill = false;
+    private bool NoBill = false, ActiveRecord = true;
     private List<FinPal.Models.BillwithFC> bItems = new List<FinPal.Models.BillwithFC>();
+    private List<FinPal.Models.BillwithFC> FilteredItems = new List<FinPal.Models.BillwithFC>();
+    private List<int> ActiveFinances = new List<int>();
+
 
     protected override async Task OnInitializedAsync()
     {
-
+        ActiveFinances = await BDatabase.GetActiveFinanceID();
+        bItems = await BDatabase.GetItemsAsyncWithFC();
         await Task.Run(LoadBills);
+
+
 
         if (CreateSuccess)
             await JS.InvokeVoidAsync("showToast", "Saved", "Bill data saved successfully.");
 
     }
 
-    private async Task LoadBills(){
+    private async Task LoadBills()
+    {
         System.Threading.Thread.Sleep(500);
-        bItems = await BDatabase.GetItemsAsyncWithFC();
+        LoadFilteredBills();
         NoBill = true;
+    }
+
+    private void LoadFilteredBills()
+    {
+        if (ActiveRecord)
+        {
+            FilteredItems = bItems.Where(i => i.Active == ActiveRecord && ActiveFinances.Contains(i.FinanceCode)).ToList();
+        }
+        else
+        {
+            FilteredItems = bItems.Where(i => i.Active == ActiveRecord || !ActiveFinances.Contains(i.FinanceCode)).ToList();
+        }
     }
 
     private void UpdateBill(int id)
@@ -97,5 +131,10 @@
         Navigate.NavigateTo("bills/form");
     }
 
+    private void ToggleActive()
+    {
+        ActiveRecord = !ActiveRecord;
+        LoadFilteredBills();
+    }
 
 }
