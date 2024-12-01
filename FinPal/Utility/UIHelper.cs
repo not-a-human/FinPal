@@ -16,15 +16,16 @@ namespace FinPal.Utility
                 case 1 :
                     return isValid switch
                     {
-                        1 => "d-block",
-                        _ => ""
+                        0 => "",
+                        2 => "",
+                        _ => "d-block"
                     };
                 default:
                     return isValid switch
                     {
-                        1 => "is-invalid",
+                        0 => "",
                         2 => "is-valid",
-                        _ => ""
+                        _ => "is-invalid"
                     };
             };
             
