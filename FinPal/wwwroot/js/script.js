@@ -3,14 +3,14 @@ function logToConsole(obj) {
 }
 
 function setTheme(theme) {
-    var mainPageBG = document.getElementById("mainPageBG");
+    const themeStylesheet = document.getElementById("theme-stylesheet");
 
     document.documentElement.setAttribute("data-bs-theme", theme);
 
     if (theme == "dark") {
-        mainPageBG.classList.remove("light-mode-bg");
+        themeStylesheet.removeAttribute("href");
     } else {
-        mainPageBG.classList.add("light-mode-bg");
+        themeStylesheet.setAttribute("href", "css/light.css");
     }
 }
 
