@@ -3,6 +3,9 @@
 @inject IJSRuntime JS
 
 <SectionContent SectionName="page-title">Salary</SectionContent>
+<SectionContent SectionName="page-actions">
+    <i class="bi bi-question-lg h5 cursor-pointer m-0 px-2" onclick="helpFileToggle()"></i>
+</SectionContent>
 
 <div class="top-panel-footer">
     <div class="row text-center">
@@ -53,26 +56,38 @@
     <button class="btn btn-primary px-5" @onclick="UpdateItems">Update</button>
 </div>
 
+<SectionContent SectionName="help-title">Salary</SectionContent>
+<SectionContent SectionName="help-body">
+    <p class="card-text">Use this page to set and manage your monthly salary details.</p>
+</SectionContent>
+
+
 @code {
     private List<FinPal.Models.Salary> sItems = new List<FinPal.Models.Salary>();
-    private int selectedYear = DateTime.Now.Year;
+    private int currentYear = DateTime.Now.Year, selectedYear;
 
     protected override async Task OnInitializedAsync()
     {
-
+        selectedYear = currentYear;
         await LoadSalaries();
     }
 
     private async Task PreviousYear()
     {
-        selectedYear--;
-        await LoadSalaries();
+        if(selectedYear > (currentYear - 2))
+        {
+            selectedYear--;
+            await LoadSalaries();
+        }
     }
 
     private async Task NextYear()
     {
-        selectedYear++;
-        await LoadSalaries();
+        if (selectedYear < (currentYear + 2))
+        {
+            selectedYear++;
+            await LoadSalaries();
+        }
     }
 
     private async Task LoadSalaries()

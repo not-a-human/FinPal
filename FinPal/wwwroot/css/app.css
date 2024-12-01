@@ -113,6 +113,13 @@ h1, h2, h3, h4, h5, h6 {
     border-color: var(--primary-color);
 }
 
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    --bs-btn-hover-bg: var(--primary-color);
+    --bs-btn-hover-border-color: var(--primary-color);
+}
+
 .btn-danger {
     color: #fff;
     background-color: var(--danger-color);
@@ -129,10 +136,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .text-gray-300 {
     color: #dddfeb !important;
-}
-
-.light-mode-bg {
-    background-color: #f8f9fc;
 }
 
 .mr-2, .mx-2 {
@@ -154,7 +157,14 @@ h1, h2, h3, h4, h5, h6 {
 i.cursor-pointer:hover {
     color: var(--primary-color);
 }
-
+@media (max-width: 576px) {
+    .mobile-no-padding {
+        padding:0;
+    }
+    .mobile-small-text {
+        font-size: 70%;
+    }
+}
 /*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/
@@ -284,6 +294,7 @@ i.cursor-pointer:hover {
     padding-right: 1rem;
     padding-bottom: 0.7rem;
 }
+
 @media (max-width: 1199px) {
     .top-panel {
         padding-left: 1rem;
@@ -713,6 +724,34 @@ section {
     }
 }
 
+/*--------------------------------------------------------------
+# Sections General
+--------------------------------------------------------------*/
+
+#help-file {
+    height: 90vh;
+    width: 90vw;
+    position: absolute;
+    z-index: 9999;
+    background: var(--bs-body-bg);
+    top: 5vh;
+    right: 5vw;
+}
+
+#help-file .card-body {
+    overflow: scroll;
+}
+
+#help-file-backdrop {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    z-index: 9998;
+    top: 0;
+    right: 0;
+    background: var(--dark-color);
+    opacity: 0.5;
+}
 /*--------------------------------------------------------------
 # Blazor default
 --------------------------------------------------------------*/

@@ -2,11 +2,15 @@
 @inject BillDatabase BDatabase
 @inject SalaryDatabase SDatabase
 @inject IJSRuntime JS
+@inject NavigationManager Navigation
 
 @using System.Diagnostics
 @page "/"
 
 <SectionContent SectionName="page-title">Welcome back, palz!</SectionContent>
+<SectionContent SectionName="page-actions">
+    <i class="bi bi-question-lg h5 cursor-pointer m-0" onclick="helpFileToggle()"></i>
+</SectionContent>
 
 <div class="">
 
@@ -14,7 +18,7 @@
     <div class="row">
 
         <div class="col-xl-3 col-6 mb-2 mb-md-4">
-            <div class="card border-left-primary shadow h-100 py-md-2">
+            <div class="card border-left-primary shadow h-100 py-md-2 cursor-pointer" @onclick='() => Navigation.NavigateTo("/salary")'>
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-md-2">
@@ -32,7 +36,7 @@
         </div>
 
         <div class="col-xl-3 col-6 mb-2 mb-md-4">
-            <div class="card border-left-success shadow h-100 py-md-2">
+            <div class="card border-left-success shadow h-100 py-md-2 cursor-pointer" @onclick='() => Navigation.NavigateTo("/salary")'>
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-md-2">
@@ -50,12 +54,12 @@
         </div>
 
         <div class="col-xl-3 col-6 mb-2 mb-md-4">
-            <div class="card border-left-warning shadow h-100 py-md-2">
+            <div class="card border-left-warning shadow h-100 py-md-2 cursor-pointer" @onclick='() => Navigation.NavigateTo("/bills")'>
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-md-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Total Active Bills
+                                Total Recurring Items
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@billsCount</div>
                         </div>
@@ -68,12 +72,12 @@
         </div>
 
         <div class="col-xl-3 col-6 mb-2 mb-md-4">
-            <div class="card border-left-info shadow h-100 py-md-2">
+            <div class="card border-left-info shadow h-100 py-md-2 cursor-pointer" @onclick='() => Navigation.NavigateTo("/bills")'>
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-md-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Total Bills (@todayMonth)
+                                Total Items (@todayMonth)
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">$@bItems.Sum(b => b.AmountDue)</div>
                         </div>
@@ -96,12 +100,12 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-lg-12 col-6">
-                            <div class="chart-pie pt-4 pb-2">
+                        <div class="col-lg-12 col-5 mobile-no-padding">
+                            <div class="chart-pie pt-lg-4 pb-lg-2">
                                 <canvas id="myPlanChart"></canvas>
                             </div>
                         </div>
-                        <div id="planChartLegend" class="mt-lg-4 small col-lg-12 col-6 d-flex"></div>
+                        <div id="planChartLegend" class="mt-lg-4 col-lg-12 col-7 mobile-no-padding d-flex small mobile-small-text"></div>
                     </div>
                 </div>
             </div>
@@ -119,14 +123,23 @@
                             <li class="list-group-item border-0">
                                 <div class="d-flex align-content-between">
                                     <div class="flex-fill">@item.Name</div>
-                                    <div>@item.funds</div>
+                                    <div>@item.funds.ToString("0.00")</div>
                                 </div>
 
                                 <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                    <div class="progress-bar @GetProgressBarBg(GetAllocatedPercent(item.funds,totalCategory(item.Id)))"
-                                         style="width: @GetPercentString(GetAllocatedPercent(item.funds,totalCategory(item.Id)));">
-                                        @totalCategory(item.Id)
-                                    </div>
+                                    @if (GetAllocatedPercent(item.funds, totalCategory(item.Id)) == 0)
+                                    {
+                                        <div class="progress-bar" style="width: 100%;">
+                                            @totalCategory(item.Id)
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="progress-bar @GetProgressBarBg(GetAllocatedPercent(item.funds,totalCategory(item.Id)))"
+                                             style="width: @GetPercentString(GetAllocatedPercent(item.funds,totalCategory(item.Id)));">
+                                            @totalCategory(item.Id)
+                                        </div>
+                                    }
                                 </div>
                             </li>
                         }
@@ -137,6 +150,29 @@
 
     </div>
 </div>
+
+<SectionContent SectionName="help-title">Dashboard</SectionContent>
+<SectionContent SectionName="help-body">
+    <p class="card-text">This page provides an overview of the total amount that needs to be paid for the selected month and year, along with additional details.</p>
+    <hr />
+    <h5 class="card-title">EARNINGS (YEAR-MONTH)</h5>
+    <p class="card-text">Displays the salary for the selected month and year.</p>
+    <hr />
+    <h5 class="card-title">EARNINGS (YEAR)</h5>
+    <p class="card-text">Displays the total salary for the selected year.</p>
+    <hr />
+    <h5 class="card-title">TOTAL RECURRING ITEMS</h5>
+    <p class="card-text">Shows the total count of recurring items.</p>
+    <hr />
+    <h5 class="card-title">TOTAL ITEMS (YEAR-MONTH)</h5>
+    <p class="card-text">Displays the total cost of recurring items for the selected month and year.</p>
+    <hr />
+    <h5 class="card-title">PLAN OVERVIEW (YEAR-MONTH)</h5>
+    <p class="card-text">The chart shows the configured percentages for each category. These percentages can be modified on the Plan page.</p>
+    <hr />
+    <h5 class="card-title">ALLOCATED VS TOTAL (YEAR-MONTH)</h5>
+    <p class="card-text">The chart displays the allocated funds based on configured percentages and the total cost of recurring items for each category.</p>
+</SectionContent>
 
 @code {
     private List<FinPal.Models.JSChartArray> planItems = new List<FinPal.Models.JSChartArray>();
@@ -153,12 +189,12 @@
     protected override async Task OnInitializedAsync()
     {
         planItems = await CDatabase.GetPlanChartAsync();
-        bItems = await BDatabase.GetItemsWithFCThisMonthAsync();
+        bItems = await BDatabase.GetItemsWithFCThisMonthAsync(2024,11);
         billsCount = await BDatabase.GetActiveCountAsync();
         aItems = await CDatabase.GetAllocatedFundsAsync();
         salaryAnnual = await SDatabase.SumSalariesByYear(today.Year);
         salaryMonth = await SDatabase.GetSalaryByMonth(today.Year,today.Month);
-
+        
         categoryArray = bItems
         .GroupBy(e => e.CategoryCode)
         .Select(g => new JSChartArray

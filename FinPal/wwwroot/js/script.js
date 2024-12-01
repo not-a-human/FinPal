@@ -3,14 +3,14 @@ function logToConsole(obj) {
 }
 
 function setTheme(theme) {
-    var mainPageBG = document.getElementById("mainPageBG");
+    const themeStylesheet = document.getElementById("theme-stylesheet");
 
     document.documentElement.setAttribute("data-bs-theme", theme);
 
     if (theme == "dark") {
-        mainPageBG.classList.remove("light-mode-bg");
+        themeStylesheet.removeAttribute("href");
     } else {
-        mainPageBG.classList.add("light-mode-bg");
+        themeStylesheet.setAttribute("href", "css/light.css");
     }
 }
 
@@ -95,7 +95,7 @@ function pieChart(id, legend, myArray, salary = 0) {
         if (salary == 0) {
             valueCell.textContent = element.value;
         } else {
-            valueCell.textContent = element.value + "%";
+            valueCell.textContent = Math.trunc(element.value) + "%";
         }
         
         tr.appendChild(valueCell);
@@ -116,7 +116,6 @@ function pieChart(id, legend, myArray, salary = 0) {
     legendContainer.appendChild(table);
 
     myPieChart.update();
-    console.log(myArray);
 }
 
 function getRandomColor() {
@@ -181,4 +180,11 @@ function showToast(title, message) {
 
     // Append the toast element to the toast container
     toastContainer.appendChild(toastElement);
+}
+function helpFileToggle() {
+    const helpFile = document.getElementById('help-file');
+    const helpFileBackDrop = document.getElementById('help-file-backdrop');
+
+    helpFile.classList.toggle('d-none');
+    helpFileBackDrop.classList.toggle('d-none');
 }

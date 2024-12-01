@@ -3,7 +3,23 @@
 @inject NavigationManager Navigate
 @inject IJSRuntime JS
 
-<SectionContent SectionName="page-title">Bills</SectionContent>
+<SectionContent SectionName="page-title">Recurring Items</SectionContent>
+<SectionContent SectionName="page-actions">
+    <i class="bi bi-question-lg h5 cursor-pointer m-0 px-2" onclick="helpFileToggle()"></i>
+    <i class="bi bi-three-dots-vertical h5 cursor-pointer m-0 px-2" data-bs-toggle="dropdown" aria-expanded="false"></i>
+</SectionContent>
+<SectionContent SectionName="dropdown-menu-items">
+    <ul class="dropdown-menu dropdown-menu-dark">
+        @if (ActiveRecord)
+        {
+            <li @onclick='ToggleActive'><a class="dropdown-item"><i class="bi bi-check-square"></i> Active</a></li>
+        }
+        else
+        {
+            <li @onclick='ToggleActive'><a class="dropdown-item"><i class="bi bi-square"></i> Inactive</a></li>
+        }
+    </ul>
+</SectionContent>
 
 
     @if(!bItems.Any())
@@ -18,7 +34,7 @@
     else
     {
         <div class="row justify-content-center px-1">
-            @foreach (var item in bItems)
+            @foreach (var item in FilteredItems)
             {
                 <div class="card my-2 col-xl-10 col-12 p-0 cursor-pointer" @onclick="() => UpdateBill(item.Id)">
                 <div class="card-body position-relative">
@@ -60,32 +76,64 @@
         </div>
     }
 
-
 <div class="btn-float btn btn-primary" @onclick="CreateBill">
     <i class="bi bi-plus-lg"></i>
 </div>
+
+<SectionContent SectionName="help-title">Recurring Items</SectionContent>
+<SectionContent SectionName="help-body">
+    <p class="card-text">This page allows you to create or update recurring items, such as bills, investments, savings, loans, and more.</p>
+    <hr />
+    <h5 class="card-title">Getting Started</h5>
+    <p class="card-text">
+        Before adding a new recurring item, ensure you have set up a Category and Finance Name:
+        <ul>
+            <li>Settings > Categories</li>
+            <li>Settings > Finance Name</li>
+        </ul>
+    </p>
+</SectionContent>
 
 @code {
     [Parameter]
     public bool CreateSuccess { get; set; } = false;
 
-    private bool NoBill = false;
+    private bool NoBill = false, ActiveRecord = true;
     private List<FinPal.Models.BillwithFC> bItems = new List<FinPal.Models.BillwithFC>();
+    private List<FinPal.Models.BillwithFC> FilteredItems = new List<FinPal.Models.BillwithFC>();
+    private List<int> ActiveFinances = new List<int>();
+
 
     protected override async Task OnInitializedAsync()
     {
-
+        ActiveFinances = await BDatabase.GetActiveFinanceID();
+        bItems = await BDatabase.GetItemsAsyncWithFC();
         await Task.Run(LoadBills);
+
+
 
         if (CreateSuccess)
             await JS.InvokeVoidAsync("showToast", "Saved", "Bill data saved successfully.");
 
     }
 
-    private async Task LoadBills(){
-        System.Threading.Thread.Sleep(1000);
-        bItems = await BDatabase.GetItemsAsyncWithFC();
+    private async Task LoadBills()
+    {
+        System.Threading.Thread.Sleep(500);
+        LoadFilteredBills();
         NoBill = true;
+    }
+
+    private void LoadFilteredBills()
+    {
+        if (ActiveRecord)
+        {
+            FilteredItems = bItems.Where(i => i.Active == ActiveRecord && ActiveFinances.Contains(i.FinanceCode)).ToList();
+        }
+        else
+        {
+            FilteredItems = bItems.Where(i => i.Active == ActiveRecord || !ActiveFinances.Contains(i.FinanceCode)).ToList();
+        }
     }
 
     private void UpdateBill(int id)
@@ -97,5 +145,10 @@
         Navigate.NavigateTo("bills/form");
     }
 
+    private void ToggleActive()
+    {
+        ActiveRecord = !ActiveRecord;
+        LoadFilteredBills();
+    }
 
 }

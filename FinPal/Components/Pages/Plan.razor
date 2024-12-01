@@ -1,11 +1,13 @@
 ﻿@page "/plan"
 @inject CategoryDatabase CDatabase
+@inject SalaryDatabase SDatabase
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 
 <SectionContent SectionName="page-title">Plan</SectionContent>
 <SectionContent SectionName="page-actions">
-    <i class="bi bi-plus-lg h5 cursor-pointer m-0" @onclick="goToCategory"></i>
+    <i class="bi bi-question-lg h5 cursor-pointer m-0 px-2" onclick="helpFileToggle()"></i>
+    <i class="bi bi-plus-lg h5 cursor-pointer m-0 px-2" @onclick="goToCategory"></i>
 </SectionContent>
 
 <div id="category-not-0" class="d-none">
@@ -15,22 +17,48 @@
                 <div class="list-group list-group-flush">
                     @foreach (var item in cItems)
                     {
-                        <div class="list-group-item list-group-item-action">
-                            <div class="row">
-                                <div class="col-8">
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between pb-1">
+                                <div>
                                     <strong class="mb-0">@item.Name</strong>
-                                    <p class="text-muted mb-0">@item.Note</p>
                                 </div>
-                                <div class="col-4 row">
-                                    <input type="number" class="form-control align-self-center" placeholder="Enter Percentage" @bind-value="item.Percentage" @bind-value:event="oninput" @onchange="CalculateTotalPercentage" min="0" max="100" />
+                                <div class="d-flex align-items-center">
+                                    <div class="btn-group-sm">
+                                        <button class="btn @(!item.FixedOrPerc ? "btn-primary" :  "btn-outline-primary")" @onclick='() => item.FixedOrPerc = false'><i class="bi bi-currency-dollar"></i></button>
+                                        <button class="btn @(item.FixedOrPerc ? "btn-primary" :  "btn-outline-primary")" @onclick='() => item.FixedOrPerc = true'><i class="bi bi-percent"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">                             
+                                <div class="col">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                                        <input type="number" disabled="@item.FixedOrPerc" class="form-control align-self-center" placeholder="Fixed amount" @bind-value="item.FixedAmount" @bind-value:event="oninput" @onchange="(e) => UpdatePercentage(item)" />
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-percent"></i></span>
+                                        <input type="number" disabled="@(item.FixedOrPerc == false)" class="form-control align-self-center" placeholder="Percentage" @bind-value="item.Percentage" @bind-value:event="oninput" @onchange="(e) => UpdateFixedAmount(item)" min="0" max="100" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     }
                     <div class="list-group-item">
                         <div class="row">
-                            <div class="col-8"></div>
-                            <div id="totalPercentDiv" class="col-4 text-center @(totalPercent>100 ? "text-danger" : "text-success")"><span id="totalPercent">@totalPercent</span> <span><i class="bi bi-percent"></i></span></div>
+                            <div class="col">
+                                <div id="totalPercentDiv" class="text-center @(totalPercent>100 ? "text-danger" : "text-success")">@cItems.Sum(i => i.FixedAmount) 
+                                    @if(salary > 0)
+                                    {
+                                        <span>/ @salary</span>
+                                    }
+                                    <span><i class="bi bi-currency-dollar"></i></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div id="totalPercentDiv" class="text-center @(totalPercent>100 ? "text-danger" : "text-success")">@totalPercent <span><i class="bi bi-percent"></i></span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -49,15 +77,82 @@
     </p>
 </div>
 
+<SectionContent SectionName="help-title">Plan</SectionContent>
+<SectionContent SectionName="help-body">
+    <p class="card-text">
+        This page allows you to configure the percentage (%) or fixed amount ($) allocated to each category.
+    </p>
+    <hr />
+    <h5 class="card-title">
+        <div class="btn-group-sm">
+            <button class="btn btn-primary"><i class="bi bi-currency-dollar"></i></button>
+            <button class="btn btn-outline-primary"><i class="bi bi-percent"></i></button>
+        </div>
+    </h5>
+    <p class="card-text">
+        Use the buttons to toggle between Fixed Amount ($) and Percentage (%) fields. Only one field can be active at a time for each category.
+        <ul>
+            <li>
+                Selecting '$' enables the `$` field and disables the `%` field. Entering a value in the `$` field automatically updates the `%` field based on the current month's salary.
+            </li>
+            <li>
+                Selecting '%' enables the `%` field and disables the `$` field. Entering a value in the `%` field automatically updates the `$` field based on the current month's salary.
+            </li>
+            <li>
+                If the current month's salary is not configured, the inactive field (`%` or `$`) will not be updated.
+            </li>
+        </ul>
 
+        You can update the current month's salary on the Salary page.
+    </p>
+    <hr/>
+    <h5 class="card-title">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+            <input type="number" disabled class="form-control" placeholder="Fixed amount" value="0" />
+        </div>
+    </h5>
+    <p class="card-text">
+        Fixed Amount ($) field.
+    </p>
+    <hr />
+    <h5 class="card-title">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-percent"></i></span>
+            <input type="number" disabled class="form-control" placeholder="Percentage" value="0" />
+        </div>
+    </h5>
+    <p class="card-text">
+        Percentage (%) field.
+    </p>
+</SectionContent>
 
 @code {
     private List<FinPal.Models.Category> cItems = new List<FinPal.Models.Category>();
-    private decimal totalPercent;
+    private decimal totalPercent, salary;
+    private DateTime today = DateTime.Now;
 
     protected override async Task OnInitializedAsync()
     {
         cItems = await CDatabase.GetActiveItemsAsync();
+        salary = await SDatabase.GetSalaryByMonth(today.Year, today.Month);
+
+        foreach (var item in cItems)
+        {
+            if(item.FixedAmount == 0 && item.Percentage > 0)
+            {
+                UpdateFixedAmount(item);
+            }
+
+            if (item.FixedOrPerc && salary > 0)  // False = FixedAmount , (True = Percentage)
+            {
+                UpdateFixedAmount(item);
+            }
+            else if (!item.FixedOrPerc && salary > 0) // (False = FixedAmount) , True = Percentage
+            {
+                UpdatePercentage(item);
+            }
+        }
 
         if(cItems.Count != 0)
         {
@@ -68,7 +163,7 @@
         {
             await JS.InvokeVoidAsync("hideOrShowElement", "category-is-0");
         }
-    }
+    }    
 
     private async Task UpdateItems()
     {
@@ -78,6 +173,24 @@
         }
         await JS.InvokeVoidAsync("showToast", "Update", "Plans updated successfully.");
 
+    }
+
+    private void UpdatePercentage(FinPal.Models.Category item)
+    {
+        if (salary > 0)
+        {
+            item.Percentage = (item.FixedAmount / salary) * 100;
+        }
+        CalculateTotalPercentage();
+    }
+
+    private void UpdateFixedAmount(FinPal.Models.Category item)
+    {
+        if (item.Percentage > 0 && salary > 0)
+        {
+            item.FixedAmount = (item.Percentage / 100) * salary;
+        }
+        CalculateTotalPercentage();
     }
 
     private void CalculateTotalPercentage()
