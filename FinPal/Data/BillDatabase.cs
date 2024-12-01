@@ -1,4 +1,5 @@
-﻿using FinPal.Models;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using FinPal.Models;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace FinPal.Data
             return await Database.QueryAsync<BillwithFC>(query);
         }
 
-        public async Task<List<BillwithFC>> GetItemsWithFCThisMonthAsync()
+        public async Task<List<BillwithFC>> GetItemsWithFCThisMonthAsync(int year, int month)
         {
             var query = @"
             
@@ -44,21 +45,24 @@ namespace FinPal.Data
                 SELECT *
                 FROM BillDates
                 WHERE 
-                     -- Condition 1: Start or end date is within the current month
-                    (StartDateConverted BETWEEN date('now', 'start of month') AND date('now', 'start of month', '+1 month', '-1 day'))
+                     -- Condition 1: Start or end date is within the specified month
+                    (StartDateConverted BETWEEN date(?1, ?2) AND date(?1, ?2, '+1 month', '-1 day'))
                     OR 
-                    (EndDateConverted BETWEEN date('now', 'start of month') AND date('now', 'start of month', '+1 month', '-1 day'))
+                    (EndDateConverted BETWEEN date(?1, ?2) AND date(?1, ?2, '+1 month', '-1 day'))
                     OR
-                    -- Condition 2: Payment spans the entire month (start date is before and end date is after the month)
-                    (StartDateConverted < date('now', 'start of month') 
-                     AND EndDateConverted > date('now', 'start of month', '+1 month', '-1 day'))
+                    -- Condition 2: Payment spans the entire specified month
+                    (StartDateConverted < date(?1, ?2) 
+                     AND EndDateConverted > date(?1, ?2, '+1 month', '-1 day'))
                     OR
                     (Continuous);
             ";
 
+            // Convert year and month into a date string (e.g., "2024-11-01").
+            string startOfMonth = $"{year:D4}-{month:D2}-01";
+
             await Init();
 
-            return await Database.QueryAsync<BillwithFC>(query);
+            return await Database.QueryAsync<BillwithFC>(query, startOfMonth, "start of month");
         }
 
         public override async Task<int> SaveItemAsync(Bill item)

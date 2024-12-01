@@ -189,12 +189,12 @@
     protected override async Task OnInitializedAsync()
     {
         planItems = await CDatabase.GetPlanChartAsync();
-        bItems = await BDatabase.GetItemsWithFCThisMonthAsync();
+        bItems = await BDatabase.GetItemsWithFCThisMonthAsync(2024,11);
         billsCount = await BDatabase.GetActiveCountAsync();
         aItems = await CDatabase.GetAllocatedFundsAsync();
         salaryAnnual = await SDatabase.SumSalariesByYear(today.Year);
         salaryMonth = await SDatabase.GetSalaryByMonth(today.Year,today.Month);
-
+        
         categoryArray = bItems
         .GroupBy(e => e.CategoryCode)
         .Select(g => new JSChartArray
