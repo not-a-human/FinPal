@@ -132,6 +132,12 @@ function hideOrShowElement(elementID) {
     el.classList.toggle("d-none");
 }
 
+function showAutoHideToast(message) {
+    const toastBox = document.getElementById("autoHideToast");
+    toastBox.querySelector(".toast-body").innerHTML = message;
+    bootstrap.Toast.getOrCreateInstance(toastBox).show();
+}
+
 function showToast(title, message) {
     // Get the container element
     const toastContainer = document.getElementById("mainToastContainer");

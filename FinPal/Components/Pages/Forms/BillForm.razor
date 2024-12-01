@@ -268,8 +268,15 @@
 
             await BDatabase.SaveItemAsync(newBill);
 
-            await JS.InvokeVoidAsync("showToast", "Saved", "Bill data saved successfully.");
-
+            if (Id != 0)
+            {
+                await JS.InvokeVoidAsync("showAutoHideToast", "Recurring item updated successfully.");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("showAutoHideToast", "Recurring item created successfully.");
+            }
+            
             Navigation.NavigateTo("/bills");
         }
         else
@@ -281,6 +288,9 @@
     private async Task deleteForm()
     {
         await BDatabase.DeleteItemAsync(bItems);
+
+        await JS.InvokeVoidAsync("showAutoHideToast", "Recurring item deleted successfully.");
+
         Navigation.NavigateTo("/bills");
     }
 

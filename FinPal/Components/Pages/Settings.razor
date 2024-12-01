@@ -167,7 +167,7 @@
         FDatabase.DropTable();
         SDatabase.DropTable();
         BDatabase.DropTable();
-        await JS.InvokeVoidAsync("showToast", "Delete", "Data deleted.");
+        await JS.InvokeVoidAsync("showAutoHideToast", "Data deleted.");
     }
 
     private async void exportData()

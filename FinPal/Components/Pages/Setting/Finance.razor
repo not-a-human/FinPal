@@ -190,7 +190,15 @@
 
             LoadFinance();
 
-            await JS.InvokeVoidAsync("showToast", "Save", "Record saved successfully.");
+            if(id == 0)
+            {
+                await JS.InvokeVoidAsync("showAutoHideToast", "Finance Name created successfully.");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("showAutoHideToast", "Finance Name updated successfully.");
+
+            }
 
             id = 0; formModel.name = ""; formModel.note = ""; formModel.category = 0;
             isName = 0; isCategory = 0;

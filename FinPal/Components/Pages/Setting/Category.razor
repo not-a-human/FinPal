@@ -102,8 +102,15 @@
 
             categoryList = await CDatabase.GetItemsAsync();
 
-            await JS.InvokeVoidAsync("showToast", "Saved", "Record saved successfully.");
+            if (id == 0)
+            {
+                await JS.InvokeVoidAsync("showAutoHideToast", "Category created successfully.");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("showAutoHideToast", "Category updated successfully.");
 
+            }
 
             id = 0; formModel.name = ""; formModel.note = "";
 

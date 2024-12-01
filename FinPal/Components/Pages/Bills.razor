@@ -1,4 +1,4 @@
-﻿@page "/bills/{CreateSuccess:bool?}"
+﻿@page "/bills"
 @inject BillDatabase BDatabase
 @inject NavigationManager Navigate
 @inject IJSRuntime JS
@@ -95,9 +95,6 @@
 </SectionContent>
 
 @code {
-    [Parameter]
-    public bool CreateSuccess { get; set; } = false;
-
     private bool NoBill = false, ActiveRecord = true;
     private List<FinPal.Models.BillwithFC> bItems = new List<FinPal.Models.BillwithFC>();
     private List<FinPal.Models.BillwithFC> FilteredItems = new List<FinPal.Models.BillwithFC>();
@@ -109,12 +106,6 @@
         ActiveFinances = await BDatabase.GetActiveFinanceID();
         bItems = await BDatabase.GetItemsAsyncWithFC();
         await Task.Run(LoadBills);
-
-
-
-        if (CreateSuccess)
-            await JS.InvokeVoidAsync("showToast", "Saved", "Bill data saved successfully.");
-
     }
 
     private async Task LoadBills()

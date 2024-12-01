@@ -171,7 +171,7 @@
         {
             await CDatabase.SaveItemAsync(item);
         }
-        await JS.InvokeVoidAsync("showToast", "Update", "Plans updated successfully.");
+        await JS.InvokeVoidAsync("showAutoHideToast", "Plans updated successfully.");
 
     }
 
