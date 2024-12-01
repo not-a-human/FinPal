@@ -128,8 +128,7 @@
                                 <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
                                     @if (GetAllocatedPercent(item.funds, totalCategory(item.Id)) == 0)
                                     {
-                                        <div class="progress-bar @GetProgressBarBg(GetAllocatedPercent(item.funds,totalCategory(item.Id)))"
-                                             style="width: 100%;">
+                                        <div class="progress-bar" style="width: 100%;">
                                             @totalCategory(item.Id)
                                         </div>
                                     }
