@@ -39,7 +39,7 @@ We are currently looking for testers to help us improve FinPal. If you're intere
       Provide information about the app, team, and the purpose of the project in the "About Us" section.
       
 ### UI Enhancements
-- [ ] **Light Mode Enhancement**  
+- [x] **Light Mode Enhancement**  
       Improve the UI/UX for light mode to enhance visibility and user comfort.
 
 
