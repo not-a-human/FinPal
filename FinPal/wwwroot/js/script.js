@@ -181,3 +181,10 @@ function showToast(title, message) {
     // Append the toast element to the toast container
     toastContainer.appendChild(toastElement);
 }
+function helpFileToggle() {
+    const helpFile = document.getElementById('help-file');
+    const helpFileBackDrop = document.getElementById('help-file-backdrop');
+
+    helpFile.classList.toggle('d-none');
+    helpFileBackDrop.classList.toggle('d-none');
+}

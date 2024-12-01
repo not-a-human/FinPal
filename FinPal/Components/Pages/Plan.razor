@@ -6,7 +6,8 @@
 
 <SectionContent SectionName="page-title">Plan</SectionContent>
 <SectionContent SectionName="page-actions">
-    <i class="bi bi-plus-lg h5 cursor-pointer m-0" @onclick="goToCategory"></i>
+    <i class="bi bi-question-lg h5 cursor-pointer m-0 px-2" onclick="helpFileToggle()"></i>
+    <i class="bi bi-plus-lg h5 cursor-pointer m-0 px-2" @onclick="goToCategory"></i>
 </SectionContent>
 
 <div id="category-not-0" class="d-none">
@@ -75,6 +76,56 @@
         It looks like no categories have been set up yet. You can create a new category <span class="text-primary cursor-pointer" @onclick="goToCategory"><strong><u>here</u></strong></span> to get started.
     </p>
 </div>
+
+<SectionContent SectionName="help-title">Plan</SectionContent>
+<SectionContent SectionName="help-body">
+    <p class="card-text">
+        This page allows you to configure the percentage (%) or fixed amount ($) allocated to each category.
+    </p>
+    <hr />
+    <h5 class="card-title">
+        <div class="btn-group-sm">
+            <button class="btn btn-primary"><i class="bi bi-currency-dollar"></i></button>
+            <button class="btn btn-outline-primary"><i class="bi bi-percent"></i></button>
+        </div>
+    </h5>
+    <p class="card-text">
+        Use the buttons to toggle between Fixed Amount ($) and Percentage (%) fields. Only one field can be active at a time for each category.
+        <ul>
+            <li>
+                Selecting '$' enables the `$` field and disables the `%` field. Entering a value in the `$` field automatically updates the `%` field based on the current month's salary.
+            </li>
+            <li>
+                Selecting '%' enables the `%` field and disables the `$` field. Entering a value in the `%` field automatically updates the `$` field based on the current month's salary.
+            </li>
+            <li>
+                If the current month's salary is not configured, the inactive field (`%` or `$`) will not be updated.
+            </li>
+        </ul>
+
+        You can update the current month's salary on the Salary page.
+    </p>
+    <hr/>
+    <h5 class="card-title">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+            <input type="number" disabled class="form-control" placeholder="Fixed amount" value="0" />
+        </div>
+    </h5>
+    <p class="card-text">
+        Fixed Amount ($) field.
+    </p>
+    <hr />
+    <h5 class="card-title">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-percent"></i></span>
+            <input type="number" disabled class="form-control" placeholder="Percentage" value="0" />
+        </div>
+    </h5>
+    <p class="card-text">
+        Percentage (%) field.
+    </p>
+</SectionContent>
 
 @code {
     private List<FinPal.Models.Category> cItems = new List<FinPal.Models.Category>();

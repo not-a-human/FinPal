@@ -10,6 +10,9 @@
 @page "/settings"
 
 <SectionContent SectionName="page-title">Settings</SectionContent>
+<SectionContent SectionName="page-actions">
+    <i class="bi bi-question-lg h5 cursor-pointer m-0 px-2" onclick="helpFileToggle()"></i>
+</SectionContent>
 
 <div class="container" id="settings">
     <div class="row justify-content-center">
@@ -111,6 +114,41 @@
         </div>
     </div>
 </div>
+
+<SectionContent SectionName="help-title">Settings</SectionContent>
+<SectionContent SectionName="help-body">
+    <p class="card-text">This page allows you to configure FinPal.</p>
+    <hr />
+    <h5 class="card-title">Categories</h5>
+    <p class="card-text">
+        Create or update Categories here.
+    </p>
+    <hr />
+    <h5 class="card-title">Finance Name</h5>
+    <p class="card-text">
+        Create or update a Finance Name. Ensure that a Category is set up before adding a Finance Name.
+    </p>
+    <hr />
+    <h5 class="card-title">Dark/Light Mode</h5>
+    <p class="card-text">
+        Toggle between dark and light mode for the application view.
+    </p>
+    <hr />
+    <h5 class="card-title">Generate Report</h5>
+    <p class="card-text">
+        Generate an Excel report for personal review.
+    </p>
+    <hr />
+    <h5 class="card-title">Export Data</h5>
+    <p class="card-text">
+        Export all your data to an Excel file for backup or restoration on another device.
+    </p>
+    <hr />
+    <h5 class="card-title">Import Data</h5>
+    <p class="card-text">
+        Import data from a previously exported file.
+    </p>
+</SectionContent>
 
 @code {
     private string message;

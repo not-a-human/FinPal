@@ -7,6 +7,9 @@
 @page "/"
 
 <SectionContent SectionName="page-title">Welcome back, palz!</SectionContent>
+<SectionContent SectionName="page-actions">
+    <i class="bi bi-question-lg h5 cursor-pointer m-0" onclick="helpFileToggle()"></i>
+</SectionContent>
 
 <div class="">
 
@@ -147,6 +150,29 @@
 
     </div>
 </div>
+
+<SectionContent SectionName="help-title">Dashboard</SectionContent>
+<SectionContent SectionName="help-body">
+    <p class="card-text">This page provides an overview of the total amount that needs to be paid for the selected month and year, along with additional details.</p>
+    <hr />
+    <h5 class="card-title">EARNINGS (YEAR-MONTH)</h5>
+    <p class="card-text">Displays the salary for the selected month and year.</p>
+    <hr />
+    <h5 class="card-title">EARNINGS (YEAR)</h5>
+    <p class="card-text">Displays the total salary for the selected year.</p>
+    <hr />
+    <h5 class="card-title">TOTAL RECURRING ITEMS</h5>
+    <p class="card-text">Shows the total count of recurring items.</p>
+    <hr />
+    <h5 class="card-title">TOTAL ITEMS (YEAR-MONTH)</h5>
+    <p class="card-text">Displays the total cost of recurring items for the selected month and year.</p>
+    <hr />
+    <h5 class="card-title">PLAN OVERVIEW (YEAR-MONTH)</h5>
+    <p class="card-text">The chart shows the configured percentages for each category. These percentages can be modified on the Plan page.</p>
+    <hr />
+    <h5 class="card-title">ALLOCATED VS TOTAL (YEAR-MONTH)</h5>
+    <p class="card-text">The chart displays the allocated funds based on configured percentages and the total cost of recurring items for each category.</p>
+</SectionContent>
 
 @code {
     private List<FinPal.Models.JSChartArray> planItems = new List<FinPal.Models.JSChartArray>();
