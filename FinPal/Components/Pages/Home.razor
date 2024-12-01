@@ -2,6 +2,7 @@
 @inject BillDatabase BDatabase
 @inject SalaryDatabase SDatabase
 @inject IJSRuntime JS
+@inject NavigationManager Navigation
 
 @using System.Diagnostics
 @page "/"
@@ -17,7 +18,7 @@
     <div class="row">
 
         <div class="col-xl-3 col-6 mb-2 mb-md-4">
-            <div class="card border-left-primary shadow h-100 py-md-2">
+            <div class="card border-left-primary shadow h-100 py-md-2 cursor-pointer" @onclick='() => Navigation.NavigateTo("/salary")'>
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-md-2">
@@ -35,7 +36,7 @@
         </div>
 
         <div class="col-xl-3 col-6 mb-2 mb-md-4">
-            <div class="card border-left-success shadow h-100 py-md-2">
+            <div class="card border-left-success shadow h-100 py-md-2 cursor-pointer" @onclick='() => Navigation.NavigateTo("/salary")'>
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-md-2">
@@ -53,7 +54,7 @@
         </div>
 
         <div class="col-xl-3 col-6 mb-2 mb-md-4">
-            <div class="card border-left-warning shadow h-100 py-md-2">
+            <div class="card border-left-warning shadow h-100 py-md-2 cursor-pointer" @onclick='() => Navigation.NavigateTo("/bills")'>
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-md-2">
@@ -71,7 +72,7 @@
         </div>
 
         <div class="col-xl-3 col-6 mb-2 mb-md-4">
-            <div class="card border-left-info shadow h-100 py-md-2">
+            <div class="card border-left-info shadow h-100 py-md-2 cursor-pointer" @onclick='() => Navigation.NavigateTo("/bills")'>
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-md-2">
