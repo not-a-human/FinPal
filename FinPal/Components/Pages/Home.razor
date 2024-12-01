@@ -9,7 +9,7 @@
 
 <SectionContent SectionName="page-title">Welcome back, palz!</SectionContent>
 <SectionContent SectionName="page-actions">
-    <i class="bi bi-question-lg h5 cursor-pointer m-0" onclick="helpFileToggle()"></i>
+    <i class="bi bi-question-lg h5 cursor-pointer m-0 px-2" onclick="helpFileToggle()"></i>
 </SectionContent>
 
 <div class="">
@@ -120,9 +120,21 @@
                     <h6 class="m-0 font-weight-bold text-primary">Allocated vs Total (@todayMonth)</h6>
                 </div>
                 <div class="card-body position-relative" style="min-height: 150px;">
-                    <div class="@(salaryMonth > 0 ? "d-none": "d-flex") w-100 h-100 position-absolute top-0 left-0 align-items-center justify-content-center text-center" style="z-index:100;background-color:var(--dark-color);opacity:0.8;color:white;">
-                        <b>Please configure the current month's salary to display this widget correctly.</b>
-                    </div>
+                    @if (salaryMonth <= 0 || !planItems.Any())
+                    {
+                        <div class="d-flex w-100 h-100 position-absolute top-0 left-0 align-items-center justify-content-center text-center" style="z-index:100;background-color:var(--dark-color);opacity:0.8;color:white;">
+                            <div>
+                                @if (!planItems.Any())
+                                {
+                                    <b>Please configure the categories to display this widget correctly.</b>
+                                }
+                                else if(salaryMonth <= 0)
+                                {
+                                    <b>Please configure the selected month's salary to display this widget correctly.</b>
+                                }
+                            </div>
+                        </div>
+                    }
                     <ul class="list-group">
                         @foreach (var item in aItems)
                         {
