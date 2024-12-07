@@ -22,5 +22,11 @@ namespace FinPal.Constant
 
         public static string DatabasePath =>
             Path.Combine(FileSystem.AppDataDirectory, DatabaseFilename);
+
+        public const string PrimaryColor = "#4e73df";
+        public const string SuccessColor = "#1cc88a";
+        public const string InfoColor = "#36b9cc";
+        public const string WarningColor = "#f6c23e";
+        public const string DangerColor = "#e74a3b";
     }
 }

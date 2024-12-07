@@ -40,14 +40,20 @@
                 </div>
 
                 <hr class="my-4" />
-                <strong class="mb-0">UI Customisation</strong>
-                <p>Customise the application looks.</p>
+                <strong class="mb-0">UI Customization</strong>
+                <p>Personalize the appearance of the application.</p>
 
                 <div class="list-group mb-5 shadow">
                     <div class="list-group-item list-group-item-action cursor-pointer" @onclick="updateUIMode">
                         <div class="align-items-center">
                             <strong class="mb-0">Dark/Light Mode</strong>
-                            <p class="text-muted mb-0">Switch between dark or light mode.</p>
+                            <p class="text-muted mb-0">Toggle between dark and light modes.</p>
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action cursor-pointer" @onclick='() => Navigation.NavigateTo("settings/color")'>
+                        <div class="align-items-center">
+                            <strong class="mb-0">Customise Colours</strong>
+                            <p class="text-muted mb-0">Adjust the application's colour scheme to your preference.</p>
                         </div>
                     </div>
                 </div>

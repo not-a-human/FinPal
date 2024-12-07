@@ -82,15 +82,24 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var userSettings = await SettingsDatabase.GetItemAsync("UIMode"); // Assume this method retrieves user settings
-        string theme = userSettings?.SetStr?? "dark"; // Default to "dark" if no settings exist
-        SetTheme(theme);
-        UiTheme = theme == "dark" ? "" : "light-mode-bg";
-    }
+        Settings userSettings = await SettingsDatabase.GetItemAsync("UIMode");
+        Settings PColor = await SettingsDatabase.GetItemAsync("--primary-color");
+        Settings WColor = await SettingsDatabase.GetItemAsync("--warning-color");
+        Settings SColor = await SettingsDatabase.GetItemAsync("--success-color");
+        Settings IColor = await SettingsDatabase.GetItemAsync("--info-color");
+        Settings DColor = await SettingsDatabase.GetItemAsync("--danger-color");
 
-    private void SetTheme(string theme)
-    {
-        // Use JS interop to set the theme in the HTML
-        JS.InvokeVoidAsync("setTheme", theme);
+        // Change app theme to light/dark
+        string theme = userSettings?.SetStr?? "dark"; // Default to "dark" if no settings exist
+        UiTheme = theme == "dark" ? "" : "light-mode-bg";
+        await JS.InvokeVoidAsync("setTheme", theme);
+
+        //Change CSS variable colors
+        await JS.InvokeVoidAsync("changeCSSVariable", PColor);
+        await JS.InvokeVoidAsync("changeCSSVariable", WColor);
+        await JS.InvokeVoidAsync("changeCSSVariable", SColor);
+        await JS.InvokeVoidAsync("changeCSSVariable", IColor);
+        await JS.InvokeVoidAsync("changeCSSVariable", DColor);
+
     }
 }

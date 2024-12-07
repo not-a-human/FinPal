@@ -1,0 +1,73 @@
+﻿@page "/settings/color"
+@inject SettingsDatabase SDatabase
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<SectionContent SectionName="page-title">Settings</SectionContent>
+<SectionContent SectionName="page-actions">
+    <div class="d-flex h5 m-0"></div>
+</SectionContent>
+<SectionContent SectionName="page-actions-1">
+    <div @onclick='() => Navigation.NavigateTo("/settings")' class="h6 d-flex m-0"><span class="align-self-center cursor-pointer">Back</span></div>
+</SectionContent>
+
+<div class="list-group list-group-flush">
+    @foreach (var item in ColorList)
+    {
+        <div class="list-group-item d-flex justify-content-between">
+            <div class="cursor-pointer flex-fill row">
+                <strong class="align-self-center col-12">@SDatabase.GetColorCaption(item.SetKey)</strong>
+            </div>
+            <div class="d-flex">
+                <div class="align-self-center border-0">
+                    <input type="color" class="form-control form-control-color" value="@item.SetStr" @onchange='(e) => saveSettings(item, e)' title="Choose your color">
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="btn-float btn btn-primary" onclick="customModalToggle()">
+    <i class="bi bi-arrow-counterclockwise"></i>
+</div>
+
+<SectionContent SectionName="custom-modal-title">Reset to Default</SectionContent>
+<SectionContent SectionName="custom-modal-body">
+    <p class="card-text">
+        Are you sure you want to reset the colours to their default settings?
+    </p>
+    <div class="text-end">
+        <button class="btn btn-primary" @onclick="ResetDefault">Yes</button>
+        <button class="btn btn-secondary" onclick="customModalToggle()">No</button>
+    </div>
+</SectionContent>
+
+
+@code {
+    private List<FinPal.Models.Settings> ColorList = new List<FinPal.Models.Settings>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ColorList = await SDatabase.GetColorListAsync();
+    }
+
+    private async Task saveSettings(Settings item, ChangeEventArgs e)
+    {
+        item.SetStr = e.Value.ToString();
+        await SDatabase.UpdateSettingAsync(item);
+        await JS.InvokeVoidAsync("changeCSSVariable", item);
+    }
+
+    private async Task ResetDefault()
+    {
+        foreach(var item in ColorList)
+        {
+            item.SetStr = SDatabase.GetDefaultValue(item.SetKey,false);
+            await SDatabase.UpdateSettingAsync(item);
+            await JS.InvokeVoidAsync("changeCSSVariable", item);
+        }
+
+        ColorList = await SDatabase.GetColorListAsync();
+        await JS.InvokeVoidAsync("customModalToggle");
+    }
+}

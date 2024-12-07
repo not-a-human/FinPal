@@ -202,3 +202,41 @@ function customModalToggle() {
     customModal.classList.toggle('d-none');
     customModalBackDrop.classList.toggle('d-none');
 }
+
+function changeCSSVariable(item) {
+    const root = document.documentElement;
+    root.style.setProperty(item.setKey, item.setStr);
+
+    switch (item.setKey) {
+        case "--primary-color":
+            root.style.setProperty("--bs-primary-rgb", hexToRgb(item.setStr));
+            break;
+        case "--warning-color":
+            root.style.setProperty("--bs-warning-rgb", hexToRgb(item.setStr));
+            break;
+        case "--success-color":
+            root.style.setProperty("--bs-success-rgb", hexToRgb(item.setStr));
+            break;
+        case "--info-color":
+            root.style.setProperty("--bs-info-rgb", hexToRgb(item.setStr));
+            break;
+        case "--danger-color":
+            root.style.setProperty("--bs-danger-rgb", hexToRgb(item.setStr));
+            break;
+        default:
+            break;
+    }
+}
+
+function hexToRgb(hex) {
+    // Remove the hash (#) if it exists
+    hex = hex.replace(/^#/, '');
+
+    // Parse the hex string into RGB components
+    let bigint = parseInt(hex, 16);
+    let r = (bigint >> 16) & 255; // Extract the red component
+    let g = (bigint >> 8) & 255;  // Extract the green component
+    let b = bigint & 255;         // Extract the blue component
+
+    return `${r}, ${g}, ${b}`;
+}
