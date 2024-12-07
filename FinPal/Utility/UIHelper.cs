@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Maui.ApplicationModel;
 
 namespace FinPal.Utility
 {
-   public static class UIHelper
+   public class UIHelper
     {
 
         public static string GetFormValidClass(int isValid, int display)
@@ -58,6 +59,15 @@ namespace FinPal.Utility
         public static string TruncateString(string input, int max = 20)
         {
             return input.Length > max ? input.Substring(0, max) + "..." : input;
+        }
+
+        // Method to open a URL
+        public static async Task OpenExternalUrl(string url)
+        {
+            if (Uri.TryCreate(url, UriKind.Absolute, out var uriResult))
+            {
+                await Launcher.OpenAsync(uriResult);
+            }
         }
 
     }
