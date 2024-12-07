@@ -95,11 +95,20 @@ namespace FinPal.Data
                 Name = c.Name,
                 Note = c.Note,
                 Percentage = c.Percentage,
-                funds = salary * (c.Percentage / 100),
+                funds = FundCheck(salary,c),
              }).ToList();
 
 
             return fund;
+        }
+
+        private decimal FundCheck(decimal Salary, Category c)
+        {
+            // False = FixedAmount , True = Percentage
+            if (c.FixedOrPerc)
+                return Salary * (c.Percentage / 100);
+            else
+                return c.FixedAmount;
         }
     }
 }
