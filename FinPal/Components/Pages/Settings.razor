@@ -88,7 +88,7 @@
                 <p>Only available during the testing period.</p>
 
                 <div class="list-group mb-5 shadow">
-                    <div class="list-group-item list-group-item-action cursor-pointer" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+                    <div class="list-group-item list-group-item-action cursor-pointer" onclick="customModalToggle()">
                         <div class="lign-items-center">
                             <strong class="mb-0">Delete All Data</strong>
                             <p class="text-muted mb-0">Please perform this after an update.</p>
@@ -100,26 +100,19 @@
     </div>
 </div>
 
-<div class="modal" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalCenterTitle">Delete all Data</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p class="text-break">
+<SectionContent SectionName="custom-modal-title">Delete All Data</SectionContent>
+<SectionContent SectionName="custom-modal-body">
+    <p class="card-text">
                     Are you sure you want to proceed with data deletion? This action is permanent and cannot be undone.
+    </p>
+    <p class="card-text">
                     @FinPal.Services.DatabaseHelper.GetDatabasePath("SinarSQLite.db3")
                 </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" @onclick="DeleteData" class="btn btn-primary" data-bs-dismiss="modal">Proceed</button>
-            </div>
-        </div>
-    </div>
+    <div class="text-end mt-2">
+        <button class="btn btn-primary" @onclick="DeleteData">Yes</button>
+        <button class="btn btn-secondary" onclick="customModalToggle()">No</button>
 </div>
+</SectionContent>
 
 <SectionContent SectionName="help-title">Settings</SectionContent>
 <SectionContent SectionName="help-body">
@@ -173,6 +166,7 @@
         FDatabase.DropTable();
         SDatabase.DropTable();
         BDatabase.DropTable();
+        await JS.InvokeVoidAsync("customModalToggle");
         await JS.InvokeVoidAsync("showAutoHideToast", "Data deleted.");
     }
 
