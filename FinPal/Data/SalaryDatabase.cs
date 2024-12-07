@@ -68,7 +68,7 @@ namespace FinPal.Data
 
             var salaries = await Database.Table<Salary>().Where(x => x.Year == year && x.Month == month && x.Active).ToListAsync();
 
-            return salaries.FirstOrDefault().Amount;
+            return salaries?.FirstOrDefault()?.Amount ?? 0;
         }
 
         public async Task<decimal> SumSalariesByYear(int year)

@@ -223,7 +223,7 @@
     private List<FinPal.Models.AllocatedFunds> aItems = new List<FinPal.Models.AllocatedFunds>();
     private List<JSChartArray> categoryArray = new List<JSChartArray>();
 
-    private int billsCount = 0, allocatedIndex = 0;
+    private int billsCount = 0;
     private decimal salaryAnnual = 0, salaryMonth = 0;
     private DateTime today = DateTime.Now;
     private string todayMonth = DateTime.Now.ToString("yyyy-MMM");
@@ -243,8 +243,8 @@
         .Select(g => new JSChartArray
             {
                 Id = Int32.Parse(g.Key),
-                Name = g.Select(z => z.CName).FirstOrDefault(),
-                Value = g.Sum(e => e.AmountDue)
+                Name = g?.Select(z => z.CName).FirstOrDefault() ?? "",
+                Value = g?.Sum(e => e.AmountDue) ?? 0
 
             }).ToList();
 
@@ -254,12 +254,7 @@
 
     private decimal totalCategory(int Id)
     {
-        var q = categoryArray.Where(x => x.Id == Id).Select(z => z.Value).FirstOrDefault();
-
-        if (q != null)
-            return q;
-
-        return 0;
+        return categoryArray.Where(x => x.Id == Id).Select(z => z.Value).FirstOrDefault();
     }
 
     private int GetAllocatedPercent(decimal funds, decimal totalBill)

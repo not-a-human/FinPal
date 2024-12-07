@@ -230,12 +230,12 @@
             formModel.period = bItems.Period;
             formModel.startDate = bItems.StartDate;
             formModel.endDate = bItems.EndDate;
-            formModel.note = bItems.Note;
+            formModel.note = bItems?.Note ?? "";
 
             isCategory = 0;
         }
 
-        JS.InvokeVoidAsync("logToConsole",Navigation.Uri);
+        await JS.InvokeVoidAsync("logToConsole",Navigation.Uri);
     }
 
     private async Task submitForm()

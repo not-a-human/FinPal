@@ -160,8 +160,8 @@
 
         if (categoryList.Any())
         {
-            selectedCategory = categoryList.FirstOrDefault(i => i.Active).Id;
-            categoryLastID = categoryList.LastOrDefault(i => i.Active).Id;
+            selectedCategory = categoryList?.FirstOrDefault(i => i.Active)?.Id ?? 0;
+            categoryLastID = categoryList?.LastOrDefault(i => i.Active)?.Id ?? 0;
             LoadFinance();
         }
     }
@@ -214,7 +214,7 @@
         if (categoryList.FirstOrDefault(i => i.Id == selectedCategory) != null)
         {
             fListwithC = financeList.Where(i => i.CategoryId == selectedCategory).ToList();
-            selectedCategoryStr = UIHelper.TruncateString(categoryList.FirstOrDefault(i => i.Id == selectedCategory).Name);
+            selectedCategoryStr = UIHelper.TruncateString(categoryList?.FirstOrDefault(i => i.Id == selectedCategory)?.Name ?? "");
         }
     }
 
@@ -230,15 +230,15 @@
         CreateForm = true;
         id = item.Id;
         formModel.category = item.CategoryId;
-        formModel.name = item.Name;
-        formModel.note = item.Note;
+        formModel.name = item.Name ?? "";
+        formModel.note = item.Note ?? "";
         formModel.payDate = item.PayDate;
         formModel.reminder = item.Reminder;
         formModel.active = item.Active;
         await firstInput.FocusAsync();
     }
 
-    private async void cancelFinance()
+    private void cancelFinance()
     {
         CreateForm = false;     
         id = 0; formModel.name = ""; formModel.note = ""; formModel.category = 0;
@@ -249,7 +249,7 @@
         if(CategoryIndex < (CategoryCount-1))
         {
             CategoryIndex++;
-            selectedCategory = categoryList.Skip(CategoryIndex).FirstOrDefault(i => i.Active).Id;
+            selectedCategory = categoryList?.Skip(CategoryIndex).FirstOrDefault(i => i.Active)?.Id ?? 0;
             LoadFinance();
         }
     }
@@ -259,7 +259,7 @@
         if (CategoryIndex > 0)
         {
             CategoryIndex--;
-            selectedCategory = categoryList.Skip(CategoryIndex).FirstOrDefault(i => i.Active).Id;
+            selectedCategory = categoryList?.Skip(CategoryIndex).FirstOrDefault(i => i.Active)?.Id ?? 0;
             LoadFinance();
         }
     }

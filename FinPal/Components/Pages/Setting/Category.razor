@@ -130,8 +130,8 @@
     {
         CreateForm = true;
         id = item.Id;
-        formModel.name = item.Name;
-        formModel.note = item.Note;
+        formModel.name = item.Name ?? "";
+        formModel.note = item.Note ?? "";
         formModel.active = item.Active;
         await firstInput.FocusAsync();
     }

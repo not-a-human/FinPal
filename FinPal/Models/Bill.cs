@@ -13,9 +13,9 @@ namespace FinPal.Models
         [PrimaryKey]
         public int Id { get; set; }
         public decimal AmountDue { get; set; }
-        public string CategoryCode { get; set; }
+        public string CategoryCode { get; set; } = "";
         public int FinanceCode { get; set; }
-        public string ItemName { get; set; }
+        public string ItemName { get; set; } = "";
         public string Repeat { get; set; } = "M";
         public int Period { get; set; }
         public bool Continuous { get; set; } = false;

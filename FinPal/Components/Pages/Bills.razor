@@ -108,7 +108,7 @@
         await Task.Run(LoadBills);
     }
 
-    private async Task LoadBills()
+    private void LoadBills()
     {
         System.Threading.Thread.Sleep(500);
         LoadFilteredBills();

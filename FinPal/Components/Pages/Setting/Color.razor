@@ -53,7 +53,7 @@
 
     private async Task saveSettings(Settings item, ChangeEventArgs e)
     {
-        item.SetStr = e.Value.ToString();
+        item.SetStr = e.Value?.ToString() ?? "";
         await SDatabase.UpdateSettingAsync(item);
         await JS.InvokeVoidAsync("changeCSSVariable", item);
     }

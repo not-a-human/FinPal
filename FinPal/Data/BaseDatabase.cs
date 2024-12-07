@@ -12,14 +12,13 @@ namespace FinPal.Data
 {
     public abstract class BaseDatabase<T> where T : new()
     {
-        protected SQLiteAsyncConnection Database;
-        public BaseDatabase() { }
+        protected SQLiteAsyncConnection Database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
 
         public async Task Init()
         {
             if (Database is not null)
                 return;
-
+         
             Database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
             var result = await Database.CreateTableAsync<T>();
         }
@@ -33,17 +32,29 @@ namespace FinPal.Data
         public async Task<List<T>> GetActiveItemsAsync()
         {
             await Init();
-            return await Database.Table<T>().Where(item => ((IModel)item).Active).ToListAsync();
+            // Fetch all records from the table
+            var allItems = await Database.Table<T>().ToListAsync();
+
+            // Filter the results in memory
+            var activeItems = allItems
+                .Where(i => i is IModel model && model.Active)
+                .ToList();
+
+            return activeItems;
         }
 
         // virtual = to allow overriding
         public virtual async Task<int> SaveItemAsync(T item)
         {
             await Init();
-            if (((IModel)item).Id != 0)
-                return await Database.UpdateAsync(item);
-            else
-                return await Database.InsertAsync(item);
+            if(item != null)
+            {
+                if (((IModel)item).Id != 0)
+                    return await Database.UpdateAsync(item);
+                else
+                    return await Database.InsertAsync(item);
+            } 
+            return 0;
         }
 
         public async Task<int> DeleteItemAsync(T item)
@@ -75,9 +86,14 @@ namespace FinPal.Data
         {
             await Init();
 
-            ((IModel)item).Active = !((IModel)item).Active;
+            if (item != null)
+            {
+                ((IModel)item).Active = !((IModel)item).Active;
 
-            return await Database.UpdateAsync(item);
+                return await Database.UpdateAsync(item);
+            }
+
+            return 0;
         }
     }
 }

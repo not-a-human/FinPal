@@ -9,8 +9,7 @@ namespace FinPal.Data
     public class SettingsDatabase
     {
 
-        protected SQLiteAsyncConnection Database;
-        public SettingsDatabase() { }
+        protected SQLiteAsyncConnection Database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
         public async Task Init()
         {
             if (Database is not null)
@@ -60,16 +59,15 @@ namespace FinPal.Data
                     return item;
                 }
                 
-                return null;
             }
 
-            if (string.IsNullOrEmpty(result.APname))
+            else if (string.IsNullOrEmpty(result.APname))
             {
                 result.APname = GetDefaultValue(setKey, true);
                 await UpdateSettingAsync(result);
             }
 
-            return result;
+            return result ?? new Settings();
         }
 
         public virtual async Task<int> UpdateSettingAsync(Settings item)

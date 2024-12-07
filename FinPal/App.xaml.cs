@@ -4,18 +4,13 @@ namespace FinPal
 {
     public partial class App : Application
     {
-        public static CategoryDatabase CDatabase { get; private set; }
-        public static FinanceNameDatabase FDatabase { get; private set; }
-        public static SettingsDatabase SetDatabase { get; private set; }
-        public static SalaryDatabase SDatabase { get; private set; }
+        public static CategoryDatabase CDatabase { get; private set; } = new CategoryDatabase();
+        public static FinanceNameDatabase FDatabase { get; private set; } = new FinanceNameDatabase();
+        public static SettingsDatabase SetDatabase { get; private set; } = new SettingsDatabase();
+        public static SalaryDatabase SDatabase { get; private set; } = new SalaryDatabase();
         public App()
         {
             InitializeComponent();
-
-            CDatabase = new CategoryDatabase();
-            FDatabase = new FinanceNameDatabase();
-            SetDatabase = new SettingsDatabase();
-            SDatabase = new SalaryDatabase();
 
             SeedDatabase();
 

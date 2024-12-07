@@ -66,8 +66,8 @@ namespace FinPal.Data
             var chartData = categories.Select(c => new JSChartArray
             {
                 Id = c.Id,
-                Name = c.Name,
-                Value = (decimal)c.Percentage
+                Name = c?.Name ?? "",
+                Value = c?.Percentage ?? 0
             }).ToList();
 
             return chartData;
@@ -85,7 +85,7 @@ namespace FinPal.Data
             var salaries = await Database.QueryAsync<Salary>(query, currentMonth, currentYear);
             
             if(salaries.Count != 0)
-                salary = salaries.FirstOrDefault().Amount;
+                salary = salaries?.FirstOrDefault()?.Amount ?? 0;
 
             var categories = await Database.Table<Category>().Where(i => i.Active).ToListAsync();
 
