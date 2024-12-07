@@ -13,7 +13,7 @@
 <div id="category-not-0" class="d-none">
     <div class="row justify-content-center">
         <div class="col-12 mx-auto">
-            <div class="my-4">
+            <div class="mb-4">
                 <div class="list-group list-group-flush">
                     @foreach (var item in cItems)
                     {
@@ -48,16 +48,22 @@
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col">
-                                <div id="totalPercentDiv" class="text-center @(totalPercent>100 ? "text-danger" : "text-success")">@cItems.Sum(i => i.FixedAmount) 
+                                <div class="text-center"> 
                                     @if(salary > 0)
                                     {
-                                        <span>/ @salary</span>
+                                        <span class="@(@cItems.Sum(i => i.FixedAmount)>salary ? "text-danger" : "text-success")">@cItems.Sum(i => i.FixedAmount)</span>
+
+                                        <span> / @salary</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@cItems.Sum(i => i.FixedAmount) </span>
                                     }
                                     <span><i class="bi bi-currency-dollar"></i></span>
                                 </div>
                             </div>
                             <div class="col">
-                                <div id="totalPercentDiv" class="text-center @(totalPercent>100 ? "text-danger" : "text-success")">@totalPercent <span><i class="bi bi-percent"></i></span></div>
+                                <div class="text-center @(totalPercent>100 ? "text-danger" : "text-success")">@totalPercent.ToString("#.##") <span><i class="bi bi-percent"></i></span></div>
                             </div>
                         </div>
                     </div>
@@ -171,7 +177,7 @@
         {
             await CDatabase.SaveItemAsync(item);
         }
-        await JS.InvokeVoidAsync("showToast", "Update", "Plans updated successfully.");
+        await JS.InvokeVoidAsync("showAutoHideToast", "Plans updated successfully.");
 
     }
 

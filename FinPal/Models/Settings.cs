@@ -9,8 +9,10 @@ namespace FinPal.Models
 {
     public class Settings
     {
+        public string APname { get; set; } = "";
+
         [PrimaryKey]
-        public string SetKey { get; set; }
-        public string SetStr { get; set; }
+        public string SetKey { get; set; } = "";
+        public string SetStr { get; set; } = "";
     }
 }

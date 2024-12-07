@@ -15,10 +15,17 @@
         <label for="totalPrice" class="form-label">Amount due</label>
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
-            <input @ref="firstInput"  type="number" class="form-control @(UIHelper.GetFormValidClass(isAmount,0))" required id="totalPrice" @bind="formModel.amountDue" placeholder="Amount due" />
+            <input @ref="firstInput"  type="number" class="form-control @(UIHelper.GetFormValidClass(isAmount,0))" required id="totalPrice" @bind-value="formModel.amountDue" @bind-value:event="oninput" @onchange="checkAmountDue" placeholder="Amount due" />
         </div>
         <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isAmount,1))">
-            Amount due cannot be 0!
+            @if(isAmount == 1)
+            {
+                <span>Amount due cannot be 0!</span>
+            }
+            else if (isAmount == 3)
+            {
+                <span>Amount due cannot be more than 999,999!</span>
+            }
         </div>
     </div>
     <hr class="my-5 mx-3"/>
@@ -43,7 +50,7 @@
         <label for="financeCode" class="form-label">Finance Name</label>
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-bank2"></i></span>
-            <select disabled="@financeDisable" class="form-select @(UIHelper.GetFormValidClass(isFinance,0))" id="financeCode" required @bind="formModel.financeCode">
+        <select disabled="@financeDisable" class="form-select @(UIHelper.GetFormValidClass(isFinance,0))" id="financeCode" required @bind-value="formModel.financeCode" @bind-value:event="oninput" @onchange="checkFinance">
                 <option value="">Please Select</option>
                 @foreach (var item in financeBasedOnCategory)
                 {
@@ -60,7 +67,7 @@
         <label for="itemName" class="form-label">Item Name</label>
         <div class="input-group">
             <span class="input-group-text"><i class="bi bi-type"></i></span>
-            <input type="text" class="form-control @(UIHelper.GetFormValidClass(isName,0))" required id="itemName" @bind="formModel.itemName" placeholder="Enter item name" />
+        <input type="text" class="form-control @(UIHelper.GetFormValidClass(isName,0))" required id="itemName" @bind-value="formModel.itemName" @bind-value:event="oninput" @onchange="checkItemName" placeholder="Enter item name" />
         </div>
         <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isName,1))">
             Please input the item name.
@@ -223,15 +230,17 @@
             formModel.period = bItems.Period;
             formModel.startDate = bItems.StartDate;
             formModel.endDate = bItems.EndDate;
-            formModel.note = bItems.Note;
+            formModel.note = bItems?.Note ?? "";
+
+            isCategory = 0;
         }
 
-        JS.InvokeVoidAsync("logToConsole",Navigation.Uri);
+        await JS.InvokeVoidAsync("logToConsole",Navigation.Uri);
     }
 
     private async Task submitForm()
     {
-        isAmount = UIHelper.IsZeroEmpty(formModel.amountDue);
+        checkAmountDue();
         isCategory = UIHelper.IsZeroEmpty(formModel.category);
         isName = UIHelper.IsZeroEmpty(formModel.itemName);
         isFinance = UIHelper.IsZeroEmpty(formModel.financeCode);
@@ -258,7 +267,17 @@
                 };
 
             await BDatabase.SaveItemAsync(newBill);
-            Navigation.NavigateTo("/bills/true");
+
+            if (Id != 0)
+            {
+                await JS.InvokeVoidAsync("showAutoHideToast", "Recurring item updated successfully.");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("showAutoHideToast", "Recurring item created successfully.");
+            }
+            
+            Navigation.NavigateTo("/bills");
         }
         else
         {
@@ -269,6 +288,9 @@
     private async Task deleteForm()
     {
         await BDatabase.DeleteItemAsync(bItems);
+
+        await JS.InvokeVoidAsync("showAutoHideToast", "Recurring item deleted successfully.");
+
         Navigation.NavigateTo("/bills");
     }
 
@@ -281,6 +303,7 @@
     {
         if (!string.IsNullOrEmpty(formModel.category))
         {
+            isCategory = 2;
             financeBasedOnCategory = fnItems.Where(c => c.CategoryId == Convert.ToInt32(formModel.category)).ToList();
             financeDisable = false;
             if(Id != 0)
@@ -289,6 +312,27 @@
         else
         {
             financeDisable = true; formModel.financeCode = "";
+            isCategory = 1;
+            isFinance = 0;
+        }
+    }
+
+    private void checkFinance()
+    {
+        isFinance = UIHelper.IsZeroEmpty(formModel.financeCode);
+    }
+
+    private void checkItemName()
+    {
+        isName = UIHelper.IsZeroEmpty(formModel.itemName);
+    }
+
+    private void checkAmountDue()
+    {
+        isAmount = UIHelper.IsZeroEmpty(formModel.amountDue);
+        if (formModel.amountDue > 999999)
+        {
+            isAmount = 3;
         }
     }
 

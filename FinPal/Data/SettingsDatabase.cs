@@ -9,8 +9,7 @@ namespace FinPal.Data
     public class SettingsDatabase
     {
 
-        protected SQLiteAsyncConnection Database;
-        public SettingsDatabase() { }
+        protected SQLiteAsyncConnection Database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
         public async Task Init()
         {
             if (Database is not null)
@@ -32,7 +31,12 @@ namespace FinPal.Data
 
             var settings = new List<Settings>
             {
-                new Settings {SetKey = "UIMode", SetStr = "dark"},
+                new Settings {SetKey = "UIMode", SetStr = "dark", APname = "Theme"},
+                new Settings {SetKey = "--primary-color", SetStr = GetDefaultValue("--primary-color", false), APname = "CSSColor"},
+                new Settings {SetKey = "--warning-color", SetStr = GetDefaultValue("--warning-color", false), APname = "CSSColor"},
+                new Settings {SetKey = "--success-color", SetStr = GetDefaultValue("--success-color", false), APname = "CSSColor"},
+                new Settings {SetKey = "--info-color", SetStr = GetDefaultValue("--info-color", false), APname = "CSSColor"},
+                new Settings {SetKey = "--danger-color", SetStr = GetDefaultValue("--danger-color", false), APname = "CSSColor"},
             };
 
             foreach (var item in settings)
@@ -45,11 +49,25 @@ namespace FinPal.Data
         {
             await Init();
             var result = await Database.Table<Settings>().Where(i => i.SetKey == setKey).FirstOrDefaultAsync();
+            
             if(result == null)
             {
-                return null;
+                if(GetDefaultValue(setKey, false) != "")
+                {
+                    Settings item = new Settings { SetKey = setKey, SetStr = GetDefaultValue(setKey, false), APname = GetDefaultValue(setKey, true) };
+                    await Database.InsertAsync(item);
+                    return item;
+                }
+                
             }
-            return result;
+
+            else if (string.IsNullOrEmpty(result.APname))
+            {
+                result.APname = GetDefaultValue(setKey, true);
+                await UpdateSettingAsync(result);
+            }
+
+            return result ?? new Settings();
         }
 
         public virtual async Task<int> UpdateSettingAsync(Settings item)
@@ -61,6 +79,70 @@ namespace FinPal.Data
         public async Task<int> ChangeUIMode(Settings item)
         {
             return await Database.UpdateAsync(item);
+        }
+
+        public async Task<List<Settings>> GetColorListAsync()
+        {
+            await Init();
+
+            return await Database.Table<Settings>().Where(i => i.APname == "CSSColor").ToListAsync();
+        }
+
+        /// <summary>
+        /// Return APName or SetStr
+        /// </summary>
+        /// <param name="APorStr">True = AP, False = Str</param>
+        public string GetDefaultValue(string SetKey, bool APorStr)
+        {
+            switch (SetKey)
+            {
+                case "UIMode":
+                    return GetApNameOrSetStr("dark","Theme",APorStr);
+                case "--primary-color":
+                    return GetApNameOrSetStr(FinPal.Constant.Constants.PrimaryColor, "CSSColor", APorStr);
+                case "--warning-color": 
+                    return GetApNameOrSetStr(FinPal.Constant.Constants.WarningColor, "CSSColor", APorStr);
+                case "--success-color": 
+                    return GetApNameOrSetStr(FinPal.Constant.Constants.SuccessColor, "CSSColor", APorStr);
+                case "--info-color":
+                    return GetApNameOrSetStr(FinPal.Constant.Constants.InfoColor, "CSSColor", APorStr);
+                case "--danger-color": 
+                    return GetApNameOrSetStr(FinPal.Constant.Constants.DangerColor, "CSSColor", APorStr);
+                default:
+                    return "";
+            }
+        }
+
+        /// <summary>
+        /// Return APName or SetStr
+        /// </summary>
+        /// <param name="APorStr">True = AP, False = Str</param>
+        private string GetApNameOrSetStr(string SetStr, string APName, bool APorStr)
+        {
+            if (APorStr)
+            {
+                return APName;
+            }
+            return SetStr;
+        }
+
+        public string GetColorCaption(string SetKey)
+        {
+            switch (SetKey)
+            {
+                case "--primary-color":
+                    return "Primary";
+                case "--warning-color":
+                    return "Warning";
+                case "--success-color":
+                    return "Success";
+                case "--info-color":
+                    return "Info";
+                case "--danger-color":
+                    return "Danger";
+                default:
+                    return "";
+            }
         }
     }
 }

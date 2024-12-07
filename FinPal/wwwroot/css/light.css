@@ -20,6 +20,10 @@
     --bs-dropdown-link-hover-bg: var(--bs-tertiary-bg);
 }
 
+.home-widget-title-color {
+    color: var(--primary-color);
+}
+
 @media (max-width: 1199px) {
     .top-panel, .top-panel-footer, #header {
         background-color: white;

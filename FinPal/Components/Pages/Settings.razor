@@ -40,14 +40,20 @@
                 </div>
 
                 <hr class="my-4" />
-                <strong class="mb-0">UI Customisation</strong>
-                <p>Customise the application looks.</p>
+                <strong class="mb-0">UI Customization</strong>
+                <p>Personalize the appearance of the application.</p>
 
                 <div class="list-group mb-5 shadow">
                     <div class="list-group-item list-group-item-action cursor-pointer" @onclick="updateUIMode">
                         <div class="align-items-center">
                             <strong class="mb-0">Dark/Light Mode</strong>
-                            <p class="text-muted mb-0">Switch between dark or light mode.</p>
+                            <p class="text-muted mb-0">Toggle between dark and light modes.</p>
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action cursor-pointer" @onclick='() => Navigation.NavigateTo("settings/color")'>
+                        <div class="align-items-center">
+                            <strong class="mb-0">Customise Colours</strong>
+                            <p class="text-muted mb-0">Adjust the application's colour scheme to your preference.</p>
                         </div>
                     </div>
                 </div>
@@ -72,7 +78,26 @@
                     <div class="list-group-item list-group-item-action cursor-pointer" @onclick="importData">
                         <div class="align-items-center">
                             <strong class="mb-0">Import Data</strong>
-                            <p class="text-muted mb-0">Existing data will be erased before importing the new data.</p>
+                            <p class="text-muted mb-0">Existing data will be overwritten.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+                <strong class="mb-0">Contact Us</strong>
+                <p>Reach out to us for more information or assistance.</p>
+
+                <div class="list-group mb-5 shadow">
+                    <div class="list-group-item list-group-item-action cursor-pointer" @onclick='() => Navigation.NavigateTo("settings/aboutus")'>
+                        <div class="lign-items-center">
+                            <strong class="mb-0">About Us</strong>
+                            <p class="text-muted mb-0">Learn more about our mission and the purpose of this app.</p>
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action cursor-pointer" @onclick="ReportAnIssue">
+                        <div class="lign-items-center">
+                            <strong class="mb-0">Report an Issue</strong>
+                            <p class="text-muted mb-0">Navigate to our GitHub page to report any issues.</p>
                         </div>
                     </div>
                 </div>
@@ -82,8 +107,8 @@
                 <p>Only available during the testing period.</p>
 
                 <div class="list-group mb-5 shadow">
-                    <div class="list-group-item list-group-item-action cursor-pointer" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
-                        <div class="lign-items-center" >
+                    <div class="list-group-item list-group-item-action cursor-pointer" onclick="customModalToggle()">
+                        <div class="lign-items-center">
                             <strong class="mb-0">Delete All Data</strong>
                             <p class="text-muted mb-0">Please perform this after an update.</p>
                         </div>
@@ -94,26 +119,19 @@
     </div>
 </div>
 
-<div class="modal" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalCenterTitle">Delete all Data</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p class="text-break">
+<SectionContent SectionName="custom-modal-title">Delete All Data</SectionContent>
+<SectionContent SectionName="custom-modal-body">
+    <p class="card-text">
                     Are you sure you want to proceed with data deletion? This action is permanent and cannot be undone.
+    </p>
+    <p class="card-text">
                     @FinPal.Services.DatabaseHelper.GetDatabasePath("SinarSQLite.db3")
                 </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" @onclick="DeleteData" class="btn btn-primary" data-bs-dismiss="modal">Proceed</button>
-            </div>
-        </div>
-    </div>
+    <div class="text-end mt-2">
+        <button class="btn btn-primary" @onclick="DeleteData">Yes</button>
+        <button class="btn btn-secondary" onclick="customModalToggle()">No</button>
 </div>
+</SectionContent>
 
 <SectionContent SectionName="help-title">Settings</SectionContent>
 <SectionContent SectionName="help-body">
@@ -151,7 +169,7 @@
 </SectionContent>
 
 @code {
-    private string message;
+    private string? message;
 
     private async Task updateUIMode()
     {
@@ -167,7 +185,8 @@
         FDatabase.DropTable();
         SDatabase.DropTable();
         BDatabase.DropTable();
-        await JS.InvokeVoidAsync("showToast", "Delete", "Data deleted.");
+        await JS.InvokeVoidAsync("customModalToggle");
+        await JS.InvokeVoidAsync("showAutoHideToast", "Data deleted.");
     }
 
     private async void exportData()
@@ -211,6 +230,9 @@
         await JS.InvokeVoidAsync("showToast", "Data Import", message);
     }
 
-
+    private async void ReportAnIssue()
+    {
+        await FinPal.Utility.UIHelper.OpenExternalUrl("https://github.com/not-a-human/FinPal/issues");
+    }
    
 }
