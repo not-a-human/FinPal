@@ -161,6 +161,11 @@ i.cursor-pointer:hover {
 .left-0 {
     left:0;
 }
+
+.home-widget-title-color {
+    color: var(--bs-heading-color);
+}
+
 @media (max-width: 576px) {
     .mobile-no-padding {
         padding:0;
