@@ -1,0 +1,66 @@
+﻿@page "/settings/aboutus"
+@inject SettingsDatabase SDatabase
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<SectionContent SectionName="page-title">About Us</SectionContent>
+<SectionContent SectionName="page-actions">
+    <div class="d-flex h5 m-0"></div>
+</SectionContent>
+<SectionContent SectionName="page-actions-1">
+    <div @onclick='() => Navigation.NavigateTo("/settings")' class="h6 d-flex m-0"><span class="align-self-center cursor-pointer">Back</span></div>
+</SectionContent>
+<div class="text-center d-flex justify-content-center align-items-center position-fixed w-100 h-100 left-0 top-0">
+    <div style="background-image:url('applogo.png');background-size: cover;width: 200px; height: 200px;"></div>
+</div>
+<div class="container-lg">
+
+    <div class="card opacity-90">
+        <div class="card-body">
+            <h5 class="pb-2">About FinPalz</h5>
+            <p class="card-text">
+                FinPalz is a finance management app designed to help users plan allocated funds based on a percentage of their monthly salary.
+                Users can create records for bills and loans, and the app notifies them when any bill or loan exceeds the allocated fund for the specified category.
+                Additionally, users can track their monthly salary within the app. This project is still in the testing and development phase, and we welcome feedback from testers.
+            </p>
+        </div>
+    </div>
+
+    <div class="card mt-3 opacity-90">
+        <div class="card-body">
+            <h5 class="pb-2">Contact Us</h5>
+            <div id="contact-us" class="d-flex justify-content-center">
+                <span @onclick='() => OpenExternal("https://www.instagram.com/aviesinar")' class="btn btn-outline-primary rounded-circle h1 border-2 mx-2"><i class="bi bi-instagram"></i></span>
+                <span @onclick='() => OpenExternal("mailto: sinargtux@gmail.com")' class="btn btn-outline-primary rounded-circle h1 border-2 mx-2"><i class="bi bi-envelope-at"></i></span>
+                <span @onclick='() => OpenExternal("https://github.com/not-a-human/FinPal")' class="btn btn-outline-primary rounded-circle h1 border-2 mx-2"><i class="bi bi-github"></i></span>
+                <span @onclick='() => OpenExternal("https://www.linkedin.com/in/avie-sinar/")' class="btn btn-outline-primary rounded-circle h1 border-2 mx-2"><i class="bi bi-linkedin"></i></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card rounded list-group list-group-flush mt-3 opacity-90">
+        <div class="list-group-item d-flex justify-content-between">
+            <div class="flex-fill">
+                App Version
+            </div>
+            <div class="text-muted">
+                @Microsoft.Maui.ApplicationModel.VersionTracking.CurrentVersion
+            </div>
+        </div>
+        <div class="list-group-item d-flex justify-content-between">
+            <div class="flex-fill">
+                Build Number
+            </div>
+            <div class="text-muted">
+                @Microsoft.Maui.ApplicationModel.VersionTracking.CurrentBuild
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private async void OpenExternal(string url)
+    {
+        await FinPal.Utility.UIHelper.OpenExternalUrl(url);
+    }
+}

@@ -84,6 +84,25 @@
                 </div>
 
                 <hr class="my-4" />
+                <strong class="mb-0">Contact Us</strong>
+                <p>Reach out to us for more information or assistance.</p>
+
+                <div class="list-group mb-5 shadow">
+                    <div class="list-group-item list-group-item-action cursor-pointer" @onclick='() => Navigation.NavigateTo("settings/aboutus")'>
+                        <div class="lign-items-center">
+                            <strong class="mb-0">About Us</strong>
+                            <p class="text-muted mb-0">Learn more about our mission and the purpose of this app.</p>
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action cursor-pointer" @onclick="ReportAnIssue">
+                        <div class="lign-items-center">
+                            <strong class="mb-0">Report an Issue</strong>
+                            <p class="text-muted mb-0">Navigate to our GitHub page to report any issues.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
                 <strong class="mb-0">Tester Function</strong>
                 <p>Only available during the testing period.</p>
 
@@ -211,6 +230,9 @@
         await JS.InvokeVoidAsync("showToast", "Data Import", message);
     }
 
-
+    private async void ReportAnIssue()
+    {
+        await FinPal.Utility.UIHelper.OpenExternalUrl("https://github.com/not-a-human/FinPal/issues");
+    }
    
 }
