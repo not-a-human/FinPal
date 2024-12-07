@@ -244,9 +244,17 @@
         isCategory = UIHelper.IsZeroEmpty(formModel.category);
         isName = UIHelper.IsZeroEmpty(formModel.itemName);
         isFinance = UIHelper.IsZeroEmpty(formModel.financeCode);
-        isPeriod = UIHelper.IsZeroEmpty(formModel.period);
         isEndDate = formModel.startDate > formModel.endDate ? 1 : 2;
 
+        if (isRepeatForever)
+        {
+            isPeriod = 2;
+        }
+        else
+        {
+            isPeriod = UIHelper.IsZeroEmpty(formModel.period);
+        }
+        
         if (isAmount == 2 && isCategory == 2 && isName == 2 && isFinance == 2 && isPeriod == 2)
         {
             var newBill = new Bill
