@@ -48,16 +48,22 @@
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col">
-                                <div id="totalPercentDiv" class="text-center @(totalPercent>100 ? "text-danger" : "text-success")">@cItems.Sum(i => i.FixedAmount) 
+                                <div class="text-center"> 
                                     @if(salary > 0)
                                     {
-                                        <span>/ @salary</span>
+                                        <span class="@(@cItems.Sum(i => i.FixedAmount)>salary ? "text-danger" : "text-success")">@cItems.Sum(i => i.FixedAmount)</span>
+
+                                        <span> / @salary</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@cItems.Sum(i => i.FixedAmount) </span>
                                     }
                                     <span><i class="bi bi-currency-dollar"></i></span>
                                 </div>
                             </div>
                             <div class="col">
-                                <div id="totalPercentDiv" class="text-center @(totalPercent>100 ? "text-danger" : "text-success")">@totalPercent <span><i class="bi bi-percent"></i></span></div>
+                                <div class="text-center @(totalPercent>100 ? "text-danger" : "text-success")">@totalPercent <span><i class="bi bi-percent"></i></span></div>
                             </div>
                         </div>
                     </div>
