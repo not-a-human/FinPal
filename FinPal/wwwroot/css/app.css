@@ -738,10 +738,10 @@ section {
 }
 
 /*--------------------------------------------------------------
-# Sections General
+# Help File / Custom Modal
 --------------------------------------------------------------*/
 
-#help-file {
+#help-file, #custom-modal {
     height: 90vh;
     width: 90vw;
     position: absolute;
@@ -751,11 +751,18 @@ section {
     right: 5vw;
 }
 
+#custom-modal {
+    height: auto;
+    width: 50vw;
+    top: 25vh;
+    right: 25vw;
+}
+
 #help-file .card-body {
     overflow: scroll;
 }
 
-#help-file-backdrop {
+#help-file-backdrop, #custom-modal-backdrop {
     height: 100vh;
     width: 100vw;
     position: absolute;
@@ -764,6 +771,21 @@ section {
     right: 0;
     background: var(--dark-color);
     opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+    #custom-modal {
+        width: 75vw;
+        top: 30vh;
+        right: 12.5vw;
+    }
+}
+@media (max-width: 576px) {
+    #custom-modal {
+        width: 90vw;
+        top: 30vh;
+        right: 5vw;
+    }
 }
 /*--------------------------------------------------------------
 # Blazor default

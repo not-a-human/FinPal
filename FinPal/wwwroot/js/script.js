@@ -194,3 +194,11 @@ function helpFileToggle() {
     helpFile.classList.toggle('d-none');
     helpFileBackDrop.classList.toggle('d-none');
 }
+
+function customModalToggle() {
+    const customModal = document.getElementById('custom-modal');
+    const customModalBackDrop = document.getElementById('custom-modal-backdrop');
+
+    customModal.classList.toggle('d-none');
+    customModalBackDrop.classList.toggle('d-none');
+}

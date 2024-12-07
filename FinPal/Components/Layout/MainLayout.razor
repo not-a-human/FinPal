@@ -17,6 +17,21 @@
     </div>
 </div>
 
+<div id="custom-modal-backdrop" class="d-none" onclick="customModalToggle()"></div>
+<div id="custom-modal" class="rounded shadow p-0 d-none">
+    <div class="card h-100 m-0">
+        <div class="card-header">
+            <div class="d-flex align-content-center justify-content-between">
+                <span><SectionOutlet SectionName="custom-modal-title" /></span>
+                <button class="btn-close" onclick="customModalToggle()"></button>
+            </div>
+        </div>
+        <div class="card-body">
+            <SectionOutlet SectionName="custom-modal-body" />
+        </div>
+    </div>
+</div>
+
 <div style="height:100vh" class="page @UiTheme">
 
     <header id="header">
