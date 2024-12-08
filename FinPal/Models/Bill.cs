@@ -24,15 +24,15 @@ namespace FinPal.Models
         public decimal Total { get; set; }
         public decimal InterestRate { get; set; }
         public decimal AdminFee { get; set; }
-        public string? Note { get; set; }
+        public string Note { get; set; } = "";
         public bool Active { get; set; } = true;
     }
 
     public class BillwithFC : Bill
     {
-        public string? FName { get; set; }
-        public string? FNote { get; set; }
-        public string? CName { get; set; }
-        public string? CNote { get; set; }
+        public string FName { get; set; } = "";
+        public string FNote { get; set; } = "";
+        public string CName { get; set; } = "";
+        public string CNote { get; set; } = "";
     }
 }

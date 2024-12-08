@@ -412,7 +412,8 @@ i.cursor-pointer:hover {
     right: 0;
     bottom: auto;
     left: auto;
-    z-index: 100;
+    z-index: 105;
+    overflow:visible;
 }
 
 .top-panel h3 {
@@ -428,7 +429,7 @@ i.cursor-pointer:hover {
     right: 0;
     bottom: auto;
     left: auto;
-    z-index: 103;
+    z-index: 106;
     padding-left: 300px;
     padding-right: 1rem;
     padding-bottom: 0.7rem;
@@ -457,6 +458,11 @@ i.cursor-pointer:hover {
     border-radius: 50%;
     font-size: 1.2rem;
 }
+
+    .btn-float .btn {
+        border-radius: 50%;
+        font-size: 1.2rem;
+    }
 
 /*--------------------------------------------------------------
 # Toast
@@ -848,6 +854,29 @@ section {
         margin: 0;
     }
 
+.bill-count-max-width {
+    width: 20px;
+}
+
+@media (max-width: 1199px) {
+    #bill-search {
+        position: fixed;
+        z-index: 100;
+        top: 75px;
+        width: 800px;
+    }
+
+    #bill-empty-space {
+        height: 20px;
+    }
+}
+
+@media (max-width: 991px){
+    #bill-search {
+        width:700px;
+    }
+}
+
 @media (max-width: 768px) {
     .bill-price {
         position: absolute;
@@ -864,6 +893,18 @@ section {
 
     .bill-ul li {
         font-size: small;
+    }
+    #bill-search {
+        width: 95% !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .bill-count-max-width {
+        width: 40px;
+    }
+    #bill-container {
+        max-width: 800px;
     }
 }
 

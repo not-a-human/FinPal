@@ -24,6 +24,10 @@
     color: var(--primary-color);
 }
 
+.table.bg-none {
+    --bs-table-bg: none;
+}
+
 @media (max-width: 1199px) {
     .top-panel, .top-panel-footer, #header {
         background-color: white;

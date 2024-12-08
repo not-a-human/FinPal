@@ -1,26 +1,43 @@
 ﻿@page "/bills"
 @inject BillDatabase BDatabase
+@inject FinanceNameDatabase FDatabase
 @inject NavigationManager Navigate
 @inject IJSRuntime JS
 
 <SectionContent SectionName="page-title">Recurring Items</SectionContent>
 <SectionContent SectionName="page-actions">
     <i class="bi bi-question-lg h5 cursor-pointer m-0 px-2" onclick="helpFileToggle()"></i>
-    <i class="bi bi-three-dots-vertical h5 cursor-pointer m-0 px-2" data-bs-toggle="dropdown" aria-expanded="false"></i>
+    <i class="bi bi-three-dots-vertical h5 cursor-pointer m-0 px-2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-container="body" id="dropdownMenuButton1"></i>
 </SectionContent>
 <SectionContent SectionName="dropdown-menu-items">
     <ul class="dropdown-menu dropdown-menu-dark">
-        @if (ActiveRecord)
+        <li @onclick='ToggleItemList'><a class="dropdown-item"><i class="bi bi-list-task"></i> @(AllRecord ? "Monthly Items" : "All Items")</a></li>
+        @if (!AllRecord)
         {
-            <li @onclick='ToggleActive'><a class="dropdown-item"><i class="bi bi-check-square"></i> Active</a></li>
-        }
-        else
-        {
-            <li @onclick='ToggleActive'><a class="dropdown-item"><i class="bi bi-square"></i> Inactive</a></li>
+            @if (ActiveRecord)
+            {
+                <li @onclick='ToggleActive'><a class="dropdown-item"><i class="bi bi-check-square"></i> Active</a></li>
+            }
+            else
+            {
+                <li @onclick='ToggleActive'><a class="dropdown-item"><i class="bi bi-square"></i> Inactive</a></li>
+            }
         }
     </ul>
 </SectionContent>
-
+<SectionContent SectionName="top-panel-footer">
+    <div class="top-panel-footer">
+        <div class="row text-center @(AllRecord ? "d-none" : "")">
+            <div class="col-3">
+                <i class="bi bi-arrow-left-circle-fill h6 cursor-pointer" @onclick="PreviousMonth"></i>
+            </div>
+            <div class="col-6">@GetSelectedMonth()</div>
+            <div class="col-3">
+                <i class="bi bi-arrow-right-circle-fill h6 cursor-pointer" @onclick="NextMonth"></i>
+            </div>
+        </div>
+    </div>
+</SectionContent>
 
     @if(!bItems.Any())
     {
@@ -33,46 +50,118 @@
     }
     else
     {
-        <div class="row justify-content-center px-1">
-            @foreach (var item in FilteredItems)
-            {
-                <div class="card my-2 col-xl-10 col-12 p-0 cursor-pointer" @onclick="() => UpdateBill(item.Id)">
-                <div class="card-body position-relative">
-                        <div class="row" >
-                            <div class="col-12 col-md-9">
-                                <h5 class="card-title">@UIHelper.TruncateString(item.ItemName, 20)</h5>
-                                <h6 class="card-subtitle mb-2 text-body-secondary">@item.FName</h6>
-                                <p class="card-text">
-                                    <ul class="row bill-ul">
-                                        @if (!item.Continuous)
-                                        {
-                                            <li class="col-auto p-1"><i class="bi bi-calendar-fill me-2"></i> @item.StartDate.ToString("yyyy-MMM") - @item.EndDate.ToString("yyyy-MMM")</li>
-                                            <li class="col-auto p-1">
-                                                <i class="bi bi-repeat me-2"></i>
-                                                @BDatabase.intervalSting(item.Repeat)
-                                                @if (item.Repeat != "N")
-                                                {
-                                                    <i class="bi bi-x mx-1"></i>
-
-                                                    @item.Period
-                                                }
-                                            </li>
-                                        }
-                                        else
-                                        {
-                                            <li><i class="bi bi-repeat me-2"></i> Continuous Billing</li>
-                                        }
-                                    </ul>
-                                </p>
-                            </div>
-                            <div class="col-md-3 col-12 row align-items-center bill-price">
-                                <h1 class="col p-0 m-0 pt-md-0 pt-2 text-end">@item.AmountDue <i class="bi bi-currency-dollar text-gray-300"></i></h1>
-                            </div>
-                        </div>
-                    </div>
+        <div id="bill-container" class="mx-auto">
+            <div class="@(!AllRecord ? "d-none" : "")" id="bill-search">
+                <div class="input-group w-100  m-0">
+                    <input type="search" id="form1" @bind-value="SearchStr" @bind-value:event="onchange" @oninput="(e) => SearchBill(e)" class="form-control" placeholder="Search" />
+                    <span class="input-group-text">
+                        <i class="bi bi-search"></i>
+                    </span>
                 </div>
+            </div>
+            <div id="bill-empty-space"></div>
+            <div class="row justify-content-center px-1 mt-4 position-relative">           
+                <table class="table bg-none">
+                    <tbody>
+                    @if (AllRecord)
+                    {
+                        @foreach (var item in FilteredAllItems)
+                        {
+                            <div class="card my-2 p-0 cursor-pointer" @onclick="() => UpdateBill(item.Id)">
+                                <div class="card-body position-relative">
+                                    <div class="row">
+                                        <div class="col-12 col-md-9">
+                                            <h5 class="card-title">@UIHelper.TruncateString(item.ItemName, 20)</h5>
+                                            <h6 class="card-subtitle mb-2 text-body-secondary">@item.FName</h6>
+                                            <p class="card-text">
+                                                <ul class="row bill-ul">
+                                                    @if (!item.Continuous)
+                                                    {
+                                                        <li class="col-auto p-1"><i class="bi bi-calendar-fill me-2"></i> @item.StartDate.ToString("yyyy-MMM") - @item.EndDate.ToString("yyyy-MMM")</li>
+                                                        <li class="col-auto p-1">
+                                                            <i class="bi bi-repeat me-2"></i>
+                                                            @BDatabase.intervalSting(item.Repeat)
+                                                            @if (item.Repeat != "N")
+                                                            {
+                                                                <i class="bi bi-x mx-1"></i>
 
-            }
+                                                                @item.Period
+                                                            }
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li><i class="bi bi-repeat me-2"></i> Continuous Billing</li>
+                                                    }
+                                                </ul>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-3 col-12 row align-items-center bill-price">
+                                            <h1 class="col p-0 m-0 pt-md-0 pt-2 text-end">@item.AmountDue <i class="bi bi-currency-dollar text-gray-300"></i></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        @foreach (var fItem in fActiveItems)
+                        {
+                            <tr data-bs-toggle="collapse" data-bs-target="#collapse-@fItem.Id" aria-expanded="true" aria-controls="collapse-@fItem.Id">
+                                <td scope="row" class="bill-count-max-width">
+                                    <span class="badge text-bg-primary rounded-pill small">@bItems.Where(i => i.FinanceCode == fItem.Id).Count()</span>
+                                </td>
+                                <td>@fItem.Name</td>
+                                <td class="text-end">@bItems.Where(i => i.FinanceCode == fItem.Id).Sum(i => i.AmountDue) <i class="bi bi-currency-dollar text-gray-300"></i></td>
+                            </tr>
+                            <tr class="collapse show" id="collapse-@fItem.Id">
+                                <td scope="row" colspan="3">
+                                    @foreach (var item in FilteredItems.Where(i => i.FinanceCode == fItem.Id).ToList())
+                                    {
+                                        <div class="card my-2 p-0 cursor-pointer" @onclick="() => UpdateBill(item.Id)">
+                                            <div class="card-body position-relative">
+                                                <div class="row">
+                                                    <div class="col-12 col-md-9">
+                                                        <h5 class="card-title">@UIHelper.TruncateString(item.ItemName, 20)</h5>
+                                                        <h6 class="card-subtitle mb-2 text-body-secondary">@item.FName</h6>
+                                                        <p class="card-text">
+                                                            <ul class="row bill-ul">
+                                                                @if (!item.Continuous)
+                                                                {
+                                                                    <li class="col-auto p-1"><i class="bi bi-calendar-fill me-2"></i> @item.StartDate.ToString("yyyy-MMM") - @item.EndDate.ToString("yyyy-MMM")</li>
+                                                                    <li class="col-auto p-1">
+                                                                        <i class="bi bi-repeat me-2"></i>
+                                                                        @BDatabase.intervalSting(item.Repeat)
+                                                                        @if (item.Repeat != "N")
+                                                                        {
+                                                                            <i class="bi bi-x mx-1"></i>
+
+                                                                            @item.Period
+                                                                        }
+                                                                    </li>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <li><i class="bi bi-repeat me-2"></i> Continuous Billing</li>
+                                                                }
+                                                            </ul>
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-md-3 col-12 row align-items-center bill-price">
+                                                        <h1 class="col p-0 m-0 pt-md-0 pt-2 text-end">@item.AmountDue <i class="bi bi-currency-dollar text-gray-300"></i></h1>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+                </table>
+            </div>
         </div>
     }
 
@@ -95,28 +184,51 @@
 </SectionContent>
 
 @code {
-    private bool NoBill = false, ActiveRecord = true;
+    private bool NoBill = false, ActiveRecord = true, AllRecord = false, FirstTimeLoad = true;
+
     private List<FinPal.Models.BillwithFC> bItems = new List<FinPal.Models.BillwithFC>();
     private List<FinPal.Models.BillwithFC> FilteredItems = new List<FinPal.Models.BillwithFC>();
-    private List<int> ActiveFinances = new List<int>();
+    private List<FinPal.Models.BillwithFC> FilteredAllItems = new List<FinPal.Models.BillwithFC>();
+    private List<FinPal.Models.BillwithFC> AllBItems = new List<FinPal.Models.BillwithFC>();
 
+    private List<FinPal.Models.FinanceName> fItems = new List<FinPal.Models.FinanceName>();
+    private List<FinPal.Models.FinanceName> fActiveItems = new List<FinPal.Models.FinanceName>();
+    private List<int> ActiveFinances = new List<int>();
+    private List<int> ActiveBills = new List<int>();
+
+    private int currentYear = DateTime.Now.Year, currentMonth = DateTime.Now.Month;
+    private int selectedYear, selectedMonth;
+    private int maxMonths = 12; // Number of months forward allowed
+
+    private string SearchStr = "";
 
     protected override async Task OnInitializedAsync()
     {
+        selectedYear = currentYear;
+        selectedMonth = currentMonth;
+        fItems = await FDatabase.GetItemsAsync();
         ActiveFinances = await BDatabase.GetActiveFinanceID();
-        bItems = await BDatabase.GetItemsAsyncWithFC();
+        await LoadBillItems();
+        AllBItems = await BDatabase.GetItemsAsyncWithFC();
+    }
+
+    private async Task LoadBillItems()
+    {
+        bItems = await BDatabase.GetItemsWithFCThisMonthAsync(selectedYear, selectedMonth);
         await Task.Run(LoadBills);
     }
 
     private void LoadBills()
     {
-        System.Threading.Thread.Sleep(500);
+        System.Threading.Thread.Sleep(250);
         LoadFilteredBills();
         NoBill = true;
     }
 
     private void LoadFilteredBills()
     {
+        System.Threading.Thread.Sleep(250);
+
         if (ActiveRecord)
         {
             FilteredItems = bItems.Where(i => i.Active == ActiveRecord && ActiveFinances.Contains(i.FinanceCode)).ToList();
@@ -125,6 +237,62 @@
         {
             FilteredItems = bItems.Where(i => i.Active == ActiveRecord || !ActiveFinances.Contains(i.FinanceCode)).ToList();
         }
+        ActiveBills = FilteredItems.Select(i => i.FinanceCode).ToList();
+        fActiveItems = fItems.Where(i => ActiveBills.Contains(i.Id)).ToList();
+    }
+
+    private async Task PreviousMonth()
+    {
+        // Calculate the minimum allowed month and year
+        int minYear = currentYear - (currentMonth + (12 - maxMonths + 1)) / 12;
+        int minMonth = (currentMonth - maxMonths + 1) % 12;
+        if (minMonth <= 0)
+        {
+            minMonth += 12;
+            minYear--;
+        }
+
+        if (selectedYear > minYear || (selectedYear == minYear && selectedMonth > minMonth))
+        {
+            selectedMonth--;
+            if (selectedMonth < 1)
+            {
+                selectedMonth = 12;
+                selectedYear--;
+            }
+            NoBill = false;
+            await LoadBillItems();
+        }
+    }
+
+    private async Task NextMonth()
+    {
+        // Restrict selection to no later than the maxMonths forward
+        int maxYear = currentYear + (currentMonth + maxMonths - 1) / 12;
+        int maxMonth = (currentMonth + maxMonths - 1) % 12;
+
+        if (maxMonth == 0)
+        {
+            maxMonth = 12;
+            maxYear--;
+        }
+
+        if (selectedYear < maxYear || (selectedYear == maxYear && selectedMonth < maxMonth))
+        {
+            selectedMonth++;
+            if (selectedMonth > 12)
+            {
+                selectedMonth = 1;
+                selectedYear++;
+            }
+            NoBill = false;
+            await LoadBillItems();
+        }
+    }
+
+    private string GetSelectedMonth()
+    {
+        return $"{new DateTime(selectedYear, selectedMonth, 1):MMM yyyy}";
     }
 
     private void UpdateBill(int id)
@@ -142,4 +310,33 @@
         LoadFilteredBills();
     }
 
+    private void ToggleItemList()
+    {
+        AllRecord = !AllRecord;
+        if (FirstTimeLoad)
+        {
+            FilteredAllItems = AllBItems;
+            FirstTimeLoad = false;
+        }
+    }
+
+    private void SearchBill(ChangeEventArgs e)
+    {
+        SearchStr = e.Value?.ToString() ?? "";
+        if (string.IsNullOrEmpty(SearchStr))
+        {
+            FilteredAllItems = AllBItems;
+        }
+        else
+        {
+            FilteredAllItems = AllBItems
+            .Where(i =>
+                i.ItemName.IndexOf(SearchStr, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                i.Note.IndexOf(SearchStr, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                i.CName.IndexOf(SearchStr, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                i.FName.IndexOf(SearchStr, StringComparison.OrdinalIgnoreCase) >= 0
+            )
+            .ToList();
+        }
+    }
 }

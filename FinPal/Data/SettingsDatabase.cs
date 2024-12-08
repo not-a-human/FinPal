@@ -9,7 +9,7 @@ namespace FinPal.Data
     public class SettingsDatabase
     {
 
-        protected SQLiteAsyncConnection Database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
+        protected SQLiteAsyncConnection Database ;
         public async Task Init()
         {
             if (Database is not null)
@@ -49,7 +49,7 @@ namespace FinPal.Data
         {
             await Init();
             var result = await Database.Table<Settings>().Where(i => i.SetKey == setKey).FirstOrDefaultAsync();
-            
+
             if(result == null)
             {
                 if(GetDefaultValue(setKey, false) != "")

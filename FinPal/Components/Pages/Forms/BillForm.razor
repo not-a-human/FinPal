@@ -11,28 +11,30 @@
 <SectionContent SectionName="page-title">@(Id != 0 ? "Edit" : "Create") Recurring Items</SectionContent>
 
 
-    <div class="mb-3 position-relative">
-        <label for="totalPrice" class="form-label">Amount due</label>
-        <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
-            <input @ref="firstInput"  type="number" class="form-control @(UIHelper.GetFormValidClass(isAmount,0))" required id="totalPrice" @bind-value="formModel.amountDue" @bind-value:event="oninput" @onchange="checkAmountDue" placeholder="Amount due" />
-        </div>
-        <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isAmount,1))">
-            @if(isAmount == 1)
-            {
-                <span>Amount due cannot be 0!</span>
-            }
-            else if (isAmount == 3)
-            {
-                <span>Amount due cannot be more than 999,999!</span>
-            }
+<div class="mb-3 position-relative">
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+        <div class="form-floating">
+            <input @ref="firstInput" type="number" class="form-control @(UIHelper.GetFormValidClass(isAmount,0))" required id="totalPrice" @bind-value="formModel.amountDue" @bind-value:event="oninput" @onchange="checkAmountDue" placeholder="Amount due" />
+            <label for="totalPrice" class="form-label">Amount due</label>
         </div>
     </div>
-    <hr class="my-5 mx-3"/>
-    <div class="mb-3 position-relative">
-        <label for="category" class="form-label">Category</label>
-        <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
+    <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isAmount,1))">
+        @if (isAmount == 1)
+        {
+            <span>Amount due cannot be 0!</span>
+        }
+        else if (isAmount == 3)
+        {
+            <span>Amount due cannot be more than 999,999!</span>
+        }
+    </div>
+</div>
+<hr class="my-5 mx-3" />
+<div class="mb-3 position-relative">
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
+        <div class="form-floating">
             <select class="form-select @(UIHelper.GetFormValidClass(isCategory,0))" required @bind-value="formModel.category" @bind-value:event="oninput" @onchange="checkCategory">
                 <option value="">Select Category</option>
                 @foreach (var item in cItems)
@@ -40,152 +42,160 @@
                     <option value="@item.Id">@item.Name</option>
                 }
             </select>
-        </div>
-        <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isCategory,1))">
-            Please select a category.
+            <label for="category" class="form-label">Category</label>
         </div>
     </div>
+    <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isCategory,1))">
+        Please select a category.
+    </div>
+</div>
 
-    <div class="mb-3 position-relative">
-        <label for="financeCode" class="form-label">Finance Name</label>
-        <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-bank2"></i></span>
-        <select disabled="@financeDisable" class="form-select @(UIHelper.GetFormValidClass(isFinance,0))" id="financeCode" required @bind-value="formModel.financeCode" @bind-value:event="oninput" @onchange="checkFinance">
+<div class="mb-3 position-relative">
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-bank2"></i></span>
+        <div class="form-floating">
+            <select disabled="@financeDisable" class="form-select @(UIHelper.GetFormValidClass(isFinance,0))" id="financeCode" required @bind-value="formModel.financeCode" @bind-value:event="oninput" @onchange="checkFinance">
                 <option value="">Please Select</option>
                 @foreach (var item in financeBasedOnCategory)
                 {
                     <option value="@item.Id">@item.Name</option>
                 }
             </select>
-        </div>
-        <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isFinance,1))">
-            Please select a valid finance name. If none is available, please create one in the Settings > Finance Name or click <a class="text-white" href="settings/finance">here</a>.
+            <label for="financeCode" class="form-label">Finance Name</label>
         </div>
     </div>
+    <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isFinance,1))">
+        Please select a valid finance name. If none is available, please create one in the Settings > Finance Name or click <a class="text-white" href="settings/finance">here</a>.
+    </div>
+</div>
 
-    <div class="mb-3 position-relative">
-        <label for="itemName" class="form-label">Item Name</label>
-        <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-type"></i></span>
-        <input type="text" class="form-control @(UIHelper.GetFormValidClass(isName,0))" required id="itemName" @bind-value="formModel.itemName" @bind-value:event="oninput" @onchange="checkItemName" placeholder="Enter item name" />
-        </div>
-        <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isName,1))">
-            Please input the item name.
+<div class="mb-3 position-relative">
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-type"></i></span>
+        <div class="form-floating">
+            <input type="text" class="form-control @(UIHelper.GetFormValidClass(isName,0))" required id="itemName" @bind-value="formModel.itemName" @bind-value:event="oninput" @onchange="checkItemName" placeholder="Enter item name" />
+            <label for="itemName" class="form-label">Item Name</label>
         </div>
     </div>
-
-    <hr class="my-5 mx-3" />
-
-    <div class="mb-3 btn col-12 mx-auto d-flex justify-content-between @(isRepeatForever ? "btn-outline-success" : "btn-outline-danger")" @onclick="repeatOption">
-        <div class="">Continuous Billing</div>
-        <div class=""><i class="bi @(isRepeatForever ? "bi-check-circle-fill" : "bi-x-circle-fill")"></i></div>
+    <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isName,1))">
+        Please input the item name.
     </div>
+</div>
 
-    <div class="@(isRepeatForever ? "d-none" : "")">
-        <div class="row mb-3">
-            <div class="position-relative">
-                <label for="period" class="form-label">Repeat for how many months</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-repeat-1"></i></span>
+<hr class="my-5 mx-3" />
+
+<div class="mb-3 btn col-12 mx-auto d-flex justify-content-between @(isRepeatForever ? "btn-outline-success" : "btn-outline-danger")" @onclick="repeatOption">
+    <div class="">Continuous Billing</div>
+    <div class=""><i class="bi @(isRepeatForever ? "bi-check-circle-fill" : "bi-x-circle-fill")"></i></div>
+</div>
+
+<div class="@(isRepeatForever ? "d-none" : "")">
+    <div class="row mb-3">
+        <div class="position-relative">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-repeat-1"></i></span>
+                <div class="form-floating">
                     <input type="number" class="form-control @(UIHelper.GetFormValidClass(isPeriod,0))" id="period" min="0" max="1000" @bind-value="formModel.period" @bind-value:event="oninput" @onchange="setEndDate" placeholder="Enter Installment Period" />
-                </div>
-                <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isPeriod,1))">
-                    Repeat time must be more than 1!
+                    <label for="period" class="form-label">Repeat for how many months</label>
                 </div>
             </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="mb-3 col-md-6">
-                <label for="startDate" class="form-label">Start Date</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-                    <input type="date" class="form-control" id="startDate" min="1970-12-31" @bind-value="formModel.startDate" @bind-value:event="oninput" @onchange="setEndDate" placeholder="Select Start Date" />
-                </div>
-            </div>
-            <div class="col-md-6 position-relative">
-                <label for="endDate" class="form-label">End Date</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
-                    <input type="date" class="form-control @(UIHelper.GetFormValidClass(isEndDate,0))" id="endDate" disabled @bind="formModel.endDate" placeholder="Select End Date" />
-                </div>
-                <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isEndDate,1))">
-                    The end date must be after the start date.
-                </div>
+            <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isPeriod,1))">
+                Repeat time must be more than 0 and cannot be more than 999;
             </div>
         </div>
     </div>
-    
-    
-    <hr class="my-5 mx-3" />
-
-    <h4 class="mb-5">Notes</h4>
 
     <div class="row mb-3">
-        <div class="col-md-6 mb-3 position-relative">
-            <label for="interestRate" class="form-label">Interest Rate</label>
+        <div class="mb-3 col-md-6">
             <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-percent"></i></span>
-                <input type="number" class="form-control" id="interestRate" min="0" max="100" @bind="formModel.interestRate" placeholder="Enter Interest Rate" />
+                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                <div class="form-floating">
+                    <input type="date" class="form-control" id="startDate" min="1970-12-31" @bind-value="formModel.startDate" @bind-value:event="oninput" @onchange="setEndDate" placeholder="Select Start Date" />
+                    <label for="startDate" class="form-label">Start Date</label>
+                </div>
             </div>
         </div>
-
         <div class="col-md-6 position-relative">
-            <label for="period" class="form-label">Admin Fee</label>
             <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
-                <input type="number" class="form-control" id="adminFee" min="0" @bind="formModel.adminFee" placeholder="Enter Admin Fee" />
+                <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
+                <div class="form-floating">
+                    <input type="date" class="form-control @(UIHelper.GetFormValidClass(isEndDate,0))" id="endDate" disabled @bind="formModel.endDate" placeholder="Select End Date" />
+                    <label for="endDate" class="form-label">End Date</label>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="mb-3 position-relative">
-        <label for="totalPrice" class="form-label">Total Price</label>
-        <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-cash-coin"></i></span>
-            <input type="number" class="form-control" id="totalPrice" min="0" @bind="formModel.total" placeholder="Enter Total Price" />
-        </div>
-    </div>
-
-    <div class="mb-3 position-relative">
-        <label for="note" class="form-label">Note</label>
-        <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-            <textarea class="form-control" id="note" min="0" @bind="formModel.note" placeholder="Enter Notes"></textarea>
-        </div>
-    </div>
-
-
-
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end my-5">
-        <button type="button" @onclick="submitForm" class="btn btn-primary">Update</button>
-        <a href="bills" class="btn btn-primary">Cancel</a>
-        @if(Id != 0)
-        {
-            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Delete</button>
-        }
-    </div>
-
-
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" role="dialog">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalCenterTitle">Delete @bItems.ItemName</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p class="text-break">
-                    Are you sure you want to delete this record? This action is permanent and cannot be undone.
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" @onclick="deleteForm" data-bs-dismiss="modal">Proceed</button>
+            <div class="invalid-tooltip @(UIHelper.GetFormValidClass(isEndDate,1))">
+                The end date must be after the start date.
             </div>
         </div>
     </div>
 </div>
+
+
+<hr class="my-5 mx-3" />
+
+<h4 class="mb-5">Notes</h4>
+
+<div class="row mb-3">
+    <div class="col-md-6 mb-3 position-relative">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-percent"></i></span>
+            <div class="form-floating">
+                <input type="number" class="form-control" id="interestRate" min="0" max="100" @bind="formModel.interestRate" placeholder="Enter Interest Rate" />
+                <label for="interestRate" class="form-label">Interest Rate</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 position-relative">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
+            <div class="form-floating">
+                <input type="number" class="form-control" id="adminFee" min="0" @bind="formModel.adminFee" placeholder="Enter Admin Fee" />
+                <label for="period" class="form-label">Admin Fee</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-3 position-relative">
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-cash-coin"></i></span>
+        <div class="form-floating">
+            <input type="number" class="form-control" id="totalPrice" min="0" @bind="formModel.total" placeholder="Enter Total Price" />
+            <label for="totalPrice" class="form-label">Total Price</label>
+        </div>
+    </div>
+</div>
+
+<div class="mb-5 position-relative">
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+        <div class="form-floating">
+            <textarea class="form-control" id="note" min="0" @bind="formModel.note" placeholder="Enter Notes"></textarea>
+            <label for="note" class="form-label">Note</label>
+        </div>
+    </div>
+</div>
+
+<div class="btn-float d-flex">
+    <div class="btn btn-primary" @onclick="submitForm"><i class="bi bi-pencil-square"></i></div>
+    <div class="btn btn-secondary ms-2" @onclick='() => Navigation.NavigateTo("bills")'><i class="bi bi-x-lg"></i></div>
+    @if (Id != 0)
+    {
+        <div class="btn btn-danger ms-2" onclick="customModalToggle()"><i class="bi bi-trash"></i></div>
+    }
+</div>
+
+<SectionContent SectionName="custom-modal-title">Delete @bItems.ItemName</SectionContent>
+<SectionContent SectionName="custom-modal-body">
+    <p class="card-text">
+        Are you sure you want to delete this record? This action is permanent and cannot be undone.
+    </p>
+    <div class="text-end mt-2">
+        <button class="btn btn-primary" @onclick="deleteForm">Yes</button>
+        <button class="btn btn-secondary" onclick="customModalToggle()">No</button>
+    </div>
+</SectionContent>
 
 @code {
     [Parameter]
@@ -213,12 +223,11 @@
         fnItems = await FnDatabase.GetActiveItemsAsync();
         cItems = await CDatabase.GetActiveItemsAsync();
 
-        if(Id != 0)
+        if (Id != 0)
         {
             bItems = await BDatabase.GetItemAsync(Id);
             formModel.itemName = bItems.ItemName;
             formModel.amountDue = bItems.AmountDue;
-            formModel.period = bItems.Period;
             formModel.category = bItems.CategoryCode;
             checkCategory();
 
@@ -235,7 +244,7 @@
             isCategory = 0;
         }
 
-        await JS.InvokeVoidAsync("logToConsole",Navigation.Uri);
+        await JS.InvokeVoidAsync("logToConsole", Navigation.Uri);
     }
 
     private async Task submitForm()
@@ -244,8 +253,9 @@
         isCategory = UIHelper.IsZeroEmpty(formModel.category);
         isName = UIHelper.IsZeroEmpty(formModel.itemName);
         isFinance = UIHelper.IsZeroEmpty(formModel.financeCode);
-        isPeriod = UIHelper.IsZeroEmpty(formModel.period);
         isEndDate = formModel.startDate > formModel.endDate ? 1 : 2;
+
+        checkPeriod();
 
         if (isAmount == 2 && isCategory == 2 && isName == 2 && isFinance == 2 && isPeriod == 2)
         {
@@ -276,7 +286,7 @@
             {
                 await JS.InvokeVoidAsync("showAutoHideToast", "Recurring item created successfully.");
             }
-            
+
             Navigation.NavigateTo("/bills");
         }
         else
@@ -289,6 +299,8 @@
     {
         await BDatabase.DeleteItemAsync(bItems);
 
+        await JS.InvokeVoidAsync("customModalToggle");
+
         await JS.InvokeVoidAsync("showAutoHideToast", "Recurring item deleted successfully.");
 
         Navigation.NavigateTo("/bills");
@@ -296,7 +308,9 @@
 
     private void setEndDate()
     {
-        formModel.endDate = BDatabase.AddInterval(formModel.startDate, formModel.period);
+        checkPeriod();
+        if (isPeriod == 2)
+            formModel.endDate = BDatabase.AddInterval(formModel.startDate, formModel.period);
     }
 
     private void checkCategory()
@@ -306,7 +320,7 @@
             isCategory = 2;
             financeBasedOnCategory = fnItems.Where(c => c.CategoryId == Convert.ToInt32(formModel.category)).ToList();
             financeDisable = false;
-            if(Id != 0)
+            if (Id != 0)
                 formModel.financeCode = "";
         }
         else
@@ -333,6 +347,25 @@
         if (formModel.amountDue > 999999)
         {
             isAmount = 3;
+        }
+    }
+
+    private void checkPeriod()
+    {
+        if (isRepeatForever)
+        {
+            isPeriod = 2;
+        }
+        else
+        {
+            if (formModel.period < 1000 && formModel.period > 0)
+            {
+                isPeriod = 2;
+            }
+            else
+            {
+                isPeriod = 1;
+            }   
         }
     }
 
