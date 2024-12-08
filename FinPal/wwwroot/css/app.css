@@ -459,6 +459,11 @@ i.cursor-pointer:hover {
     font-size: 1.2rem;
 }
 
+    .btn-float .btn {
+        border-radius: 50%;
+        font-size: 1.2rem;
+    }
+
 /*--------------------------------------------------------------
 # Toast
 --------------------------------------------------------------*/
@@ -891,7 +896,7 @@ section {
     }
     #bill-search {
         width: 95% !important;
-}
+    }
 }
 
 @media (min-width: 768px) {
