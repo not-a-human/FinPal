@@ -44,20 +44,23 @@
             </div>
         </div>
     </header>
-
-    <div class="top-panel d-flex justify-content-between">
-        <SectionOutlet SectionName="page-actions-1" />
-        <h3 id="page-title"><SectionOutlet SectionName="page-title" /></h3>
-        <div id="top-panel-actions">
-            <SectionOutlet SectionName="page-actions" />
-             <SectionOutlet SectionName="dropdown-menu-items" />
+    <div class="position-relative">
+        <div class="top-panel">
+            <div class=" d-flex justify-content-between">
+                <SectionOutlet SectionName="page-actions-1" />
+                <h3 id="page-title"><SectionOutlet SectionName="page-title" /></h3>
+                <div id="top-panel-actions">
+                    <SectionOutlet SectionName="page-actions" />
+                    <SectionOutlet SectionName="dropdown-menu-items" />
+                </div>
+            </div>
+            <SectionOutlet SectionName="top-panel-footer"/>
         </div>
-       
     </div>
 
     <main id="main">
         <section class="inner-page">
-            <div class="container">
+            <div class="container-md">
                 @Body
             </div>
         </section>
