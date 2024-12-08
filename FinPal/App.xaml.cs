@@ -5,12 +5,17 @@ namespace FinPal
 {
     public partial class App : Application
     {
-        public static CategoryDatabase CDatabase { get; private set; } = new CategoryDatabase();
-        public static FinanceNameDatabase FDatabase { get; private set; } = new FinanceNameDatabase();
-        public static SettingsDatabase SetDatabase { get; private set; } = new SettingsDatabase();
-        public static SalaryDatabase SDatabase { get; private set; } = new SalaryDatabase();
+        public static CategoryDatabase CDatabase { get; private set; }
+        public static FinanceNameDatabase FDatabase { get; private set; }
+        public static SettingsDatabase SetDatabase { get; private set; }
+        public static SalaryDatabase SDatabase { get; private set; }
         public App()
         {
+            CDatabase = new CategoryDatabase();
+            FDatabase = new FinanceNameDatabase();
+            SetDatabase = new SettingsDatabase();
+            SDatabase = new SalaryDatabase();
+
             InitializeComponent();
 
             SeedDatabase();
@@ -41,8 +46,13 @@ namespace FinPal
             if (!columns.Any(c => c.Name.Equals(columnName, StringComparison.OrdinalIgnoreCase)))
             {
                 var alterTableQuery = $"ALTER TABLE {tableName} ADD COLUMN {columnName} {columnDefinition}";
-                await Database.ExecuteAsync(alterTableQuery);
-                Console.WriteLine($"Added column '{columnName}' to table '{tableName}'.");
+
+                var result = await Database.ExecuteScalarAsync<string>("SELECT name FROM sqlite_master WHERE type='table' AND name=?;", tableName);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    await Database.ExecuteAsync(alterTableQuery);
+                    Console.WriteLine($"Added column '{columnName}' to table '{tableName}'.");
+                }
             }
             else
             {

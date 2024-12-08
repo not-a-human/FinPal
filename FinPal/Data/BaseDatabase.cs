@@ -12,7 +12,7 @@ namespace FinPal.Data
 {
     public abstract class BaseDatabase<T> where T : new()
     {
-        protected SQLiteAsyncConnection Database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
+        protected SQLiteAsyncConnection Database;
 
         public async Task Init()
         {
