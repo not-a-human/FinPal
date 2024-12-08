@@ -231,7 +231,7 @@
     protected override async Task OnInitializedAsync()
     {
         planItems = await CDatabase.GetPlanChartAsync();
-        bItems = await BDatabase.GetItemsWithFCThisMonthAsync(2024,11);
+        bItems = await BDatabase.GetItemsWithFCThisMonthAsync(today.Year,today.Month);
         billsCount = await BDatabase.GetActiveCountAsync();
         aItems = await CDatabase.GetAllocatedFundsAsync();
         salaryAnnual = await SDatabase.SumSalariesByYear(today.Year);
