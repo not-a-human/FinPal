@@ -69,6 +69,9 @@ namespace FinPal.Data
         {
             await Init();
 
+            if (item.Total == 0)
+                item.Total = item.AmountDue * item.Period;
+
             if (await GetItemAsync(item.Id) != null)
                 return await Database.UpdateAsync(item);
 
