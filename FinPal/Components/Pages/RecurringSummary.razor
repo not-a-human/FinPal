@@ -1,0 +1,119 @@
+﻿@page "/recurringsummary"
+@inject CategoryDatabase CDatabase
+@inject BillDatabase BDatabase
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<SectionContent SectionName="page-title">Recurring Summary</SectionContent>
+<SectionContent SectionName="page-actions">
+    <div class="d-flex h5 m-0"><i class="bi bi-question-lg h5 cursor-pointer m-0 px-2" onclick="helpFileToggle()"></i></div>
+</SectionContent>
+<SectionContent SectionName="page-actions-1">
+    <div @onclick='() => Navigation.NavigateTo("/")' class="h6 d-flex m-0"><span class="align-self-center cursor-pointer">Back</span></div>
+</SectionContent>
+
+<div class="table-responsive">
+    <table class="table text-center table-bordered">
+        <thead>
+            <tr>
+                <th>Year</th>
+                @foreach (var item in yearMonthCounts)
+                {
+                    <th colspan="@item.Value">@item.Key</th>
+                }
+            </tr>
+            <tr>
+                <th>Month</th>
+                @foreach (var item in monthsAndYears)
+                {
+                    <th style="min-width: 100px;" scope="col">@UIHelper.GetMonthString(item.Month)</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cItem in CategoryList)
+            {
+                <tr>
+                    <td scope="row" class="no-word-wrap">@cItem.Name</td>
+                    @foreach (var monthYear in monthsAndYears)
+                    {
+                        @if (!monthYear.CategoryValue.Any(i => i.CategoryCode == cItem.Id.ToString()))
+                        {
+                            <td>0</td>
+                        }
+                        @foreach (var item in monthYear.CategoryValue.Where(i => i.CategoryCode == cItem.Id.ToString()))
+                        {
+                            <td>@item.Amount</td>
+                        }
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<SectionContent SectionName="help-title">Recurring Summary</SectionContent>
+<SectionContent SectionName="help-body">
+    <p class="card-text">This page displays a summary of the amounts for each category, including the current month and the three previous and next months.</p>
+</SectionContent>
+
+
+@code {
+    private List<(int Month, int Year, List<(string? CategoryCode, decimal Amount)> CategoryValue)> monthsAndYears = new List<(int Month, int Year, List<(string? CategoryCode, decimal Amount)>)>();
+    private Dictionary<int, int> yearMonthCounts = new Dictionary<int, int>();
+    private int currentMonth = DateTime.Now.Month, currentYear = DateTime.Now.Year;
+    private List<Category> CategoryList = new List<Category>();
+    private List<JSChartArray> categoryArray = new List<JSChartArray>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDate();
+
+        CategoryList = await CDatabase.GetActiveItemsAsync();
+
+        // Count months for each year
+        yearMonthCounts = monthsAndYears
+            .GroupBy(x => x.Year) // Group by year
+            .ToDictionary(g => g.Key, g => g.Count()); // Count months in each year
+    }
+
+    private async Task LoadDate()
+    {
+        List<(string? CategoryCode, decimal Amount)> item = new List<(string? CategoryCode, decimal Amount)>();
+
+        // Get the 3 previous months for the current year
+        for (int i = 3; i > 0; i--)
+        {
+            int month = currentMonth - i;
+            int year = currentYear;
+
+            if (month <= 0)
+            {
+                month += 12; // Wrap around to previous year's months
+                year--;
+            }
+            item = await BDatabase.GetAmountByCategoryAsync(year, month);
+            monthsAndYears.Add((month, year, item));
+        }
+
+        // Add the current month and year
+        item = await BDatabase.GetAmountByCategoryAsync(currentYear, currentMonth);
+        monthsAndYears.Add((currentMonth, currentYear, item));
+
+        // Add 3 months for the next year
+        for (int i = 1; i <= 3; i++)
+        {
+            int month = currentMonth + i;
+            int year = currentYear;
+
+            if (month > 12)
+            {
+                month -= 12; // Wrap around to next year's months
+                year++;
+            }
+
+            item = await BDatabase.GetAmountByCategoryAsync(year, month);
+            monthsAndYears.Add((month, year, item));
+        }
+    }
+}

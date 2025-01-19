@@ -70,5 +70,10 @@ namespace FinPal.Utility
             }
         }
 
+        public static string GetMonthString(int month)
+        {
+            return new DateTime(DateTime.Now.Year, month, 1).ToString("MMM");
+        }
+
     }
 }

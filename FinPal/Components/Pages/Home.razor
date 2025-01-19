@@ -11,6 +11,12 @@
 <SectionContent SectionName="page-title">Welcome back, palz!</SectionContent>
 <SectionContent SectionName="page-actions">
     <i class="bi bi-question-lg h5 cursor-pointer m-0 px-2" onclick="helpFileToggle()"></i>
+    <i class="bi bi-three-dots-vertical h5 cursor-pointer m-0 px-2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-container="body" id="dropdownMenuButton1"></i>
+</SectionContent>
+<SectionContent SectionName="dropdown-menu-items">
+    <ul class="dropdown-menu dropdown-menu-dark">
+        <li @onclick='() => Navigation.NavigateTo("/recurringsummary")' class="cursor-pointer"><span class="dropdown-item"><i class="bi bi-table"></i> Recurring Summary</span></li>
+    </ul>
 </SectionContent>
 <SectionContent SectionName="top-panel-footer">
     <div class="top-panel-footer">

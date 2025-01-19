@@ -64,6 +64,47 @@ namespace FinPal.Data
             return await Database.QueryAsync<BillwithFC>(query, startOfMonth, "start of month");
         }
 
+        public async Task<List<(string? CategoryCode, decimal Amount)>> GetAmountByCategoryAsync(int year, int month)
+        {
+            var query = @"
+                WITH BillDates AS (
+                    SELECT 
+                        b.Name AS FName, 
+                        b.Note AS FNote, 
+                        c.Name AS CName, 
+                        c.Note AS CNote, 
+                        a.*, 
+                        datetime((a.StartDate / 10000000) - 62135596800, 'unixepoch') AS StartDateConverted,
+                        datetime((a.EndDate / 10000000) - 62135596800, 'unixepoch') AS EndDateConverted
+                    FROM Bill a
+                    JOIN FinanceName b ON a.FinanceCode = b.Id
+                    JOIN Category c ON a.CategoryCode = c.Id
+                    WHERE c.Active AND b.Active
+                )
+                SELECT CategoryCode, SUM(AmountDue) AS Amount
+                FROM BillDates
+                WHERE 
+                     -- Condition 1: Start or end date is within the specified month
+                    (StartDateConverted BETWEEN date(?1, ?2) AND date(?1, ?2, '+1 month', '-1 day'))
+                    OR 
+                    (EndDateConverted BETWEEN date(?1, ?2) AND date(?1, ?2, '+1 month', '-1 day'))
+                    OR
+                    -- Condition 2: Payment spans the entire specified month
+                    (StartDateConverted < date(?1, ?2) 
+                     AND EndDateConverted > date(?1, ?2, '+1 month', '-1 day'))
+                    OR
+                    (Continuous)
+                GROUP BY CategoryCode;
+            ";
+
+            // Convert year and month into a date string (e.g., "2024-11-01").
+            string startOfMonth = $"{year:D4}-{month:D2}-01";
+
+            await Init();
+
+            return await Database.QueryAsync<(string? CategoryCode, decimal Amount)> (query, startOfMonth, "start of month");
+        }
+
         public override async Task<int> SaveItemAsync(Bill item)
         {
             await Init();
