@@ -304,6 +304,12 @@ i.cursor-pointer:hover {
     border-left: .25rem solid var(--warning-color) !important;
 }
 
+.no-word-wrap {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/

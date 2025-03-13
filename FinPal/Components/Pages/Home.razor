@@ -11,9 +11,28 @@
 <SectionContent SectionName="page-title">Welcome back, palz!</SectionContent>
 <SectionContent SectionName="page-actions">
     <i class="bi bi-question-lg h5 cursor-pointer m-0 px-2" onclick="helpFileToggle()"></i>
+    <i class="bi bi-three-dots-vertical h5 cursor-pointer m-0 px-2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-container="body" id="dropdownMenuButton1"></i>
+</SectionContent>
+<SectionContent SectionName="dropdown-menu-items">
+    <ul class="dropdown-menu dropdown-menu-dark">
+        <li @onclick='() => Navigation.NavigateTo("/recurringsummary")' class="cursor-pointer"><span class="dropdown-item"><i class="bi bi-table"></i> Recurring Summary</span></li>
+    </ul>
+</SectionContent>
+<SectionContent SectionName="top-panel-footer">
+    <div class="top-panel-footer">
+        <div class="row text-center">
+            <div class="col-3">
+                <i class="bi bi-arrow-left-circle-fill h6 cursor-pointer" @onclick="PreviousMonth"></i>
+            </div>
+            <div class="col-6">@GetSelectedMonth()</div>
+            <div class="col-3">
+                <i class="bi bi-arrow-right-circle-fill h6 cursor-pointer" @onclick="NextMonth"></i>
+            </div>
+        </div>
+    </div>
 </SectionContent>
 
-<div class="">
+<div class="mt-4 mt-xl-1">
 
     <!-- Content Row -->
     <div class="row">
@@ -24,7 +43,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-md-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Earnings (@todayMonth)
+                                Earnings
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">$@salaryMonth</div>
                         </div>
@@ -42,7 +61,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-md-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Earnings (@today.Year)
+                                Earnings (@selectedYear)
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">$@salaryAnnual</div>
                         </div>
@@ -78,7 +97,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-md-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Total Items (@todayMonth)
+                                Total Items
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">$@bItems.Sum(b => b.AmountDue)</div>
                         </div>
@@ -97,7 +116,7 @@
         <div class="col-xl-4 col-lg-5 mb-md-4 mb-2">
             <div class="card shadow h-100">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold home-widget-title-color">Plan Overview (@todayMonth)</h6>
+                    <h6 class="m-0 font-weight-bold home-widget-title-color">Plan Overview</h6>
                 </div>
                 <div class="card-body position-relative">
                     <div class="@(planItems.Any() ? "d-none": "d-flex") w-100 h-100 position-absolute top-0 left-0 align-items-center justify-content-center text-center">
@@ -118,7 +137,7 @@
         <div class="col-xl-8 col-lg-7 mb-md-4 mb-2">
             <div class="card shadow h-100">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold home-widget-title-color">Allocated vs Total (@todayMonth)</h6>
+                    <h6 class="m-0 font-weight-bold home-widget-title-color">Allocated vs Total</h6>
                 </div>
                 <div class="card-body position-relative" style="min-height: 150px;">
                     @if (salaryMonth <= 0 || !planItems.Any())
@@ -196,7 +215,7 @@
 <SectionContent SectionName="help-body">
     <p class="card-text">This page provides an overview of the total amount that needs to be paid for the selected month and year, along with additional details.</p>
     <hr />
-    <h5 class="card-title">EARNINGS (YEAR-MONTH)</h5>
+    <h5 class="card-title">EARNINGS</h5>
     <p class="card-text">Displays the salary for the selected month and year.</p>
     <hr />
     <h5 class="card-title">EARNINGS (YEAR)</h5>
@@ -205,13 +224,13 @@
     <h5 class="card-title">TOTAL RECURRING ITEMS</h5>
     <p class="card-text">Shows the total count of recurring items.</p>
     <hr />
-    <h5 class="card-title">TOTAL ITEMS (YEAR-MONTH)</h5>
+    <h5 class="card-title">TOTAL ITEMS</h5>
     <p class="card-text">Displays the total cost of recurring items for the selected month and year.</p>
     <hr />
-    <h5 class="card-title">PLAN OVERVIEW (YEAR-MONTH)</h5>
+    <h5 class="card-title">PLAN OVERVIEW</h5>
     <p class="card-text">The chart shows the configured percentages for each category. These percentages can be modified on the Plan page.</p>
     <hr />
-    <h5 class="card-title">ALLOCATED VS TOTAL (YEAR-MONTH)</h5>
+    <h5 class="card-title">ALLOCATED VS TOTAL</h5>
     <p class="card-text">The chart displays the allocated funds based on configured percentages and the total cost of recurring items for each category.</p>
 </SectionContent>
 
@@ -219,25 +238,41 @@
     private List<FinPal.Models.JSChartArray> planItems = new List<FinPal.Models.JSChartArray>();
     private List<FinPal.Models.BillwithFC> bItems = new List<FinPal.Models.BillwithFC>();
     private List<FinPal.Models.FinanceName> fItems = new List<FinPal.Models.FinanceName>();
-    //private List<FinPal.Models.Salary> sItems = new List<FinPal.Models.Salary>();
     private List<FinPal.Models.AllocatedFunds> aItems = new List<FinPal.Models.AllocatedFunds>();
     private List<JSChartArray> categoryArray = new List<JSChartArray>();
 
     private int billsCount = 0;
     private decimal salaryAnnual = 0, salaryMonth = 0;
-    private DateTime today = DateTime.Now;
-    private string todayMonth = DateTime.Now.ToString("yyyy-MMM");
+
+    private int currentYear = DateTime.Now.Year, currentMonth = DateTime.Now.Month;
+    private int selectedYear, selectedMonth;
+    private int maxMonths = 12; // Number of months forward allowed
 
     protected override async Task OnInitializedAsync()
     {
+        selectedYear = currentYear;
+        selectedMonth = currentMonth;
         planItems = await CDatabase.GetPlanChartAsync();
-        bItems = await BDatabase.GetItemsWithFCThisMonthAsync(today.Year,today.Month);
-        billsCount = await BDatabase.GetActiveCountAsync();
-        aItems = await CDatabase.GetAllocatedFundsAsync();
-        salaryAnnual = await SDatabase.SumSalariesByYear(today.Year);
-        salaryMonth = await SDatabase.GetSalaryByMonth(today.Year,today.Month);
         fItems = await FDatabase.GetItemsAsync();
 
+        await LoadData();
+
+        await JS.InvokeVoidAsync("pieChart", "myPlanChart", "planChartLegend", planItems, salaryMonth);
+    }
+
+    private async Task LoadData()
+    {
+        bItems = await BDatabase.GetItemsWithFCThisMonthAsync(selectedYear, selectedMonth);
+        billsCount = await BDatabase.GetActiveCountAsync(selectedYear, selectedMonth);
+        aItems = await CDatabase.GetAllocatedFundsAsync();
+        salaryAnnual = await SDatabase.SumSalariesByYear(selectedYear);
+        salaryMonth = await SDatabase.GetSalaryByMonth(selectedYear, selectedMonth);
+
+        UpdateChart();
+    }
+
+    private void UpdateChart()
+    {
         categoryArray = bItems
         .GroupBy(e => e.CategoryCode)
         .Select(g => new JSChartArray
@@ -247,9 +282,6 @@
                 Value = g?.Sum(e => e.AmountDue) ?? 0
 
             }).ToList();
-
-        await JS.InvokeVoidAsync("pieChart", "myPlanChart", "planChartLegend", planItems, salaryMonth);
-        //await JS.InvokeVoidAsync("pieChart", "myCategoryChart", "categoryChartLegend", categoryArray);
     }
 
     private decimal totalCategory(int Id)
@@ -277,5 +309,56 @@
     private string GetPercentString(int percentage)
     {
         return Convert.ToString(percentage) + "%";
+    }
+
+    private async Task PreviousMonth()
+    {
+        // Calculate the minimum allowed month and year
+        int minYear = currentYear - (currentMonth + (12 - maxMonths + 1)) / 12;
+        int minMonth = (currentMonth - maxMonths + 1) % 12;
+        if (minMonth <= 0)
+        {
+            minMonth += 12;
+            minYear--;
+        }
+
+        if (selectedYear > minYear || (selectedYear == minYear && selectedMonth > minMonth))
+        {
+            selectedMonth--;
+            if (selectedMonth < 1)
+            {
+                selectedMonth = 12;
+                selectedYear--;
+            }
+            await LoadData();
+        }
+    }
+
+    private async Task NextMonth()
+    {
+        // Restrict selection to no later than the maxMonths forward
+        int maxYear = currentYear + (currentMonth + maxMonths - 1) / 12;
+        int maxMonth = (currentMonth + maxMonths - 1) % 12;
+
+        if (maxMonth == 0)
+        {
+            maxMonth = 12;
+            maxYear--;
+        }
+
+        if (selectedYear < maxYear || (selectedYear == maxYear && selectedMonth < maxMonth))
+        {
+            selectedMonth++;
+            if (selectedMonth > 12)
+            {
+                selectedMonth = 1;
+                selectedYear++;
+            }
+            await LoadData();
+        }
+    }
+    private string GetSelectedMonth()
+    {
+        return $"{new DateTime(selectedYear, selectedMonth, 1):MMM yyyy}";
     }
 }
