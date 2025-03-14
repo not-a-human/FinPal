@@ -1,54 +1,57 @@
 ﻿body {
-    background-color: #f8f9fc;
+  background-color: #f8f9fc;
 }
 
 .list-group-item {
-    background: none;
+  background: none;
 }
 
 #settings .list-group-item {
-    background: var(--bs-list-group-bg);
+  background: var(--bs-list-group-bg);
 }
 
 .dropdown-menu-dark {
-    --bs-dropdown-color: var(--bs-body-color);
-    --bs-dropdown-bg: var(--bs-body-bg);
-    --bs-dropdown-border-color: var(--bs-border-color-translucent);
-    --bs-dropdown-box-shadow: var(--bs-box-shadow);
-    --bs-dropdown-link-color: var(--bs-body-color);
-    --bs-dropdown-link-hover-color: var(--bs-body-color);
-    --bs-dropdown-link-hover-bg: var(--bs-tertiary-bg);
+  --bs-dropdown-color: var(--bs-body-color);
+  --bs-dropdown-bg: var(--bs-body-bg);
+  --bs-dropdown-border-color: var(--bs-border-color-translucent);
+  --bs-dropdown-box-shadow: var(--bs-box-shadow);
+  --bs-dropdown-link-color: var(--bs-body-color);
+  --bs-dropdown-link-hover-color: var(--bs-body-color);
+  --bs-dropdown-link-hover-bg: var(--bs-tertiary-bg);
 }
 
 .home-widget-title-color {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .table.bg-none {
-    --bs-table-bg: none;
+  --bs-table-bg: none;
 }
 
-@media (max-width: 1199px) {
-    .top-panel, .top-panel-footer, #header {
-        background-color: white;
-    }
-    #header {
-        box-shadow: #ddd 0.5px 1px 10px 1px;
-    }
-    .top-panel, .top-panel-footer {
-        box-shadow: #ddd 0.5px 5px 7px 0.5px;
-    }
+.top-panel,
+.top-panel-footer,
+#header {
+  background-color: white;
+}
 
-    #navbar ul li:first-child {
-        border: 4px solid white;
-    }
-    .top-panel-footer .bi-arrow-right-circle-fill, .top-panel-footer .bi-arrow-left-circle-fill {
-        color: #6f7180;
-    }
+.top-panel-footer .bi-arrow-right-circle-fill,
+.top-panel-footer .bi-arrow-left-circle-fill {
+  color: #6f7180;
+}
+
+@media (max-width: 991px) {
+  #header {
+    box-shadow: #ddd 0.5px 1px 10px 1px;
+  }
+  .top-panel,
+  .top-panel-footer {
+    box-shadow: #ddd 0.5px 5px 7px 0.5px;
+  }
+
+  #navbar ul li:first-child {
+    border: 4px solid white;
+  }
 }
 
 @media (min-width: 1200px) {
-    .top-panel, .top-panel-footer, #header {
-        color: white;
-    }
 }
