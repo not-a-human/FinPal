@@ -310,6 +310,14 @@ i.cursor-pointer:hover {
     text-overflow: ellipsis;
 }
 
+.text-left {
+    text-align:left;
+}
+
+.text-right {
+    text-align: right;
+}
+
 /*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/

@@ -90,7 +90,7 @@ function pieChart(id, legend, myArray, salary = 0) {
 
         // Value cell
         const valueCell = document.createElement('td');
-        valueCell.classList.add('border-0');
+        valueCell.classList.add('border-0','text-right');
 
         if (salary == 0) {
             valueCell.textContent = element.value;
