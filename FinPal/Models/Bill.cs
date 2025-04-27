@@ -35,4 +35,9 @@ namespace FinPal.Models
         public string CName { get; set; } = "";
         public string CNote { get; set; } = "";
     }
+
+    public class BillId
+    {
+        public int Id { get; set; }
+    }
 }

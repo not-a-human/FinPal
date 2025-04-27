@@ -3,9 +3,11 @@ using FinPal.Models;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace FinPal.Data
 {
@@ -15,6 +17,12 @@ namespace FinPal.Data
         {
             await Init();
             return await Database.Table<Bill>().Where(i => i.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Bill>> GetItemsAsync(int id)
+        {
+            await Init();
+            return await Database.Table<Bill>().ToListAsync();
         }
 
         public async Task<List<BillwithFC>> GetItemsAsyncWithFC()
@@ -116,6 +124,14 @@ namespace FinPal.Data
                 return await Database.UpdateAsync(item);
 
             item.Id = await GetCountAsync() + 1;
+
+            List<BillId> existingID = await Database.QueryAsync<BillId>("SELECT Id FROM Bill;");
+            List<int> existingIDInt = existingID.Select(i => i.Id).ToList();
+            
+            //while (existingIDInt.Contains(item.Id))
+            //{
+            //    //item.Id++;
+            //} 
             return await Database.InsertAsync(item);
 
         }

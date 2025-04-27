@@ -11,7 +11,7 @@
 <SectionContent SectionName="page-title">Welcome back, palz!</SectionContent>
 <SectionContent SectionName="page-actions">
     <i class="bi bi-question-lg h5 cursor-pointer m-0 px-2" onclick="helpFileToggle()"></i>
-    <i class="bi bi-bell-fill h5 cursor-pointer m-0 px-2" onclick="helpFileToggle()"></i>
+    <!--<i class="bi bi-bell-fill h5 cursor-pointer m-0 px-2" onclick="helpFileToggle()"></i>-->
     <i class="bi bi-three-dots-vertical h5 cursor-pointer m-0 px-2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-container="body" id="dropdownMenuButton1"></i>
 </SectionContent>
 <SectionContent SectionName="dropdown-menu-items">
@@ -93,7 +93,7 @@
         </div>
 
         <div class="col-xl-3 col-6 mb-2 mb-md-4">
-            <div class="card border-left-info shadow h-100 py-md-2 cursor-pointer" @onclick='() => Navigation.NavigateTo("/bills")'>
+            <div class="card border-left-info shadow h-100 py-md-2 cursor-pointer" @onclick='() => Navigation.NavigateTo("/recurringsummary")'>
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-md-2">
@@ -113,7 +113,7 @@
     </div>
 
     <div class="row justify-content-center">
-
+        <!--
         <div class="col-xl-4 col-lg-5 mb-md-4 mb-2">
             <div class="card shadow h-100">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -134,7 +134,7 @@
                 </div>
             </div>
         </div>
-
+        -->
         <div class="col-xl-8 col-lg-7 mb-md-4 mb-2">
             <div class="card shadow h-100">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -258,7 +258,7 @@
 
         await LoadData();
 
-        await JS.InvokeVoidAsync("pieChart", "myPlanChart", "planChartLegend", planItems, salaryMonth);
+        //await JS.InvokeVoidAsync("pieChart", "myPlanChart", "planChartLegend", planItems, salaryMonth);
     }
 
     private async Task LoadData()
